@@ -27,9 +27,17 @@ public final class Constants {
 		// IDs 3-14 are used by the swerve modules. Do NOT reuse here.
 
 		public static final class ShooterIds {
-			public static final int leftShooterCanId = 16;
-			public static final int rightShooterCanId = 17;
-			public static final int hoodCanId = 20;
+			public static final int leftShooterCanId = 0;
+			public static final int rightShooterCanId = 0;
+		}
+
+		public static final class HoodIds {
+			public static final int hoodCanId = 0;
+		}
+
+		public static final class IntakeIds {
+			public static final int rotationCanId = 0;
+			public static final int rollerCanId = 0;
 		}
 	}
 
@@ -52,8 +60,21 @@ public final class Constants {
 			public static final double kI = 0;
 			public static final double kD = 0;
 
-			public static final double minLimit = 1;
 			public static final double maxLimit = 10;
+			public static final double currentLimit = 10;
+			public static final double duration = 10;
+		}
+
+		public static final class IntakeValues {
+			public static final double kS = 0;
+			public static final double kG = 0;
+			public static final double kP = 0;
+			public static final double kI = 0;
+			public static final double kD = 0;
+
+			public static final double maxLimit = 10;
+			public static final double currentLimit = 10;
+			public static final double duration = 10;
 		}
 	}
 }

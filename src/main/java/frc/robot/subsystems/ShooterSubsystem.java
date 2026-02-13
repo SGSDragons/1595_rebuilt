@@ -14,17 +14,15 @@ import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareID.ShooterIds;
 import frc.robot.Constants.TuningValues.ShooterValues;
-import frc.robot.Constants.TuningValues.HoodValues;
+
 
 public class ShooterSubsystem extends SubsystemBase {
     
     TalonFX leftShooter;
     TalonFX rightShooter;
     TalonFX shooterMotor;
-    TalonFX hoodMotor;
 
     VelocityVoltage targetVelocity;
-    PositionVoltage targetPosition;
 
     public ShooterSubsystem() {
         // Make shooterMotor control both left and right shooters
@@ -45,50 +43,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
         leftShooter.getConfigurator().apply(shooterConfig);
         targetVelocity = new VelocityVoltage(0).withVelocity(ShooterValues.runSpeed);
-
-
-        hoodMotor = new TalonFX(ShooterIds.hoodCanId);
-        hoodMotor.setNeutralMode(NeutralModeValue.Brake);
-
-        var hoodConfig = new Slot0Configs();
-        hoodConfig.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
-        hoodConfig.kS = HoodValues.kS;
-        hoodConfig.kG = HoodValues.kG;
-        hoodConfig.kP = HoodValues.kP;
-        hoodConfig.kI = HoodValues.kI;
-        hoodConfig.kD = HoodValues.kD;
-
-        hoodMotor.getConfigurator().apply(hoodConfig);
-        targetPosition = new PositionVoltage(0).withPosition(HoodValues.minLimit);
-
     }
 
     public void runShooter() {
         shooterMotor.setControl(targetVelocity);
     }
 
-    public void runHood(double power) {
-        hoodMotor.set(power);
-    } 
-
-    public void enableHood() {
-        hoodMotor.setControl(targetPosition);
-    }
-
-    public void disableHood() {
-        setTargetPosition(HoodValues.minLimit);
-        hoodMotor.setControl(targetPosition);
-    }
-
-    public void setTargetPosition(double position) {
-        targetPosition = new PositionVoltage(0).withPosition(position);
-    }
-
-    public double getHoodCurrent() {
-        return hoodMotor.getStatorCurrent().getValueAsDouble();
-    }
-
-    public void zeroHood() {
-        hoodMotor.setPosition(0);
+    public void setTargetVelocity(double velocity) {
+        targetVelocity = new VelocityVoltage(0).withVelocity(velocity);
     }
 }
