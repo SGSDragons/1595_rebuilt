@@ -25,4 +25,65 @@ public final class Constants {
           return Preferences.getDouble("Deadband", 0.1);
       }
   }
+
+	public static final class HardwareID {
+
+		// All the CANBus and Channel IDs used on the robot. If any of these IDs are repeated,
+		// then things won't work correctly
+		//
+		// Can ID -1 denotes numbers that have yet to be programmed on devices.
+		// 
+		// IDs 3-14 are used by the swerve modules. Do NOT reuse here.
+
+		public static final class ShooterIds {
+			public static final int leftShooterCanId = 0;
+			public static final int rightShooterCanId = 0;
+		}
+
+		public static final class HoodIds {
+			public static final int hoodCanId = 0;
+		}
+
+		public static final class IntakeIds {
+			public static final int rotationCanId = 0;
+			public static final int rollerCanId = 0;
+		}
+	}
+
+	public static final class TuningValues {
+
+		public static final class ShooterValues {
+			public static final double kS = 0;
+			public static final double kV = 0;
+			public static final double kP = 0;
+			public static final double kI = 0;
+			public static final double kD = 0;
+
+			public static final double runSpeed = 10;
+		}
+
+		public static final class HoodValues {
+			public static final double kS = 0;
+			public static final double kG = 0;
+			public static final double kP = 0;
+			public static final double kI = 0;
+			public static final double kD = 0;
+
+			public static final double maxLimit = 10;
+			public static final double currentLimit = 10;
+			public static final double duration = 10;
+		}
+
+		public static final class IntakeValues {
+			public static final double kS = 0;
+			public static final double kG = 0;
+			public static final double kP = 0;
+			public static final double kI = 0;
+			public static final double kD = 0;
+
+			public static final double maxLimit = 10;
+			public static final double currentLimit = 10;
+			public static final double duration = 10;
+		}
+	}
 }
