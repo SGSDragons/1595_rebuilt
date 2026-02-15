@@ -7,7 +7,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.Constants.TuningValues.HoodValues;;
 
 public class RunShooter extends Command {
-
+/*
     public enum Speed {
         FAST,
         MEDIUM,
@@ -16,7 +16,7 @@ public class RunShooter extends Command {
 
     private final ShooterSubsystem shooterSubsystem;
 
-    public ZeroHood(ShooterSubsystem shooterSubsystem) {
+    public RunShooter(ShooterSubsystem shooterSubsystem) {
         this.shooterSubsystem = shooterSubsystem;
         addRequirements(shooterSubsystem);
     }
@@ -55,4 +55,5 @@ public class RunShooter extends Command {
     public boolean isFinished() {
         return (time - spikeStartTime > HoodValues.duration);
     }
+        */
 }
