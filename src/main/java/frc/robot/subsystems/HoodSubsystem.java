@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -15,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareID.ShooterIds;
 import frc.robot.Constants.HardwareID.HoodIds;
 import frc.robot.Constants.TuningValues.HoodValues;
+import frc.robot.Constants.CurrentLimits.HoodLimits;
 
 public class HoodSubsystem extends SubsystemBase {
     
@@ -25,13 +27,17 @@ public class HoodSubsystem extends SubsystemBase {
         hoodMotor = new TalonFX(HoodIds.hoodCanId);
         hoodMotor.setNeutralMode(NeutralModeValue.Brake);
 
-        var hoodConfig = new Slot0Configs();
-        hoodConfig.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
-        hoodConfig.kS = HoodValues.kS;
-        hoodConfig.kG = HoodValues.kG;
-        hoodConfig.kP = HoodValues.kP;
-        hoodConfig.kI = HoodValues.kI;
-        hoodConfig.kD = HoodValues.kD;
+        var hoodConfig = new TalonFXConfiguration();
+
+        hoodConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        hoodConfig.CurrentLimits.StatorCurrentLimit = HoodLimits.maxLimit;
+
+        hoodConfig.Slot0.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
+        hoodConfig.Slot0.kS = HoodValues.kS;
+        hoodConfig.Slot0.kG = HoodValues.kG;
+        hoodConfig.Slot0.kP = HoodValues.kP;
+        hoodConfig.Slot0.kI = HoodValues.kI;
+        hoodConfig.Slot0.kD = HoodValues.kD;
 
         hoodMotor.getConfigurator().apply(hoodConfig);
         targetPosition = new PositionVoltage(0).withPosition(0);

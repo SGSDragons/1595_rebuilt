@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareID.ShooterIds;
 import frc.robot.Constants.TuningValues.ShooterValues;
+import frc.robot.Constants.CurrentLimits.ShooterLimits;
 
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -28,21 +30,25 @@ public class ShooterSubsystem extends SubsystemBase {
         // Make shooterMotor control both left and right shooters
         shooterMotor = new TalonFX(ShooterIds.leftShooterCanId);
         rightShooter = new TalonFX(ShooterIds.rightShooterCanId);
-        rightShooter.setControl(new Follower(leftShooter.getDeviceID(), MotorAlignmentValue.Opposed));
+        rightShooter.setControl(new Follower(shooterMotor.getDeviceID(), MotorAlignmentValue.Opposed));
 
         rightShooter.setNeutralMode(NeutralModeValue.Brake);
         shooterMotor.setNeutralMode(NeutralModeValue.Brake);
 
-        var shooterConfig = new Slot0Configs();
-        shooterConfig.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
-        shooterConfig.kS = ShooterValues.kS;
-        shooterConfig.kG = ShooterValues.kV;
-        shooterConfig.kP = ShooterValues.kP;
-        shooterConfig.kI = ShooterValues.kI;
-        shooterConfig.kD = ShooterValues.kD;
+        var shooterConfig = new TalonFXConfiguration();
 
-        leftShooter.getConfigurator().apply(shooterConfig);
-        targetVelocity = new VelocityVoltage(0).withVelocity(ShooterValues.runSpeed);
+        shooterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        shooterConfig.CurrentLimits.StatorCurrentLimit = ShooterLimits.maxLimit;
+
+        shooterConfig.Slot0.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
+        shooterConfig.Slot0.kS = ShooterValues.kS;
+        shooterConfig.Slot0.kG = ShooterValues.kV;
+        shooterConfig.Slot0.kP = ShooterValues.kP;
+        shooterConfig.Slot0.kI = ShooterValues.kI;
+        shooterConfig.Slot0.kD = ShooterValues.kD;
+
+        shooterMotor.getConfigurator().apply(shooterConfig);
+        targetVelocity = new VelocityVoltage(0).withVelocity(ShooterValues.slowSpeed);
     }
 
     public void runShooter() {

@@ -1,58 +1,55 @@
 package frc.robot.Shooter;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.Constants.TuningValues.HoodValues;;
+import frc.robot.Constants.TuningValues.ShooterValues;
+
 
 public class RunShooter extends Command {
 
-    public enum Speed {
+    public enum ShooterSpeed {
         FAST,
-        MEDIUM,
         SLOW
     }
 
     private final ShooterSubsystem shooterSubsystem;
+    private final ShooterSpeed speed;
+    public boolean autoRun;
 
-    public ZeroHood(ShooterSubsystem shooterSubsystem) {
+    public RunShooter(ShooterSubsystem shooterSubsystem, ShooterSpeed speed) {
         this.shooterSubsystem = shooterSubsystem;
+        this.speed = speed;
         addRequirements(shooterSubsystem);
     }
 
+    // Set target speed
     @Override
     public void initialize() {  
-        currentDraw = this.hoodSubsystem.getCurrent();
-        time = Timer.getFPGATimestamp();
-    }
-
-    // Slowly run hood down and record stator current
-    @Override
-    public void execute() {
-        currentDraw = this.hoodSubsystem.getCurrent();
-        this.hoodSubsystem.runHood(-0.1);
-
-        if (currentDraw > currentLimit) {
-            if (spikeStartTime < 0) {
-                spikeStartTime = time;
-            }
+        if (speed == ShooterSpeed.FAST) {
+            this.shooterSubsystem.setTargetVelocity(ShooterValues.fastSpeed);
         }
         else {
-            spikeStartTime = -1;
+            this.shooterSubsystem.setTargetVelocity(ShooterValues.slowSpeed);
         }
     }
 
-    // When stator current is above threshold for enough time, stop motor and zero the hood
     @Override
-    public void end(boolean interrupted) {
-        this.hoodSubsystem.runHood(0);
-        this.hoodSubsystem.zeroHood();
+    public void execute() {
+        this.shooterSubsystem.runShooter();
     }
 
-    // Detect when stator current is above threshold for enough time
+    @Override
+    public void end(boolean interrupted) {
+        if (autoRun) {
+            this.shooterSubsystem.setTargetVelocity(0);
+        }
+        else {
+            this.shooterSubsystem.setTargetVelocity(ShooterValues.slowSpeed);
+        }
+    }
+
     @Override
     public boolean isFinished() {
-        return (time - spikeStartTime > HoodValues.duration);
+        return false;
     }
 }

@@ -3,13 +3,13 @@ package frc.robot.Shooter;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.HoodSubsystem;
-import frc.robot.Constants.TuningValues.HoodValues;;
+import frc.robot.Constants.CurrentLimits.HoodLimits;
 
 public class ZeroHood extends Command {
 
     private final HoodSubsystem hoodSubsystem;
 
-    final double currentLimit = HoodValues.currentLimit;
+    final double currentLimit = HoodLimits.currentLimit;
     double currentDraw;
     double time;
     double spikeStartTime;
@@ -51,6 +51,6 @@ public class ZeroHood extends Command {
     // Detect when stator current is above threshold for enough time
     @Override
     public boolean isFinished() {
-        return (time - spikeStartTime > HoodValues.duration);
+        return (time - spikeStartTime > HoodLimits.duration);
     }
 }

@@ -4,13 +4,13 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.Constants.TuningValues.IntakeValues;;;
+import frc.robot.Constants.CurrentLimits.IntakeLimits;
 
 public class ZeroIntake extends Command {
 
     private final IntakeSubsystem intakeSubsystem;
 
-    final double currentLimit = IntakeValues.currentLimit;
+    final double currentLimit = IntakeLimits.currentLimit;
     double currentDraw;
     double time;
     double spikeStartTime;
@@ -52,6 +52,6 @@ public class ZeroIntake extends Command {
     // Detect when stator current is above threshold for enough time
     @Override
     public boolean isFinished() {
-        return (time - spikeStartTime > IntakeValues.duration);
+        return (time - spikeStartTime > IntakeLimits.duration);
     }
 }
