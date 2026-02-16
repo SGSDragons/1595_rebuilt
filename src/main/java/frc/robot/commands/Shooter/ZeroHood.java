@@ -2,7 +2,7 @@ package frc.robot.commands.Shooter;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.Shooter.HoodSubsystem;
 import frc.robot.Constants.CurrentLimits.HoodLimits;
 
 public class ZeroHood extends Command {

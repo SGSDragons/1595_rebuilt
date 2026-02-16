@@ -77,6 +77,10 @@ public final class Constants {
 			public static final double kP = 0;
 			public static final double kI = 0;
 			public static final double kD = 0;
+
+			public static final double extended = 4;
+			public static final double retracted = 0;
+			public static final double tolerance = 1;
 		}
 	}
 
@@ -96,6 +100,10 @@ public final class Constants {
 			public static final double maxLimit = 10;
 			public static final double currentLimit = 10;
 			public static final double duration = 10;
+		}
+
+		public static final class RollerLimits {
+			public static final double maxLimit = 50;
 		}
 	}
 

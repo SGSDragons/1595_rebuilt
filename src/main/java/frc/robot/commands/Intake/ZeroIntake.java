@@ -2,9 +2,8 @@ package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.HoodSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.Constants.CurrentLimits.IntakeLimits;
+import frc.robot.subsystems.Intake.IntakeSubsystem;
 
 public class ZeroIntake extends Command {
 
@@ -26,7 +25,7 @@ public class ZeroIntake extends Command {
         time = Timer.getFPGATimestamp();
     }
 
-    // Slowly run hood down and record stator current
+    // Slowly run intake and record stator current
     @Override
     public void execute() {
         currentDraw = this.intakeSubsystem.getCurrent();

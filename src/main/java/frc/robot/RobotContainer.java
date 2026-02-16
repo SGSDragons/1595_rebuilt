@@ -5,7 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.Shooter.HoodSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.parser.PIDFConfig;
 import edu.wpi.first.math.geometry.Pose2d;
