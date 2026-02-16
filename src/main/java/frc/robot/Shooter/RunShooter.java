@@ -6,13 +6,8 @@ import frc.robot.Constants.TuningValues.ShooterValues;
 
 
 public class RunShooter extends Command {
-<<<<<<< HEAD
 
     public enum ShooterSpeed {
-=======
-/*
-    public enum Speed {
->>>>>>> 403196ddef33a4a623b3f37db74b549ad3349d9b
         FAST,
         SLOW
     }
@@ -21,11 +16,7 @@ public class RunShooter extends Command {
     private final ShooterSpeed speed;
     public boolean autoRun;
 
-<<<<<<< HEAD
     public RunShooter(ShooterSubsystem shooterSubsystem, ShooterSpeed speed) {
-=======
-    public RunShooter(ShooterSubsystem shooterSubsystem) {
->>>>>>> 403196ddef33a4a623b3f37db74b549ad3349d9b
         this.shooterSubsystem = shooterSubsystem;
         this.speed = speed;
         addRequirements(shooterSubsystem);
@@ -61,5 +52,4 @@ public class RunShooter extends Command {
     public boolean isFinished() {
         return false;
     }
-        */
 }
