@@ -23,6 +23,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -40,10 +42,13 @@ import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
+import swervelib.SwerveModule;
 import swervelib.math.SwerveMath;
+import swervelib.parser.PIDFConfig;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
@@ -85,13 +90,15 @@ public class SwerveSubsystem extends DriveSubsystem {
         swerveDrive.setAngularVelocityCompensation(true, true, 0.1);
 
         // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
-        swerveDrive.setModuleEncoderAutoSynchronize(false, 1);
+        swerveDrive.setModuleEncoderAutoSynchronize(true, 1);
 
         // Disable the odometry updates in a background thread and do them in
         // the main periodic loop. This way vision updates can be injected without
         // race conditions.
         swerveDrive.stopOdometryThread();
         setupPathPlanner();
+
+        publishTunables();
     }
 
     @Override
@@ -472,5 +479,40 @@ public class SwerveSubsystem extends DriveSubsystem {
      */
     public SwerveDrive getSwerveDrive() {
         return swerveDrive;
+    }
+
+    public void updateAnglePIDF() {
+        var table = getAnglePIDFTable();
+
+        // Read values, providing current defaults if the table entry doesn't exist
+        PIDFConfig init = swerveDrive.getModules()[0].getAnglePIDF();
+        double p = table.getEntry("kP").getDouble(init.p);
+        double i = table.getEntry("kI").getDouble(init.i);
+        double d = table.getEntry("kD").getDouble(init.d);
+        double f = table.getEntry("kF").getDouble(init.f);
+
+        PIDFConfig newConfig = new PIDFConfig(p, i, d, f);
+
+        // Apply to all modules (YAGSL SwerveDrive object)
+        for (SwerveModule module : swerveDrive.getModules()) {
+            module.setAnglePIDF(newConfig);
+        }
+
+        System.out.println("Applied new Angle PIDF: P=" + p);
+    }
+
+    private NetworkTable getAnglePIDFTable() {
+
+        // A table for tuning the Angle PIDF
+        return NetworkTableInstance.getDefault().getTable("Tuning").getSubTable("swerveAnglePIDF");
+    }
+
+    private void publishTunables() {
+        var table = getAnglePIDFTable();
+        PIDFConfig init = swerveDrive.getModules()[0].getAnglePIDF();
+        table.getEntry("kP").setDouble(init.p);
+        table.getEntry("kI").setDouble(init.i);
+        table.getEntry("kD").setDouble(init.d);
+        table.getEntry("kF").setDouble(init.f);
     }
 }

@@ -5,16 +5,19 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.Shooter.ZeroHood;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import swervelib.parser.PIDFConfig;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -26,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+<<<<<<< HEAD
     private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
     private final SwerveSubsystem swerve = new SwerveSubsystem(Units.MetersPerSecond.of(8), Pose2d.kZero);
     private final HoodSubsystem hood = new HoodSubsystem();
@@ -66,4 +70,76 @@ public class RobotContainer {
         // An example command will be run in autonomous
         return Autos.exampleAuto(m_exampleSubsystem);
     }
+=======
+  // The robot's subsystems and commands are defined here...
+  private final SwerveSubsystem drive = new SwerveSubsystem(Units.MetersPerSecond.of(2.0), Pose2d.kZero);
+  private final HoodSubsystem hood = new HoodSubsystem();
+
+  private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.driverControllerPort);
+  private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.operatorControllerPort);
+
+
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  public RobotContainer() {
+    // Configure the trigger bindings
+    configureBindings();
+
+    if (drive instanceof SwerveSubsystem) {
+      SwerveSubsystem swerve = (SwerveSubsystem) drive;
+      swerve.resetOdometry(Pose2d.kZero);
+    }
+  }
+
+  //      ______________________________(17, 8)
+  //      |                                |
+  //     B|                                |R
+  //     B|                                |R
+  //     B|                                |R
+  //     B|                                |R
+  //      |________________________________|
+  //    (0,0)
+  //
+  // With 0deg heading pointing right.
+  //
+  // When on the Blue alliance
+  //    Left joystick Up (-1 y-axis) maps to positive X.
+  //    Left joystick left (-1 x-axis) maps to positive Y.
+  // Thus, Blue axis are inverted.
+  class DriverSticks {
+    // TODO: Make this adapt to the Red/Blue alliance
+    private final double inverter = 1.0;
+    double readAxis(XboxController.Axis axis) {
+      return driverController.getRawAxis(axis.value);
+    }
+    public double translateX() { return inverter*readAxis(Axis.kLeftY); }
+    public double translateY() { return inverter*readAxis(Axis.kLeftX); }
+    public double lookX() { return inverter*readAxis(Axis.kRightX); }
+    public double lookY() { return inverter*readAxis(Axis.kRightY); }
+  }
+
+  private void configureBindings() {
+
+    DriverSticks driver = new DriverSticks();
+    
+    drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
+  }
+
+  public void configureTestBindings() {
+
+    driverController.x().onTrue(Commands.runOnce(drive::updateAnglePIDF));
+
+  }
+
+
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+    // An example command will be run in autonomous
+    return null;
+  }
+
+>>>>>>> 403196ddef33a4a623b3f37db74b549ad3349d9b
 }
