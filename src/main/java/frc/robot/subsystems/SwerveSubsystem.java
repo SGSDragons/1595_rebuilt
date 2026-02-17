@@ -235,13 +235,18 @@ public class SwerveSubsystem extends DriveSubsystem {
             Translation2d joystick = new Translation2d(translationX.getAsDouble(), translationY.getAsDouble());
             double magnitude = joystick.getNorm();
           
-            if (joystick.getNorm() < 0.1) {
+            if (magnitude < 0.1) {
                 joystick = Translation2d.kZero;
             }
 
 
-            magnitude = scale*Math.pow(magnitude, 3);
+            // if (magnitude > 1) {
+            //     joystick = joystick.div(magnitude);
+            // }
+
+            // magnitude = scale*Math.pow(magnitude, 3);
             joystick = joystick.times(magnitude);
+            
 
             Translation2d scaledInputs = SwerveMath.scaleTranslation(joystick, 0.8);
 
