@@ -59,7 +59,8 @@ public final class Constants {
 			public static final double kI = 0;
 			public static final double kD = 0;
 
-			public static final double runSpeed = 10;
+			public static final double fastSpeed = 10;
+			public static final double slowSpeed = 10;
 		}
 
 		public static final class HoodValues {
@@ -68,10 +69,6 @@ public final class Constants {
 			public static final double kP = 0;
 			public static final double kI = 0;
 			public static final double kD = 0;
-
-			public static final double maxLimit = 10;
-			public static final double currentLimit = 10;
-			public static final double duration = 10;
 		}
 
 		public static final class IntakeValues {
@@ -81,9 +78,33 @@ public final class Constants {
 			public static final double kI = 0;
 			public static final double kD = 0;
 
+			public static final double extended = 4;
+			public static final double retracted = 0;
+			public static final double tolerance = 1;
+		}
+	}
+
+	public static final class CurrentLimits {
+
+		public static final class ShooterLimits {
+			public static final double maxLimit = 10;
+		}
+
+		public static final class HoodLimits {
 			public static final double maxLimit = 10;
 			public static final double currentLimit = 10;
 			public static final double duration = 10;
 		}
+
+		public static final class IntakeLimits {
+			public static final double maxLimit = 10;
+			public static final double currentLimit = 10;
+			public static final double duration = 10;
+		}
+
+		public static final class RollerLimits {
+			public static final double maxLimit = 50;
+		}
 	}
+
 }
