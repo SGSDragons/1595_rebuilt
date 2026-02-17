@@ -31,7 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem drive = new SwerveSubsystem(Units.MetersPerSecond.of(2.0), new Pose2d(4, 4, Rotation2d.kZero));
+  private final SwerveSubsystem drive = new SwerveSubsystem(Units.MetersPerSecond.of(6.0), new Pose2d(4, 4, Rotation2d.kZero));
   private final HoodSubsystem hood = new HoodSubsystem();
 
   private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.driverControllerPort);

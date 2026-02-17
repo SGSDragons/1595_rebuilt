@@ -239,12 +239,7 @@ public class SwerveSubsystem extends DriveSubsystem {
                 joystick = Translation2d.kZero;
             }
 
-
-            // if (magnitude > 1) {
-            //     joystick = joystick.div(magnitude);
-            // }
-
-            // magnitude = scale*Math.pow(magnitude, 3);
+            magnitude = scale*Math.pow(magnitude, 3);
             joystick = joystick.times(magnitude);
             
 
