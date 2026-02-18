@@ -2,31 +2,26 @@ package frc.robot.subsystems.Intake;
 
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
-
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.CurrentLimits.HoodLimits;
-import frc.robot.Constants.HardwareID.IntakeIds;
-import frc.robot.Constants.TuningValues.IntakeValues;
-import frc.robot.Constants.CurrentLimits.RollerLimits;
 
-public class RollerSusbsystem extends SubsystemBase {
+import frc.robot.Constants.HardwareID.IntakeIds;
+import frc.robot.Constants.CurrentLimits.IntakeRollerLimits;;
+
+
+public class IntakeRollerSubsystem extends SubsystemBase {
     
     TalonFX rollerMotor;
 
-    public RollerSusbsystem() {
+    public IntakeRollerSubsystem() {
         rollerMotor = new TalonFX(IntakeIds.rollerCanId);
         rollerMotor.setNeutralMode(NeutralModeValue.Brake);
 
         var rollerConfig = new TalonFXConfiguration();
 
         rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        rollerConfig.CurrentLimits.StatorCurrentLimit = RollerLimits.maxLimit;
+        rollerConfig.CurrentLimits.StatorCurrentLimit = IntakeRollerLimits.maxLimit;
 
         rollerMotor.getConfigurator().apply(rollerConfig);
 

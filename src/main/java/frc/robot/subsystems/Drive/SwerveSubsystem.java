@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.Drive;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
+import frc.robot.subsystems.GoalAim;
 
 import java.io.File;
 import java.util.Arrays;
@@ -251,6 +252,35 @@ public class SwerveSubsystem extends DriveSubsystem {
                     scaledInputs.getY(),
                     headingX.getAsDouble(),
                     headingY.getAsDouble(),
+                    swerveDrive.getOdometryHeading().getRadians(),
+                    swerveDrive.getMaximumChassisVelocity()));
+        });
+    }
+
+    public Command pointAtGoal(DoubleSupplier translationX, DoubleSupplier translationY, GoalAim aimer, double scale) {
+        swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
+        return run(() -> {
+
+            Translation2d joystick = new Translation2d(translationX.getAsDouble(), translationY.getAsDouble());
+            double magnitude = joystick.getNorm();
+          
+            if (magnitude < 0.1) {
+                joystick = Translation2d.kZero;
+            }
+
+            magnitude = scale*Math.pow(magnitude, 3);
+            joystick = joystick.times(magnitude);
+            
+
+            Translation2d scaledInputs = SwerveMath.scaleTranslation(joystick, 0.8);
+            Translation2d vector = aimer.pointAtGoal();
+
+            // Make the robot move
+            driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(
+                    scaledInputs.getX(),
+                    scaledInputs.getY(),
+                    vector.getX(),
+                    vector.getY(),
                     swerveDrive.getOdometryHeading().getRadians(),
                     swerveDrive.getMaximumChassisVelocity()));
         });

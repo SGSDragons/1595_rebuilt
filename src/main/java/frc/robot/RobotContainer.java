@@ -5,11 +5,16 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.GoalAim;
+import frc.robot.subsystems.Drive.SwerveSubsystem;
 import frc.robot.subsystems.Shooter.HoodSubsystem;
-import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.parser.PIDFConfig;
+
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -78,8 +83,9 @@ public class RobotContainer {
   private void configureBindings() {
 
     DriverSticks driver = new DriverSticks();
-    
-    drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
+
+    // drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
+    drive.setDefaultCommand(drive.pointAtGoal(driver::translateX, driver::translateY, new GoalAim(drive, true), 1.0));
   }
 
   public void configureTestBindings() {

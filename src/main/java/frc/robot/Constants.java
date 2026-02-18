@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 
 /**
@@ -48,6 +50,11 @@ public final class Constants {
 			public static final int rotationCanId = 0;
 			public static final int rollerCanId = 0;
 		}
+
+		public static final class FeederIds {
+			public static final int hopperCanId = 0;
+			public static final int feederCanId = 0;
+		}
 	}
 
 	public static final class TuningValues {
@@ -61,7 +68,17 @@ public final class Constants {
 
 			public static final double fastSpeed = 10;
 			public static final double slowSpeed = 10;
-		}
+
+			public static final class angleFunction {
+				public static final double x2coef = 0;
+				public static final double xcoef = 0;
+				public static final double constant = 0;
+
+				public static double calculate(double input) {
+					return x2coef*Math.pow(input,2) + xcoef*input + constant;
+				}
+			}
+ 		}
 
 		public static final class HoodValues {
 			public static final double kS = 0;
@@ -102,9 +119,27 @@ public final class Constants {
 			public static final double duration = 10;
 		}
 
-		public static final class RollerLimits {
+		public static final class IntakeRollerLimits {
 			public static final double maxLimit = 50;
 		}
+
+		public static final class HopperLimits {
+			public static final double maxLimit = 50;
+		}
+
+		public static final class FeederLimits {
+			public static final double maxLimit = 50;
+		}
+	}
+
+	public static final class FeildConstants {
+		public boolean isRedAlliance() {
+			var alliance = DriverStation.getAlliance();
+			return (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red);
+		}
+
+		public static final Translation2d redGoal = new Translation2d(12,4);
+		public static final Translation2d blueGoal = new Translation2d(4.5,4);
 	}
 
 }
