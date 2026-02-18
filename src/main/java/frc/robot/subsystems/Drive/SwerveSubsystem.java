@@ -257,6 +257,7 @@ public class SwerveSubsystem extends DriveSubsystem {
         });
     }
 
+    @Override
     public Command pointAtGoal(DoubleSupplier translationX, DoubleSupplier translationY, GoalAim aimer, double scale) {
         swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
         return run(() -> {

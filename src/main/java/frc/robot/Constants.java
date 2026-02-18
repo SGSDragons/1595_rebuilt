@@ -133,7 +133,7 @@ public final class Constants {
 	}
 
 	public static final class FeildConstants {
-		public boolean isRedAlliance() {
+		public static boolean isRedAlliance() {
 			var alliance = DriverStation.getAlliance();
 			return (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red);
 		}

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.FeildConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.GoalAim;
 import frc.robot.subsystems.Drive.SwerveSubsystem;
@@ -42,6 +43,7 @@ public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.driverControllerPort);
   private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.operatorControllerPort);
 
+  private final boolean isRedAlliance = FeildConstants.isRedAlliance();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -70,7 +72,7 @@ public class RobotContainer {
   // Thus, Blue axis are inverted.
   class DriverSticks {
     // TODO: Make this adapt to the Red/Blue alliance
-    private final double inverter = 1.0;
+    private final double inverter = isRedAlliance ? 1.0 : -1.0;
     double readAxis(XboxController.Axis axis) {
       return driverController.getRawAxis(axis.value);
     }
@@ -84,8 +86,8 @@ public class RobotContainer {
 
     DriverSticks driver = new DriverSticks();
 
-    // drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
-    drive.setDefaultCommand(drive.pointAtGoal(driver::translateX, driver::translateY, new GoalAim(drive, true), 1.0));
+    drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
+    driverController.leftBumper().whileTrue(drive.pointAtGoal(driver::translateX, driver::translateY, new GoalAim(drive, isRedAlliance), 1.0));
   }
 
   public void configureTestBindings() {

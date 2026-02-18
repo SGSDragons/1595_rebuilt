@@ -8,9 +8,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.HardwareID.FeederIds;
 import frc.robot.Constants.CurrentLimits.FeederLimits;
+import frc.robot.subsystems.SubsystemInterfaces.FeederSubsystemFake;
 
 
-public class FeederSubsystem extends SubsystemBase {
+public class FeederSubsystem {
     
     TalonFX feederMotor;
 
@@ -24,7 +25,6 @@ public class FeederSubsystem extends SubsystemBase {
         rollerConfig.CurrentLimits.StatorCurrentLimit = FeederLimits.maxLimit;
 
         feederMotor.getConfigurator().apply(rollerConfig);
-
     }
 
     public void runRollers(double power) {
