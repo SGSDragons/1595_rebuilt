@@ -28,6 +28,11 @@ public class HoodSubsystemFake extends SubsystemBase {
 
     public double getCurrent() { return 0; }
 
+    public double getPosition() { return 0; }
+
     public void zeroHood() {}
+
+    @Override
+    public void periodic() {}
 }
 

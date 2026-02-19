@@ -37,4 +37,7 @@ public class IntakeSubsystemFake extends SubsystemBase {
     public double getCurrent() { return 0; }
 
     public void zeroRotation() {}
+
+    @Override
+    public void periodic() {}
 }

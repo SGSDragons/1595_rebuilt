@@ -73,4 +73,13 @@ public class IntakeSubsystem extends SubsystemBase {
     public void zeroRotation() {
         rotationMotor.setPosition(0);
     }
+
+    @Override
+    public void periodic() {
+
+    }
+
+    public void telemetry() {
+        
+    }
 }

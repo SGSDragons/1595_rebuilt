@@ -59,4 +59,13 @@ public class ShooterSubsystem extends SubsystemBase {
     public double getVelocity() {
         return shooterMotor.getVelocity().getValueAsDouble();
     }
+    
+    @Override
+    public void periodic() {
+
+    }
+
+    public void telemetry() {
+        
+    }
 }

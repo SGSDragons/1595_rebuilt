@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.FeildConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Shooter.EnableHood;
 import frc.robot.subsystems.GoalAim;
 import frc.robot.subsystems.Drive.SwerveSubsystem;
 import frc.robot.subsystems.Shooter.HoodSubsystem;
@@ -85,9 +86,12 @@ public class RobotContainer {
   private void configureBindings() {
 
     DriverSticks driver = new DriverSticks();
+    GoalAim goalAimer = new GoalAim(drive, isRedAlliance);
 
     drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
-    driverController.leftBumper().whileTrue(drive.pointAtGoal(driver::translateX, driver::translateY, new GoalAim(drive, isRedAlliance), 1.0));
+    driverController.leftBumper().whileTrue(drive.pointAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
+
+    hood.setDefaultCommand(new EnableHood(hood, goalAimer));
   }
 
   public void configureTestBindings() {

@@ -28,4 +28,7 @@ public class ShooterSubsystemFake extends SubsystemBase {
     public void setTargetVelocity(double velocity) {}
 
     public double getVelocity() { return 0; }
+
+    @Override
+    public void periodic() {}
 }

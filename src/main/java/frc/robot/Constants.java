@@ -69,8 +69,8 @@ public final class Constants {
 			public static final double fastSpeed = 10;
 			public static final double slowSpeed = 10;
 
-			public static final class angleFunction {
-				public static final double x2coef = 0;
+			public static final class AngleFunction {
+				public static final double x2coef = 1;
 				public static final double xcoef = 0;
 				public static final double constant = 0;
 
@@ -98,6 +98,16 @@ public final class Constants {
 			public static final double extended = 4;
 			public static final double retracted = 0;
 			public static final double tolerance = 1;
+
+			public static final double intakeRunSpeed = 0.8;
+		}
+
+		public static final class FeederValues {
+			public static final double feederRunSpeed = 0.8;
+		}
+
+		public static final class HopperValues {
+			public static final double hopperRunSpeed = 0.8;
 		}
 	}
 

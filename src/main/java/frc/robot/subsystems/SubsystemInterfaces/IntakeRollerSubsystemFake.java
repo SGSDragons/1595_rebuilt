@@ -19,4 +19,7 @@ public class IntakeRollerSubsystemFake extends SubsystemBase {
     public void stopRotation() {} 
  
     public double getCurrent() { return 0; }
+
+    @Override
+    public void periodic() {}
 }

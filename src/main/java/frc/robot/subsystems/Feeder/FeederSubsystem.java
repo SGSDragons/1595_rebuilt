@@ -8,10 +8,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.HardwareID.FeederIds;
 import frc.robot.Constants.CurrentLimits.FeederLimits;
-import frc.robot.subsystems.SubsystemInterfaces.FeederSubsystemFake;
 
 
-public class FeederSubsystem {
+public class FeederSubsystem extends SubsystemBase{
     
     TalonFX feederMotor;
 
@@ -37,5 +36,14 @@ public class FeederSubsystem {
  
     public double getCurrent() {
         return feederMotor.getStatorCurrent().getValueAsDouble();
+    }
+    
+    @Override
+    public void periodic() {
+
+    }
+
+    public void telemetry() {
+        
     }
 }

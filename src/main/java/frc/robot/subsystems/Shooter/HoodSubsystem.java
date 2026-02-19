@@ -7,6 +7,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareID.HoodIds;
 import frc.robot.Constants.TuningValues.HoodValues;
@@ -14,7 +17,7 @@ import frc.robot.Constants.CurrentLimits.HoodLimits;
 
 public class HoodSubsystem extends SubsystemBase {
     
-    TalonFX hoodMotor;
+    public TalonFX hoodMotor;
     PositionVoltage targetPosition;
 
     public HoodSubsystem() {
@@ -35,6 +38,8 @@ public class HoodSubsystem extends SubsystemBase {
 
         hoodMotor.getConfigurator().apply(hoodConfig);
         targetPosition = new PositionVoltage(0).withPosition(0);
+
+        // Mechanism2d arm = new Mechanism2d(2, 3);
     }
 
     public void runHood(double power) {
@@ -53,8 +58,22 @@ public class HoodSubsystem extends SubsystemBase {
         return hoodMotor.getStatorCurrent().getValueAsDouble();
     }
 
+    public double getPosition() {
+        return hoodMotor.getPosition().getValueAsDouble();
+    }
+
     public void zeroHood() {
         hoodMotor.setPosition(0);
+    }
+
+    @Override
+    public void periodic() {
+        telemetry();
+    }
+
+    public void telemetry() {
+        SmartDashboard.putNumber("Target Position", targetPosition.Position);
+        SmartDashboard.putNumber("Hood Position", getPosition());
     }
 }
 

@@ -38,4 +38,13 @@ public class IntakeRollerSubsystem extends SubsystemBase {
     public double getCurrent() {
         return rollerMotor.getStatorCurrent().getValueAsDouble();
     }
+    
+    @Override
+    public void periodic() {
+
+    }
+
+    public void telemetry() {
+        
+    }
 }
