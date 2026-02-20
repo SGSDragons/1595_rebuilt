@@ -43,7 +43,7 @@ public final class Constants {
 		}
 
 		public static final class HoodIds {
-			public static final int hoodCanId = 0;
+			public static final int hoodCanId = 18;
 		}
 
 		public static final class IntakeIds {
@@ -118,9 +118,9 @@ public final class Constants {
 		}
 
 		public static final class HoodLimits {
-			public static final double maxLimit = 10;
-			public static final double currentLimit = 10;
-			public static final double duration = 10;
+			public static final double maxLimit = 8;
+			public static final double currentLimit = 4;
+			public static final double duration = 0.1;
 		}
 
 		public static final class IntakeLimits {

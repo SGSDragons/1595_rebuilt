@@ -74,6 +74,7 @@ public class HoodSubsystem extends SubsystemBase {
     public void telemetry() {
         SmartDashboard.putNumber("Target Position", targetPosition.Position);
         SmartDashboard.putNumber("Hood Position", getPosition());
+        SmartDashboard.putNumber("Hood Voltage", hoodMotor.getMotorVoltage().getValueAsDouble());
     }
 }
 

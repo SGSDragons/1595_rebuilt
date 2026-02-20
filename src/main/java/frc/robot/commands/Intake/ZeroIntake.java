@@ -29,6 +29,7 @@ public class ZeroIntake extends Command {
     @Override
     public void execute() {
         currentDraw = this.intakeSubsystem.getCurrent();
+        time = Timer.getFPGATimestamp();
         this.intakeSubsystem.runRotation(-0.1);
 
         if (currentDraw > currentLimit) {
@@ -37,7 +38,7 @@ public class ZeroIntake extends Command {
             }
         }
         else {
-            spikeStartTime = -1;
+            spikeStartTime = time;
         }
     }
 

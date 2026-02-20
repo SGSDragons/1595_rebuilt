@@ -29,6 +29,7 @@ public class ZeroHood extends Command {
     @Override
     public void execute() {
         currentDraw = this.hoodSubsystem.getCurrent();
+        time = Timer.getFPGATimestamp();
         this.hoodSubsystem.runHood(-0.1);
 
         if (currentDraw > currentLimit) {
@@ -37,7 +38,7 @@ public class ZeroHood extends Command {
             }
         }
         else {
-            spikeStartTime = -1;
+            spikeStartTime = time;
         }
     }
 
