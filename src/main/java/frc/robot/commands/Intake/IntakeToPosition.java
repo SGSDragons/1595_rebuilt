@@ -3,23 +3,24 @@ package frc.robot.commands.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.TuningValues.IntakeValues;
 import frc.robot.subsystems.Intake.IntakeSubsystem;
+import frc.robot.subsystems.Intake.IntakeSubsystemReal;
 
 
-public class GotoPosition extends Command {
+public class IntakeToPosition extends Command {
 
     public enum IntakePosition {
         EXTENDED,
         RETRACTED
     }
 
-    private final IntakeSubsystem intakeSubsystem;
+    private final IntakeSubsystemReal intakeSubsystem;
     private final IntakePosition position;
     public boolean autoRun;
 
-    public GotoPosition(IntakeSubsystem intakeSubsystem, IntakePosition position) {
-        this.intakeSubsystem = intakeSubsystem;
+    public IntakeToPosition(IntakeSubsystemReal intake, IntakePosition position) {
+        this.intakeSubsystem = intake;
         this.position = position;
-        addRequirements(intakeSubsystem);
+        addRequirements(intake);
     }
 
     // Set target speed

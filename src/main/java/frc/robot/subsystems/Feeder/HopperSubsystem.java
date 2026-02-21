@@ -1,50 +1,20 @@
 package frc.robot.subsystems.Feeder;
 
-
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import frc.robot.Constants.HardwareID.FeederIds;
-import frc.robot.Constants.CurrentLimits.HopperLimits;;
 
 
 public class HopperSubsystem extends SubsystemBase {
-    
-    TalonFX hopperMotor;
 
-    public HopperSubsystem() {
-        hopperMotor = new TalonFX(FeederIds.hopperCanId);
-        hopperMotor.setNeutralMode(NeutralModeValue.Brake);
+    public HopperSubsystem() {}
 
-        var rollerConfig = new TalonFXConfiguration();
+    public void runRollers(double power) {} 
 
-        rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        rollerConfig.CurrentLimits.StatorCurrentLimit = HopperLimits.maxLimit;
-
-        hopperMotor.getConfigurator().apply(rollerConfig);
-
-    }
-
-    public void runRollers(double power) {
-        hopperMotor.set(power);
-    } 
-
-    public void stopRotation() {
-        hopperMotor.stopMotor();
-    } 
+    public void stopRotation() {} 
  
-    public double getCurrent() {
-        return hopperMotor.getStatorCurrent().getValueAsDouble();
-    }
-    
+    public double getCurrent() { return 0; }
+
     @Override
-    public void periodic() {
+    public void periodic() { telemetry(); }
 
-    }
-
-    public void telemetry() {
-        
-    }
+    public void telemetry() {}
 }

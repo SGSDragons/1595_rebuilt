@@ -8,11 +8,10 @@ import frc.robot.subsystems.Feeder.*;
 
 public class RunFeeder extends Command {
 
-    private final HopperSubsystem hopperSubsystem;
-    private final FeederSubsystem feederSubsystem;
+    private final HopperSubsystemReal hopperSubsystem;
+    private final FeederSubsystemReal feederSubsystem;
 
-
-    public RunFeeder(HopperSubsystem hopperSubsystem, FeederSubsystem feederSubsystem) {
+    public RunFeeder(HopperSubsystemReal hopperSubsystem, FeederSubsystemReal feederSubsystem) {
         this.hopperSubsystem = hopperSubsystem;
         this.feederSubsystem = feederSubsystem;
 

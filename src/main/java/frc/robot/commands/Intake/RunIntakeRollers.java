@@ -7,10 +7,10 @@ import frc.robot.subsystems.Intake.*;
 
 public class RunIntakeRollers extends Command {
 
-    private final IntakeRollerSubsystem intakeRollerSubsystem;
+    private final IntakeRollerSubsystemReal intakeRollerSubsystem;
 
 
-    public RunIntakeRollers(IntakeRollerSubsystem intakeRollerSubsystem) {
+    public RunIntakeRollers(IntakeRollerSubsystemReal intakeRollerSubsystem) {
         this.intakeRollerSubsystem = intakeRollerSubsystem;
         addRequirements(intakeRollerSubsystem);
     }

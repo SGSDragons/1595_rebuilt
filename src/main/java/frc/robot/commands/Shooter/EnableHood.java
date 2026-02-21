@@ -2,17 +2,17 @@ package frc.robot.commands.Shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.GoalAim;
-import frc.robot.subsystems.Shooter.HoodSubsystem;
+import frc.robot.subsystems.Shooter.HoodSubsystemReal;
 import frc.robot.Constants.TuningValues.ShooterValues.AngleFunction;
 
 
 public class EnableHood extends Command {
 
-    private final HoodSubsystem hoodSubsystem;
+    private final HoodSubsystemReal hoodSubsystem;
     private final GoalAim goalAim;
     private double targetPosition;
 
-    public EnableHood(HoodSubsystem hoodSubsystem, GoalAim goalAim) {
+    public EnableHood(HoodSubsystemReal hoodSubsystem, GoalAim goalAim) {
         this.hoodSubsystem = hoodSubsystem;
         this.goalAim = goalAim;
         addRequirements(hoodSubsystem);

@@ -2,19 +2,19 @@ package frc.robot.commands.Shooter;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Shooter.HoodSubsystem;
+import frc.robot.subsystems.Shooter.HoodSubsystemReal;
 import frc.robot.Constants.CurrentLimits.HoodLimits;
 
 public class ZeroHood extends Command {
 
-    private final HoodSubsystem hoodSubsystem;
+    private final HoodSubsystemReal hoodSubsystem;
 
     final double currentLimit = HoodLimits.currentLimit;
     double currentDraw;
     double time;
     double spikeStartTime;
 
-    public ZeroHood(HoodSubsystem hoodSubsystem) {
+    public ZeroHood(HoodSubsystemReal hoodSubsystem) {
         this.hoodSubsystem = hoodSubsystem;
         addRequirements(hoodSubsystem);
     }
@@ -32,12 +32,7 @@ public class ZeroHood extends Command {
         time = Timer.getFPGATimestamp();
         this.hoodSubsystem.runHood(-0.1);
 
-        if (currentDraw > currentLimit) {
-            if (spikeStartTime < 0) {
-                spikeStartTime = time;
-            }
-        }
-        else {
+        if (currentDraw < currentLimit) {
             spikeStartTime = time;
         }
     }

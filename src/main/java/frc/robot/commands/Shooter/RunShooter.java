@@ -1,7 +1,7 @@
 package frc.robot.commands.Shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Shooter.ShooterSubsystem;
+import frc.robot.subsystems.Shooter.ShooterSubsystemReal;
 import frc.robot.Constants.TuningValues.ShooterValues;
 
 
@@ -12,11 +12,11 @@ public class RunShooter extends Command {
         SLOW
     }
 
-    private final ShooterSubsystem shooterSubsystem;
+    private final ShooterSubsystemReal shooterSubsystem;
     private final ShooterSpeed speed;
     public boolean autoRun;
 
-    public RunShooter(ShooterSubsystem shooterSubsystem, ShooterSpeed speed) {
+    public RunShooter(ShooterSubsystemReal shooterSubsystem, ShooterSpeed speed) {
         this.shooterSubsystem = shooterSubsystem;
         this.speed = speed;
         addRequirements(shooterSubsystem);

@@ -6,12 +6,17 @@ package frc.robot;
 
 import frc.robot.Constants.FeildConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Intake.IntakeToPosition;
+import frc.robot.commands.Intake.IntakeToPosition.IntakePosition;
 import frc.robot.commands.Shooter.EnableHood;
 import frc.robot.commands.Shooter.ZeroHood;
 import frc.robot.subsystems.GoalAim;
 import frc.robot.subsystems.Drive.SwerveSubsystem;
+import frc.robot.subsystems.Drive.SwerveSubsystemReal;
+import frc.robot.subsystems.Intake.IntakeRollerSubsystemReal;
+import frc.robot.subsystems.Intake.IntakeSubsystemReal;
 import frc.robot.subsystems.Shooter.HoodSubsystem;
-import frc.robot.subsystems.SubsystemInterfaces.SwerveSubsystemFake;
+import frc.robot.subsystems.Shooter.HoodSubsystemReal;
 import swervelib.parser.PIDFConfig;
 
 import java.util.function.DoubleSupplier;
@@ -40,8 +45,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  // private final SwerveSubsystem drive = new SwerveSubsystem(Units.MetersPerSecond.of(6.0), new Pose2d(4, 4, Rotation2d.kZero));
+  private final SwerveSubsystem drive = new SwerveSubsystem(Units.MetersPerSecond.of(6.0), new Pose2d(4, 4, Rotation2d.kZero));
   private final HoodSubsystem hood = new HoodSubsystem();
+  private final IntakeSubsystemReal intake = new IntakeSubsystemReal();
 
   private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.driverControllerPort);
   private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.operatorControllerPort);
@@ -53,9 +59,9 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
 
-    // if (drive instanceof SwerveSubsystem) {
-    //   SwerveSubsystem swerve = (SwerveSubsystem) drive;
-    // }
+    if (drive instanceof SwerveSubsystem) {
+      SwerveSubsystem swerve = (SwerveSubsystem) drive;
+    }
   }
 
   //      ______________________________(17, 8)
@@ -88,20 +94,27 @@ public class RobotContainer {
   private void configureBindings() {
 
     DriverSticks driver = new DriverSticks();
-    // GoalAim goalAimer = new GoalAim(drive, isRedAlliance);
+    GoalAim goalAimer = new GoalAim(drive, isRedAlliance);
 
-    // drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
-    // driverController.leftBumper().whileTrue(drive.pointAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
+    drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
+    driverController.leftBumper().whileTrue(drive.pointAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
 
-    // hood.setDefaultCommand(new EnableHood(hood, goalAimer));
+    operatorController.a().onTrue(new EnableHood(hood, goalAimer));
+    hood.setDefaultCommand(new EnableHood(hood, goalAimer));
   }
 
   public void configureTestBindings() {
 
-    // driverController.x().onTrue(Commands.runOnce(drive::updateAnglePIDF));
+    DriverSticks driver = new DriverSticks();
+    GoalAim goalAimer = new GoalAim(drive, isRedAlliance);
 
-    hood.setDefaultCommand(new ZeroHood(hood));
+    driverController.x().onTrue(Commands.runOnce(drive::updateAnglePIDF));
 
+    operatorController.a().onTrue(new EnableHood(hood, goalAimer));
+    hood.setDefaultCommand(new EnableHood(hood, goalAimer));
+
+    operatorController.povRight().onTrue(new IntakeToPosition(intake, IntakePosition.RETRACTED));
+    operatorController.povLeft().onTrue(new IntakeToPosition(intake, IntakePosition.EXTENDED));
   }
 
 
