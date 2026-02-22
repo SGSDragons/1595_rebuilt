@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareID.ShooterIds;
 import frc.robot.Constants.TuningValues.ShooterValues;
 import frc.robot.Constants.CurrentLimits.ShooterLimits;

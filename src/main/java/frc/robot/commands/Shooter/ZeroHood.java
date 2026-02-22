@@ -2,21 +2,23 @@ package frc.robot.commands.Shooter;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystems.Shooter.HoodSubsystem;
 import frc.robot.subsystems.Shooter.HoodSubsystemReal;
 import frc.robot.Constants.CurrentLimits.HoodLimits;
 
 public class ZeroHood extends Command {
 
-    private final HoodSubsystemReal hoodSubsystem;
+    private final HoodSubsystem hoodSubsystem;
 
     final double currentLimit = HoodLimits.currentLimit;
     double currentDraw;
     double time;
     double spikeStartTime;
 
-    public ZeroHood(HoodSubsystemReal hoodSubsystem) {
+    public ZeroHood(HoodSubsystem hoodSubsystem) {
         this.hoodSubsystem = hoodSubsystem;
-        addRequirements(hoodSubsystem);
+        addRequirements((Subsystem) hoodSubsystem);
     }
 
     @Override

@@ -2,15 +2,15 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.FeildConstants;
-import frc.robot.subsystems.Drive.SwerveSubsystemReal;
+import frc.robot.subsystems.Drive.SwerveSubsystem;
 
 public class GoalAim {
     
-    SwerveSubsystemReal swerveSubsystem;
+    SwerveSubsystem swerveSubsystem;
     Translation2d goalPosition;
     boolean isRed;
 
-    public GoalAim(SwerveSubsystemReal swerveSubsystem, boolean isRed) {
+    public GoalAim(SwerveSubsystem swerveSubsystem, boolean isRed) {
         this.swerveSubsystem = swerveSubsystem;
 
         if (isRed) {

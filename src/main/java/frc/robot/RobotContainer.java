@@ -13,7 +13,7 @@ import frc.robot.commands.Shooter.ZeroHood;
 import frc.robot.subsystems.GoalAim;
 import frc.robot.subsystems.Drive.SwerveSubsystem;
 import frc.robot.subsystems.Drive.SwerveSubsystemReal;
-import frc.robot.subsystems.Intake.IntakeRollerSubsystemReal;
+import frc.robot.subsystems.Intake.IntakeSubsystem;
 import frc.robot.subsystems.Intake.IntakeSubsystemReal;
 import frc.robot.subsystems.Shooter.HoodSubsystem;
 import frc.robot.subsystems.Shooter.HoodSubsystemReal;
@@ -45,9 +45,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem drive = new SwerveSubsystem(Units.MetersPerSecond.of(6.0), new Pose2d(4, 4, Rotation2d.kZero));
-  private final HoodSubsystem hood = new HoodSubsystem();
-  private final IntakeSubsystemReal intake = new IntakeSubsystemReal();
+  private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(6.0), new Pose2d(4, 4, Rotation2d.kZero));
+  private final HoodSubsystemReal hood = new HoodSubsystemReal();
+  private final IntakeSubsystem intake = new IntakeSubsystem();
 
   private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.driverControllerPort);
   private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.operatorControllerPort);

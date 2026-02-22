@@ -70,7 +70,10 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
      *
      * @param maxSpeed The maximum operating speed to allow.
      */
+    
     public SwerveSubsystemReal(LinearVelocity maxSpeed, Pose2d initialPose) {
+        super(maxSpeed, initialPose);
+
         this.maxSpeedMps = maxSpeed.in(MetersPerSecond);
 
         // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.

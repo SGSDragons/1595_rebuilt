@@ -1,18 +1,18 @@
 package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.TuningValues.IntakeValues;
 import frc.robot.subsystems.Intake.*;
 
 
 public class RunIntakeRollers extends Command {
 
-    private final IntakeRollerSubsystemReal intakeRollerSubsystem;
+    private final IntakeRollerSubsystem intakeRollerSubsystem;
 
-
-    public RunIntakeRollers(IntakeRollerSubsystemReal intakeRollerSubsystem) {
+    public RunIntakeRollers(IntakeRollerSubsystem intakeRollerSubsystem) {
         this.intakeRollerSubsystem = intakeRollerSubsystem;
-        addRequirements(intakeRollerSubsystem);
+        addRequirements((Subsystem) intakeRollerSubsystem);
     }
 
     @Override

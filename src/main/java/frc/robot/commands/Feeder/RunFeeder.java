@@ -1,6 +1,7 @@
 package frc.robot.commands.Feeder;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.TuningValues.FeederValues;
 import frc.robot.Constants.TuningValues.HopperValues;
 import frc.robot.subsystems.Feeder.*;
@@ -8,14 +9,14 @@ import frc.robot.subsystems.Feeder.*;
 
 public class RunFeeder extends Command {
 
-    private final HopperSubsystemReal hopperSubsystem;
-    private final FeederSubsystemReal feederSubsystem;
+    private final HopperSubsystem hopperSubsystem;
+    private final FeederSubsystem feederSubsystem;
 
-    public RunFeeder(HopperSubsystemReal hopperSubsystem, FeederSubsystemReal feederSubsystem) {
+    public RunFeeder(HopperSubsystem hopperSubsystem, FeederSubsystem feederSubsystem) {
         this.hopperSubsystem = hopperSubsystem;
         this.feederSubsystem = feederSubsystem;
 
-        addRequirements(hopperSubsystem, feederSubsystem);
+        addRequirements((Subsystem) hopperSubsystem, (Subsystem) feederSubsystem);
     }
 
     @Override   
