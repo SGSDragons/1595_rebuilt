@@ -22,7 +22,7 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class SwerveSubsystem extends SubsystemBase {
 
-    public SwerveSubsystem(LinearVelocity maxSpeed, Pose2d initialPose) {}
+    public SwerveSubsystem() {}
 
     /**
      * Command to drive the robot using translative values and heading as a setpoint.

@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 
@@ -66,18 +68,42 @@ public final class Constants {
 			public static final double kI = 0;
 			public static final double kD = 0;
 
-			public static final double fastSpeed = 10;
-			public static final double slowSpeed = 10;
+			public static final double runSpeed = 10;
 
-			public static final class AngleFunction {
-				public static final double x2coef = 1;
-				public static final double xcoef = 0;
-				public static final double constant = 0;
+			public static final class ShooterAimer {
+				public static InterpolatingDoubleTreeMap hoodMap = new InterpolatingDoubleTreeMap();
+				public static InterpolatingDoubleTreeMap wheelMap = new InterpolatingDoubleTreeMap();
 
-				public static double calculate(double input) {
-					return x2coef*Math.pow(input,2) + xcoef*input + constant;
+				static {
+					hoodMap.put(0.0,0.0);
+					hoodMap.put(0.0,0.0);
+					hoodMap.put(0.0,0.0);
+					hoodMap.put(0.0,0.0);
+
+					wheelMap.put(0.0,0.0);
+					wheelMap.put(0.0,0.0);
+					wheelMap.put(0.0,0.0);
+					wheelMap.put(0.0,0.0);
+				}
+
+				public static double getHoodValue(double distance) {
+					return hoodMap.get(distance);
+				}
+
+				public static double getWheelValue(double distance) {
+					return wheelMap.get(distance);
 				}
 			}
+
+			// public static final class AngleFunction {
+			// 	public static final double x2coef = 1;
+			// 	public static final double xcoef = 0;
+			// 	public static final double constant = 0;
+
+			// 	public static double calculate(double input) {
+			// 		return x2coef*Math.pow(input,2) + xcoef*input + constant;
+			// 	}
+			// }
  		}
 
 		public static final class HoodValues {

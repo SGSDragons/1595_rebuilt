@@ -27,7 +27,7 @@ public class IntakeToPosition extends Command {
     // Set target speed
     @Override
     public void initialize() {  
-        if (position == IntakePosition.EXTENDED) {
+        if (this.position == IntakePosition.EXTENDED) {
             this.intakeSubsystem.setTargetPosition(IntakeValues.extended);
         }
         else {
@@ -42,12 +42,12 @@ public class IntakeToPosition extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        intakeSubsystem.stopRotation();
+        this.intakeSubsystem.stopRotation();
     }
 
     @Override
     public boolean isFinished() {
-        if (position == IntakePosition.EXTENDED) {
+        if (this.position == IntakePosition.EXTENDED) {
             return this.intakeSubsystem.isExtended();
         }
         else {

@@ -1,53 +1,52 @@
 package frc.robot.commands.Shooter;
 
+import org.ironmaple.simulation.Goal;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystems.GoalAim;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
-import frc.robot.subsystems.Shooter.ShooterSubsystemReal;
 import frc.robot.Constants.TuningValues.ShooterValues;
+import frc.robot.Constants.TuningValues.ShooterValues.ShooterAimer;
 
 
 public class RunShooter extends Command {
 
-    public enum ShooterSpeed {
-        FAST,
-        SLOW
-    }
-
     private final ShooterSubsystem shooterSubsystem;
-    private final ShooterSpeed speed;
-    public boolean autoRun;
+    private final GoalAim goalAim;
+    private final boolean useAutoSpeed;
+    double targetspeed;
 
-    public RunShooter(ShooterSubsystem shooterSubsystem, ShooterSpeed speed) {
+    public RunShooter(ShooterSubsystem shooterSubsystem, GoalAim goalAim, boolean useAutoSpeed) {
         this.shooterSubsystem = shooterSubsystem;
-        this.speed = speed;
+        this.goalAim = goalAim;
+        this.useAutoSpeed = useAutoSpeed;
         addRequirements((Subsystem) shooterSubsystem);
     }
 
-    // Set target speed
+    // Set target speed to interpolation value if we want to use it, else set it to default speed
     @Override
     public void initialize() {  
-        if (speed == ShooterSpeed.FAST) {
-            this.shooterSubsystem.setTargetVelocity(ShooterValues.fastSpeed);
-        }
+        if (this.useAutoSpeed) {
+            targetspeed = ShooterAimer.getWheelValue(this.goalAim.getDistance());
+        } 
         else {
-            this.shooterSubsystem.setTargetVelocity(ShooterValues.slowSpeed);
+            targetspeed = ShooterValues.runSpeed;
         }
     }
 
+    // run shooter and keep adjusting it if useAutoSpeed is true
     @Override
     public void execute() {
+        if (this.useAutoSpeed) {
+            targetspeed = ShooterAimer.getWheelValue(this.goalAim.getDistance());
+        }
         this.shooterSubsystem.runShooter();
     }
 
+    // ends when button is released
     @Override
     public void end(boolean interrupted) {
-        if (autoRun) {
-            this.shooterSubsystem.setTargetVelocity(0);
-        }
-        else {
-            this.shooterSubsystem.setTargetVelocity(ShooterValues.slowSpeed);
-        }
     }
 
     @Override

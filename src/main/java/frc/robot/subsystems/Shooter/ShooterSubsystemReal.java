@@ -45,7 +45,7 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
         shooterConfig.Slot0.kD = ShooterValues.kD;
 
         shooterMotor.getConfigurator().apply(shooterConfig);
-        targetVelocity = new VelocityVoltage(0).withVelocity(ShooterValues.slowSpeed);
+        targetVelocity = new VelocityVoltage(0).withVelocity(ShooterValues.runSpeed);
     }
 
     public void runShooter() {

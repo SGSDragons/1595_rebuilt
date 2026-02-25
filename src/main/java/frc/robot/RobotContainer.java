@@ -24,6 +24,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -101,6 +102,11 @@ public class RobotContainer {
 
     operatorController.a().onTrue(new EnableHood(hood, goalAimer));
     hood.setDefaultCommand(new EnableHood(hood, goalAimer));
+
+    operatorController.povRight().onTrue(new IntakeToPosition(intake, IntakePosition.RETRACTED));
+    operatorController.povLeft().onTrue(new IntakeToPosition(intake, IntakePosition.EXTENDED));
+
+    InterpolatingDoubleTreeMap hoopMap = new InterpolatingDoubleTreeMap();
   }
 
   public void configureTestBindings() {
