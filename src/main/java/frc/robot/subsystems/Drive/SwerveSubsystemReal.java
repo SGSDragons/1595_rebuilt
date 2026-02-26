@@ -6,13 +6,14 @@ package frc.robot.subsystems.Drive;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
-// import com.pathplanner.lib.auto.AutoBuilder;
-// import com.pathplanner.lib.commands.PathfindingCommand;
-// import com.pathplanner.lib.config.PIDConstants;
-// import com.pathplanner.lib.config.RobotConfig;
-// import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-// import com.pathplanner.lib.controllers.PathFollowingController;
-// import com.pathplanner.lib.util.DriveFeedforwards;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.controllers.PPLTVController;
+import com.pathplanner.lib.controllers.PathFollowingController;
+import com.pathplanner.lib.util.DriveFeedforwards;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
@@ -33,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
+import frc.robot.Constants.FeildConstants;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.GoalAim;
@@ -85,39 +87,6 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
             throw new RuntimeException(e);
         }
 
-        // RobotConfig config;
-        // try{
-        // config = RobotConfig.fromGUISettings();
-        // } catch (Exception e) {
-        // // Handle exception as needed
-        // e.printStackTrace();
-        // }
-
-        // // Configure AutoBuilder last
-        // AutoBuilder.configure(
-        //         this::getPose, // Robot pose supplier
-        //         this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-        //         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        //         (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-        //         new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-        //                 new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-        //                 new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-        //         ),
-        //         config, // The robot configuration
-        //         () -> {
-        //         // Boolean supplier that controls when the path will be mirrored for the red alliance
-        //         // This will flip the path being followed to the red side of the field.
-        //         // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-        //         var alliance = DriverStation.getAlliance();
-        //         if (alliance.isPresent()) {
-        //             return alliance.get() == DriverStation.Alliance.Red;
-        //         }
-        //         return false;
-        //         },
-        //         this // Reference to this subsystem to set requirements
-        // );
-
         // Heading correction should only be used while controlling the robot via angle.
         swerveDrive.setHeadingCorrection(false);
 
@@ -133,8 +102,8 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         // the main periodic loop. This way vision updates can be injected without
         // race conditions.
         swerveDrive.stopOdometryThread();
-        setupPathPlanner();
-
+        
+        initializeAutoBuilder();
         publishTunables();
     }
 
@@ -151,64 +120,34 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         }
     }
 
-    @Override
-    public void simulationPeriodic() {
+    public void initializeAutoBuilder() {
+
+        // Load the RobotConfig from the GUI settings. You should probably
+        // store this in your Constants file
+        RobotConfig config;
+        try{
+            config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            // Handle exception as needed
+            e.printStackTrace();
+            config = new RobotConfig(0, 0, null, 0);
+        }
+
+        // Configure AutoBuilder last
+        AutoBuilder.configure(
+                this::getPose, // Robot pose supplier
+                this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+                this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                (speeds, feedforwards) -> drive(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+                new PPLTVController(0.02), // PPLTVController is the built in path following controller for differential drive trains
+                config, // The robot configuration
+                () -> FeildConstants.isRedAlliance(), // Red or Blue Alliance
+                this // Reference to this subsystem to set requirements
+        );
     }
 
-    /**
-     * Setup AutoBuilder for PathPlanner.
-     */
-    public void setupPathPlanner() {
-        // // Load the RobotConfig from the GUI settings. You should probably
-        // // store this in your Constants file
-        // RobotConfig config;
-        // try {
-        //     config = RobotConfig.fromGUISettings();
-
-        //     // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds.
-        //     final BiConsumer<ChassisSpeeds, DriveFeedforwards> driver;
-        //     final boolean enableFeedForward = true;
-
-        //     if (enableFeedForward) {
-        //         driver = (speeds, feedForwards) -> swerveDrive.drive(speeds, swerveDrive.kinematics.toSwerveModuleStates(speeds), feedForwards.linearForces());
-        //     } else {
-        //         driver = (speeds, unused) -> swerveDrive.setChassisSpeeds(speeds);
-        //     }
-
-        //     // PPHolonomicController is the built in path following controller for holonomic drive trains
-        //     final PathFollowingController controller = new PPHolonomicDriveController(
-        //             new PIDConstants(5.0, 0.0, 0.0),
-        //             // Translation PID constants
-        //             new PIDConstants(5.0, 0.0, 0.0)
-        //             // Rotation PID constants
-        //     );
-
-        //     // Configure AutoBuilder last
-        //     AutoBuilder.configure(
-        //             this::getPose,
-        //             this::resetOdometry,
-        //             this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        //             driver,
-        //             controller,
-        //             config,
-
-        //             // Boolean supplier that controls when the path will be mirrored for the red alliance
-        //             // This will flip the path being followed to the red side of the field.
-        //             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-        //             () -> Reefscape.isRedAlliance(),
-
-        //             // Reference to this subsystem to set requirements
-        //             this
-        //     );
-
-        // } catch (Exception e) {
-        //     // Handle exception as needed
-        //     e.printStackTrace();
-        // }
-
-        // //Preload PathPlanner Path finding
-        // // IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE
-        // PathfindingCommand.warmupCommand().schedule();
+    @Override
+    public void simulationPeriodic() {
     }
 
     /**
