@@ -13,10 +13,10 @@ import frc.robot.commands.Shooter.ZeroHood;
 import frc.robot.subsystems.GoalAim;
 import frc.robot.subsystems.Drive.SwerveSubsystem;
 import frc.robot.subsystems.Drive.SwerveSubsystemReal;
-import frc.robot.subsystems.Intake.IntakeSubsystem;
-import frc.robot.subsystems.Intake.IntakeSubsystemReal;
-import frc.robot.subsystems.Shooter.HoodSubsystem;
-import frc.robot.subsystems.Shooter.HoodSubsystemReal;
+import frc.robot.subsystems.Intake.Rotation.IntakeSubsystem;
+import frc.robot.subsystems.Intake.Rotation.IntakeSubsystemReal;
+import frc.robot.subsystems.Shooter.Hood.HoodSubsystem;
+import frc.robot.subsystems.Shooter.Hood.HoodSubsystemReal;
 import swervelib.parser.PIDFConfig;
 
 import java.util.function.DoubleSupplier;
@@ -52,7 +52,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final SendableChooser<Command> autoChooser;
+  SendableChooser<Command> autoChooser;
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(6.0), new Pose2d(3.7, 0.5, Rotation2d.kZero));
@@ -64,18 +64,17 @@ public class RobotContainer {
 
   private final boolean isRedAlliance = FeildConstants.isRedAlliance();
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Configure the trigger bindings
     configureBindings();
 
-    // Build an auto chooser. This will use Commands.none() as the default option.
+    // Auto Chooser 
+    // autoChooser = new SendableChooser<>();
     autoChooser = AutoBuilder.buildAutoChooser();
-
-    // Another option that allows you to specify the default auto by its name
-    // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
-
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    // autoChooser.setDefaultOption("None", null);
+    // autoChooser.addOption("TestAuto", new PathPlannerAuto("TestAuto"));
+    // autoChooser.addOption("TestAuto2", new PathPlannerAuto("TestAuto2"));
 
     if (drive instanceof SwerveSubsystem) {
       SwerveSubsystem swerve = (SwerveSubsystem) drive;
@@ -97,8 +96,8 @@ public class RobotContainer {
   //    Left joystick Up (-1 y-axis) maps to positive X.
   //    Left joystick left (-1 x-axis) maps to positive Y.
   // Thus, Blue axis are inverted.
+
   class DriverSticks {
-    // TODO: Make this adapt to the Red/Blue alliance
     private final double inverter = isRedAlliance ? 1.0 : -1.0;
     double readAxis(XboxController.Axis axis) {
       return driverController.getRawAxis(axis.value);
@@ -145,21 +144,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    // return autoChooser.getSelected();
-
-    return new PathPlannerAuto("TestPath");
-
-    // try{
-    //     // Load the path you want to follow using its name in the GUI
-    //     PathPlannerPath path = PathPlannerPath.fromPathFile("TestPath");
-
-    //     // Create a path following command using AutoBuilder. This will also trigger event markers.
-    //     return AutoBuilder.followPath(path);
-    // } catch (Exception e) {
-    //     DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-    //     return Commands.none();
-    // }
+    return autoChooser.getSelected();
+    // return new PathPlannerAuto("TestPath");
   }
 
 }

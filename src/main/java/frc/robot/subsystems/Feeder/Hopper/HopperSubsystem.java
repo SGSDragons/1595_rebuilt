@@ -1,12 +1,12 @@
-package frc.robot.subsystems.Feeder;
+package frc.robot.subsystems.Feeder.Hopper;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
-public class FeederSubsystem extends SubsystemBase {
+public class HopperSubsystem extends SubsystemBase {
 
-    public FeederSubsystem() {}
+    public HopperSubsystem() {}
 
     public void runRollers(double power) {} 
 
@@ -14,7 +14,7 @@ public class FeederSubsystem extends SubsystemBase {
  
     public double getCurrent() { return 0; }
 
-    public void periodic() {}
+    public void periodic() { telemetry(); }
 
     public void telemetry() {}
 }

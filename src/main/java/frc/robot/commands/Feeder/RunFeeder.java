@@ -4,7 +4,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.TuningValues.FeederValues;
 import frc.robot.Constants.TuningValues.HopperValues;
-import frc.robot.subsystems.Feeder.*;
+import frc.robot.subsystems.Feeder.Feeder.FeederSubsystem;
+import frc.robot.subsystems.Feeder.Hopper.HopperSubsystem;
 
 
 public class RunFeeder extends Command {

@@ -3,7 +3,7 @@ package frc.robot.commands.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.GoalAim;
-import frc.robot.subsystems.Shooter.HoodSubsystem;
+import frc.robot.subsystems.Shooter.Hood.HoodSubsystem;
 import frc.robot.Constants.TuningValues.ShooterValues.ShooterAimer;;
 
 

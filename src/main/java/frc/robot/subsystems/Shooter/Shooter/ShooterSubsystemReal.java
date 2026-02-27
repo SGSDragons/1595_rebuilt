@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Shooter;
+package frc.robot.subsystems.Shooter.Shooter;
 
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;

@@ -1,12 +1,12 @@
-package frc.robot.subsystems.Feeder;
+package frc.robot.subsystems.Intake.Roller;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
-public class HopperSubsystem extends SubsystemBase {
+public class IntakeRollerSubsystem extends SubsystemBase {
 
-    public HopperSubsystem() {}
+    public IntakeRollerSubsystem() {}
 
     public void runRollers(double power) {} 
 
