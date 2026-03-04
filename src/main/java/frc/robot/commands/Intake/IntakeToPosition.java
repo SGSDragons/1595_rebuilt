@@ -38,6 +38,7 @@ public class IntakeToPosition extends Command {
     @Override
     public void execute() {
         this.intakeSubsystem.gotoPosition();
+        System.out.println("Works");
     }
 
     @Override

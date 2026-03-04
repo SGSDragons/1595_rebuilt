@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.GoalAim;
 import frc.robot.subsystems.Shooter.Shooter.ShooterSubsystem;
 import frc.robot.Constants.TuningValues.ShooterValues;
-import frc.robot.Constants.TuningValues.ShooterValues.ShooterAimer;
+import frc.robot.Constants.Aiming;
 
 
 public class RunShooter extends Command {
@@ -28,7 +28,7 @@ public class RunShooter extends Command {
     @Override
     public void initialize() {  
         if (this.useAutoSpeed) {
-            targetspeed = ShooterAimer.getWheelValue(this.goalAim.getDistance());
+            targetspeed = Aiming.getWheelValue(this.goalAim.getAdjustedDistance());
         } 
         else {
             targetspeed = ShooterValues.runSpeed;
@@ -39,7 +39,7 @@ public class RunShooter extends Command {
     @Override
     public void execute() {
         if (this.useAutoSpeed) {
-            targetspeed = ShooterAimer.getWheelValue(this.goalAim.getDistance());
+            targetspeed = Aiming.getWheelValue(this.goalAim.getAdjustedDistance());
         }
         this.shooterSubsystem.runShooter();
     }

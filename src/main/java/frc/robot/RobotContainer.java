@@ -3,22 +3,25 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
-import frc.robot.Constants.FeildConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Intake.IntakeToPosition;
+import frc.robot.commands.Intake.RunIntakeRollers;
 import frc.robot.commands.Intake.IntakeToPosition.IntakePosition;
 import frc.robot.commands.Shooter.EnableHood;
 import frc.robot.commands.Shooter.ZeroHood;
 import frc.robot.subsystems.GoalAim;
 import frc.robot.subsystems.Drive.SwerveSubsystem;
 import frc.robot.subsystems.Drive.SwerveSubsystemReal;
+import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystem;
+import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystemReal;
 import frc.robot.subsystems.Intake.Rotation.IntakeSubsystem;
 import frc.robot.subsystems.Intake.Rotation.IntakeSubsystemReal;
 import frc.robot.subsystems.Shooter.Hood.HoodSubsystem;
 import frc.robot.subsystems.Shooter.Hood.HoodSubsystemReal;
 import swervelib.parser.PIDFConfig;
 
+import java.util.List;
 import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -27,12 +30,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -45,6 +43,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -52,100 +51,106 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  SendableChooser<Command> autoChooser;
+	SendableChooser<Command> autoChooser;
 
-  // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(6.0), new Pose2d(3.7, 0.5, Rotation2d.kZero));
-  private final HoodSubsystemReal hood = new HoodSubsystemReal();
-  private final IntakeSubsystem intake = new IntakeSubsystem();
+	// The robot's subsystems and commands are defined here...
+	// private final SwerveSubsystem drive = new SwerveSubsystem();
+	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(6.0), new Pose2d(7.5, 0.625, Rotation2d.kZero));
+	private final HoodSubsystem hood = new HoodSubsystem();
+	private final IntakeSubsystem intake = new IntakeSubsystem();
+	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystem();
 
-  private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.driverControllerPort);
-  private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.operatorControllerPort);
+	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.driverControllerPort);
+	private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.operatorControllerPort);
 
-  private final boolean isRedAlliance = FeildConstants.isRedAlliance();
+	private final boolean isRedAlliance = FieldConstants.isRedAlliance();
 
-  public RobotContainer() {
-    configureBindings();
+  	public RobotContainer() {
+		configureBindings();
 
-    // Auto Chooser 
-    // autoChooser = new SendableChooser<>();
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+		// Auto Chooser 
+		autoChooser = AutoBuilder.buildAutoChooser();
+		SmartDashboard.putData("Auto Chooser", autoChooser);
 
-    // autoChooser.setDefaultOption("None", null);
-    // autoChooser.addOption("TestAuto", new PathPlannerAuto("TestAuto"));
-    // autoChooser.addOption("TestAuto2", new PathPlannerAuto("TestAuto2"));
+		if (drive instanceof SwerveSubsystem) {
+			SwerveSubsystem swerve = (SwerveSubsystem) drive;
+		}
+  	}
 
-    if (drive instanceof SwerveSubsystem) {
-      SwerveSubsystem swerve = (SwerveSubsystem) drive;
-    }
-  }
+	//      ______________________________(17, 8)
+	//      |                                |
+	//     B|                                |R
+	//     B|                                |R
+	//     B|                                |R
+	//     B|                                |R
+	//      |________________________________|
+	//    (0,0)
+	//
+	// With 0deg heading pointing right.
+	//
+	// When on the Blue alliance
+	//    Left joystick Up (-1 y-axis) maps to positive X.
+	//    Left joystick left (-1 x-axis) maps to positive Y.
+	// Thus, Blue axis are inverted.
 
-  //      ______________________________(17, 8)
-  //      |                                |
-  //     B|                                |R
-  //     B|                                |R
-  //     B|                                |R
-  //     B|                                |R
-  //      |________________________________|
-  //    (0,0)
-  //
-  // With 0deg heading pointing right.
-  //
-  // When on the Blue alliance
-  //    Left joystick Up (-1 y-axis) maps to positive X.
-  //    Left joystick left (-1 x-axis) maps to positive Y.
-  // Thus, Blue axis are inverted.
+	class DriverSticks {
+		private final double inverter = isRedAlliance ? 1.0 : -1.0;
+		double readAxis(XboxController.Axis axis) {
+		return driverController.getRawAxis(axis.value);
+		}
+		public double translateX() { return inverter*readAxis(Axis.kLeftY); }
+		public double translateY() { return inverter*readAxis(Axis.kLeftX); }
+		public double lookX() { return inverter*readAxis(Axis.kRightX); }
+		public double lookY() { return inverter*readAxis(Axis.kRightY); }
+	}
 
-  class DriverSticks {
-    private final double inverter = isRedAlliance ? 1.0 : -1.0;
-    double readAxis(XboxController.Axis axis) {
-      return driverController.getRawAxis(axis.value);
-    }
-    public double translateX() { return inverter*readAxis(Axis.kLeftY); }
-    public double translateY() { return inverter*readAxis(Axis.kLeftX); }
-    public double lookX() { return inverter*readAxis(Axis.kRightX); }
-    public double lookY() { return inverter*readAxis(Axis.kRightY); }
-  }
+	private void configureBindings() {
 
-  private void configureBindings() {
+		DriverSticks driver = new DriverSticks();
+		GoalAim goalAimer = new GoalAim(drive, isRedAlliance);
 
-    DriverSticks driver = new DriverSticks();
-    GoalAim goalAimer = new GoalAim(drive, isRedAlliance);
+		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
+		driverController.leftBumper().whileTrue(drive.pointAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
+		driverController.a().whileTrue(drive.pointAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
 
-    drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
-    driverController.leftBumper().whileTrue(drive.pointAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
+		operatorController.a().whileTrue(new EnableHood(hood, goalAimer));
+		hood.setDefaultCommand(new EnableHood(hood, goalAimer));
 
-    operatorController.a().onTrue(new EnableHood(hood, goalAimer));
-    hood.setDefaultCommand(new EnableHood(hood, goalAimer));
+		operatorController.povRight().onTrue(new IntakeToPosition(intake, IntakePosition.RETRACTED));
+		operatorController.povLeft().onTrue(new IntakeToPosition(intake, IntakePosition.EXTENDED));
+	}
 
-    operatorController.povRight().onTrue(new IntakeToPosition(intake, IntakePosition.RETRACTED));
-    operatorController.povLeft().onTrue(new IntakeToPosition(intake, IntakePosition.EXTENDED));
-  }
+	public void configureTestBindings() {
 
-  public void configureTestBindings() {
+		DriverSticks driver = new DriverSticks();
+		GoalAim goalAimer = new GoalAim(drive, isRedAlliance);
 
-    DriverSticks driver = new DriverSticks();
-    GoalAim goalAimer = new GoalAim(drive, isRedAlliance);
+		driverController.x().onTrue(Commands.runOnce(drive::updateAnglePIDF));
 
-    driverController.x().onTrue(Commands.runOnce(drive::updateAnglePIDF));
+		operatorController.a().whileTrue(new EnableHood(hood, goalAimer));
+		hood.setDefaultCommand(new EnableHood(hood, goalAimer));
 
-    operatorController.a().onTrue(new EnableHood(hood, goalAimer));
-    hood.setDefaultCommand(new EnableHood(hood, goalAimer));
+		operatorController.a().onTrue(new IntakeToPosition(intake, IntakePosition.RETRACTED));
+		operatorController.b().onTrue(new IntakeToPosition(intake, IntakePosition.EXTENDED));
 
-    operatorController.povRight().onTrue(new IntakeToPosition(intake, IntakePosition.RETRACTED));
-    operatorController.povLeft().onTrue(new IntakeToPosition(intake, IntakePosition.EXTENDED));
-  }
+		operatorController.x().onTrue(new RunIntakeRollers(intakeRollers));
+	}
 
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
-    // return new PathPlannerAuto("TestPath");
-  }
+	/**
+	 * Use this to pass the autonomous command to the main {@link Robot} class.
+	 *
+	 * @return the command to run in autonomous
+	 */
+	public Command getAutonomousCommand() {
+		Command auto = autoChooser.getSelected();
+
+		// reset odometry to the autos starting pose
+		// var autoname = auto.getName();
+		// drive.resetOdometry(new PathPlannerAuto(autoname).getStartingPose());
+
+		return auto;
+		// return new PathPlannerAuto("TestPath");
+	}
 
 }

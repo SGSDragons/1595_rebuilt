@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.GoalAim;
 import frc.robot.subsystems.Shooter.Hood.HoodSubsystem;
-import frc.robot.Constants.TuningValues.ShooterValues.ShooterAimer;;
+import frc.robot.Constants.Aiming;
 
 
 public class EnableHood extends Command {
@@ -22,14 +22,14 @@ public class EnableHood extends Command {
     // set target position based on distance to the goal
     @Override
     public void initialize() {
-        targetPosition = ShooterAimer.getWheelValue(this.goalAim.getDistance());
+        targetPosition = Aiming.getWheelValue(this.goalAim.getAdjustedDistance());
         this.hoodSubsystem.setTargetPosition(targetPosition);
     }
 
     // always try to reach position
     @Override
     public void execute() {
-        targetPosition = ShooterAimer.getWheelValue(this.goalAim.getDistance());
+        targetPosition = Aiming.getWheelValue(this.goalAim.getAdjustedDistance());
         this.hoodSubsystem.setTargetPosition(targetPosition);
         this.hoodSubsystem.enableHood();
     }

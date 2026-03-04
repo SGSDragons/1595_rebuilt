@@ -34,7 +34,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
-import frc.robot.Constants.FeildConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.GoalAim;
@@ -141,7 +141,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
                 (speeds, feedforwards) -> drive(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                 new PPLTVController(0.02), // PPLTVController is the built in path following controller for differential drive trains
                 config, // The robot configuration
-                () -> FeildConstants.isRedAlliance(), // Red or Blue Alliance
+                () -> FieldConstants.isRedAlliance(), // Red or Blue Alliance
                 this // Reference to this subsystem to set requirements
         );
     }
@@ -233,6 +233,23 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
     }
 
     @Override
+    public Command driveRelative(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX)
+    {
+      return run(() -> {
+        
+        Translation2d joystick = new Translation2d(translationX.getAsDouble(), translationY.getAsDouble());
+        if (joystick.getNorm() < 0.1) {
+            joystick = Translation2d.kZero;
+        }
+        double omega = MathUtil.applyDeadband(angularRotationX.getAsDouble(), 0.2);
+        omega = Math.pow(omega, 3) * swerveDrive.getMaximumChassisAngularVelocity() / 4.0;
+
+        // Make the robot move
+        swerveDrive.drive(joystick, omega, false, false);
+      });
+    }
+
+    @Override
     public Command pointAtGoal(DoubleSupplier translationX, DoubleSupplier translationY, GoalAim aimer, double scale) {
         swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
         return run(() -> {
@@ -260,23 +277,6 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
                     swerveDrive.getOdometryHeading().getRadians(),
                     swerveDrive.getMaximumChassisVelocity()));
         });
-    }
-
-    @Override
-    public Command driveRelative(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX)
-    {
-      return run(() -> {
-        
-        Translation2d joystick = new Translation2d(translationX.getAsDouble(), translationY.getAsDouble());
-        if (joystick.getNorm() < 0.1) {
-            joystick = Translation2d.kZero;
-        }
-        double omega = MathUtil.applyDeadband(angularRotationX.getAsDouble(), 0.2);
-        omega = Math.pow(omega, 3) * swerveDrive.getMaximumChassisAngularVelocity() / 4.0;
-
-        // Make the robot move
-        swerveDrive.drive(joystick, omega, false, false);
-      });
     }
 
     /**

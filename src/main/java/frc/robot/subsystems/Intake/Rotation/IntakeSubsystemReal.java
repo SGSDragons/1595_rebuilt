@@ -7,6 +7,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareID.IntakeIds;
 import frc.robot.Constants.TuningValues.IntakeValues;
@@ -80,6 +81,6 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
     }
 
     public void telemetry() {
-        
+        SmartDashboard.putNumber("Rotation Current", rotationMotor.getStatorCurrent().getValueAsDouble());
     }
 }

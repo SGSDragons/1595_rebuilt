@@ -7,6 +7,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,8 +39,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX, DoubleSupplier headingY, double scale) { return runOnce(null); }
 
-    public Command pointAtGoal(DoubleSupplier translationX, DoubleSupplier translationY, GoalAim aimer, double scale) { return runOnce(null); }
-
     /**
      * Command to drive the robot relative to the robot itself.
      * 
@@ -51,15 +50,21 @@ public class SwerveSubsystem extends SubsystemBase {
     public Command driveRelative(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX) { return runOnce(null); }
 
     /**
-     * Command to drive the robot using translation values and heading pointed to a reef
+     * Command to drive the robot using translation values and heading pointed to the goal
      *
      * @param translationX Translation in the X direction. Cubed for smoother controls.
      * @param translationY Translation in the Y direction. Cubed for smoother controls.
+     * @param aimer Used to find goal heaading offset.
      * @return A drive command.
      */
-    public Command driveTargeting(DoubleSupplier translationX, DoubleSupplier translationY) { return runOnce(null); }
+    public Command pointAtGoal(DoubleSupplier translationX, DoubleSupplier translationY, GoalAim aimer, double scale) { return runOnce(null); }
 
-    public Pose2d getPose() { return Pose2d.kZero; };
+    public Pose2d getPose() { return Pose2d.kZero; }
 
-    public void updateAnglePIDF() {};
+    public ChassisSpeeds getRobotVelocity() { return new ChassisSpeeds(); }
+
+    public ChassisSpeeds getFieldVelocity() { return new ChassisSpeeds(); };
+
+    public void updateAnglePIDF() {}
+
 }

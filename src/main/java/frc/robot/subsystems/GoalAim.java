@@ -1,41 +1,61 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.Constants.FeildConstants;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import frc.robot.Constants.Aiming;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.Drive.SwerveSubsystem;
 
 public class GoalAim {
     
-    SwerveSubsystem swerveSubsystem;
+    SwerveSubsystem swerve;
     Translation2d goalPosition;
     boolean isRed;
 
-    public GoalAim(SwerveSubsystem swerveSubsystem, boolean isRed) {
-        this.swerveSubsystem = swerveSubsystem;
+    public GoalAim(SwerveSubsystem swerve, boolean isRed) {
+        this.swerve = swerve;
 
         if (isRed) {
-            goalPosition = FeildConstants.redGoal;
+            goalPosition = FieldConstants.redGoal;
         }
         else {
-            goalPosition = FeildConstants.blueGoal;
+            goalPosition = FieldConstants.blueGoal;
         }
     }
 
-    // return robot angle to point at goal
     public Translation2d pointAtGoal() {
-        Translation2d robotPosition = this.swerveSubsystem.getPose().getTranslation();
+        // Translation2d robotPosition = this.swerve.getPose().getTranslation();
+        Translation2d robotPosition = velocityAdjustedPosition();
 
-        // Find the X and Y offsets bettween the robot and goal, normalize, and turn to Translation2d
+        // Find the X and Y offsets between the robot and goal, normalize, and turn to Translation2d
         Translation2d heading = goalPosition.minus(robotPosition);
         heading = heading.div(heading.getNorm());
         heading = new Translation2d(heading.getY(), heading.getX());
-
+        
         return heading;
     }
 
-    // return distance between robot and goal for the hood 
-    public double getDistance() {
-        Translation2d robotPosition = this.swerveSubsystem.getPose().getTranslation();
+    public double getCurrentDistance() {
+        Translation2d robotPosition = this.swerve.getPose().getTranslation();
         return robotPosition.getDistance(goalPosition);
+    }
+
+    public double getAdjustedDistance() {
+        Translation2d robotPosition = velocityAdjustedPosition();
+        return robotPosition.getDistance(goalPosition);
+    }
+
+    // Get average of time of flights and use that to calculate the robot position
+    public Translation2d velocityAdjustedPosition() {
+        double currentTOF = Aiming.getFlightValue(getCurrentDistance());
+        Translation2d futurePosition = getTranslation(currentTOF, this.swerve.getRobotVelocity(), this.swerve.getPose().getTranslation());
+        
+        double futureTOF = Aiming.getFlightValue(futurePosition.getDistance(goalPosition));
+        double averageTOF = (currentTOF + futureTOF) / 2;
+        return getTranslation(averageTOF, this.swerve.getFieldVelocity(), this.swerve.getPose().getTranslation());
+    }
+
+    public Translation2d getTranslation(double time, ChassisSpeeds velocity, Translation2d position) {
+        return position.plus(new Translation2d(time*velocity.vxMetersPerSecond, time*velocity.vyMetersPerSecond));
     }
 }

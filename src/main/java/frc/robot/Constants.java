@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 
@@ -49,8 +48,8 @@ public final class Constants {
 		}
 
 		public static final class IntakeIds {
-			public static final int rotationCanId = 0;
-			public static final int rollerCanId = 0;
+			public static final int rotationCanId = 18;
+			public static final int rollerCanId = 18;
 		}
 
 		public static final class FeederIds {
@@ -58,6 +57,42 @@ public final class Constants {
 			public static final int feederCanId = 0;
 		}
 	}
+
+	public static final class Aiming {
+		public static InterpolatingDoubleTreeMap hoodMap = new InterpolatingDoubleTreeMap();
+		public static InterpolatingDoubleTreeMap wheelMap = new InterpolatingDoubleTreeMap();
+		public static InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
+
+		static {
+			hoodMap.put(0.0,0.0);
+			hoodMap.put(0.0,0.0);
+			hoodMap.put(0.0,0.0);
+			hoodMap.put(0.0,0.0);
+
+			wheelMap.put(0.0,0.0);
+			wheelMap.put(0.0,0.0);
+			wheelMap.put(0.0,0.0);
+			wheelMap.put(0.0,0.0);
+
+			timeOfFlightMap.put(1.0,0.3);
+			timeOfFlightMap.put(2.0,0.5);
+			timeOfFlightMap.put(3.0,0.8);
+			timeOfFlightMap.put(4.0,1.0);
+		}
+
+		public static double getHoodValue(double distance) {
+			return hoodMap.get(distance);
+		}
+
+		public static double getWheelValue(double distance) {
+			return wheelMap.get(distance);
+		}
+
+		public static double getFlightValue(double distance) {
+			return timeOfFlightMap.get(distance);
+		}
+	}
+
 
 	public static final class TuningValues {
 
@@ -69,31 +104,6 @@ public final class Constants {
 			public static final double kD = 0;
 
 			public static final double runSpeed = 10;
-
-			public static final class ShooterAimer {
-				public static InterpolatingDoubleTreeMap hoodMap = new InterpolatingDoubleTreeMap();
-				public static InterpolatingDoubleTreeMap wheelMap = new InterpolatingDoubleTreeMap();
-
-				static {
-					hoodMap.put(0.0,0.0);
-					hoodMap.put(0.0,0.0);
-					hoodMap.put(0.0,0.0);
-					hoodMap.put(0.0,0.0);
-
-					wheelMap.put(0.0,0.0);
-					wheelMap.put(0.0,0.0);
-					wheelMap.put(0.0,0.0);
-					wheelMap.put(0.0,0.0);
-				}
-
-				public static double getHoodValue(double distance) {
-					return hoodMap.get(distance);
-				}
-
-				public static double getWheelValue(double distance) {
-					return wheelMap.get(distance);
-				}
-			}
 
 			// public static final class AngleFunction {
 			// 	public static final double x2coef = 1;
@@ -117,7 +127,7 @@ public final class Constants {
 		public static final class IntakeValues {
 			public static final double kS = 0;
 			public static final double kG = 0;
-			public static final double kP = 0;
+			public static final double kP = 0.1;
 			public static final double kI = 0;
 			public static final double kD = 0;
 
@@ -152,7 +162,7 @@ public final class Constants {
 		public static final class IntakeLimits {
 			public static final double maxLimit = 10;
 			public static final double currentLimit = 10;
-			public static final double duration = 10;
+			public static final double duration = 0.1;
 		}
 
 		public static final class IntakeRollerLimits {
@@ -168,7 +178,7 @@ public final class Constants {
 		}
 	}
 
-	public static final class FeildConstants {
+	public static final class FieldConstants {
 		public static boolean isRedAlliance() {
 			var alliance = DriverStation.getAlliance();
 			return (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red);
