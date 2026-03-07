@@ -77,10 +77,12 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
 
     @Override
     public void periodic() {
-
+        telemetry();
     }
 
     public void telemetry() {
-        SmartDashboard.putNumber("Rotation Current", rotationMotor.getStatorCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Rotation Target", targetPosition.Position);
+        SmartDashboard.putNumber("Rotation Position", getPosition());
+        SmartDashboard.putNumber("Rotation Current", getCurrent());
     }
 }

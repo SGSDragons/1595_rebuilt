@@ -15,7 +15,7 @@ public class FeederSubsystemReal extends FeederSubsystem {
     TalonFX feederMotor;
 
     public FeederSubsystemReal() {
-        feederMotor = new TalonFX(FeederIds.hopperCanId);
+        feederMotor = new TalonFX(FeederIds.feederCanId);
         feederMotor.setNeutralMode(NeutralModeValue.Brake);
 
         var rollerConfig = new TalonFXConfiguration();
@@ -26,17 +26,14 @@ public class FeederSubsystemReal extends FeederSubsystem {
         feederMotor.getConfigurator().apply(rollerConfig);
     }
 
-    @Override
     public void runRollers(double power) {
         feederMotor.set(power);
     } 
 
-    @Override
     public void stopRotation() {
         feederMotor.stopMotor();
     } 
  
-    @Override
     public double getCurrent() {
         return feederMotor.getStatorCurrent().getValueAsDouble();
     }

@@ -11,28 +11,34 @@ import frc.robot.Constants.TuningValues.ShooterValues;
 import frc.robot.Constants.Aiming;
 
 
-public class RunShooter extends Command {
+public class EnableShooter extends Command {
 
     private final ShooterSubsystem shooterSubsystem;
+    private final GoalAim goalAim;
     double targetspeed;
 
-    public RunShooter(ShooterSubsystem shooterSubsystem) {
+    public EnableShooter(ShooterSubsystem shooterSubsystem, GoalAim goalAim) {
         this.shooterSubsystem = shooterSubsystem;
+        this.goalAim = goalAim;
         addRequirements((Subsystem) shooterSubsystem);
     }
 
+    // Set target speed to interpolation value
     @Override
     public void initialize() {
-        targetspeed = ShooterValues.runSpeed;
+        targetspeed = Aiming.getWheelValue(this.goalAim.getAdjustedDistance());
         this.shooterSubsystem.setTargetVelocity(targetspeed);
     }
 
+    // run shooter and keep adjusting it if enabled is true
     @Override
     public void execute() {
+        targetspeed = Aiming.getWheelValue(this.goalAim.getAdjustedDistance());
+        this.shooterSubsystem.setTargetVelocity(targetspeed);
         this.shooterSubsystem.runShooter();
     }
 
-    // default command
+    // ends when button is released
     @Override
     public void end(boolean interrupted) {
     }

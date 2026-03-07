@@ -39,22 +39,26 @@ public final class Constants {
 		// IDs 3-14 are used by the swerve modules. Do NOT reuse here.
 
 		public static final class ShooterIds {
-			public static final int leftShooterCanId = 0;
-			public static final int rightShooterCanId = 0;
+			public static final int leftShooterCanId = 14;
+			public static final int rightShooterCanId = 15;
 		}
 
 		public static final class HoodIds {
-			public static final int hoodCanId = 18;
+			public static final int hoodCanId = 19;
 		}
 
 		public static final class IntakeIds {
 			public static final int rotationCanId = 18;
-			public static final int rollerCanId = 18;
+			public static final int rollerCanId = 0;
 		}
 
 		public static final class FeederIds {
-			public static final int hopperCanId = 0;
-			public static final int feederCanId = 0;
+			public static final int hopperCanId = 16;
+			public static final int feederCanId = 17;
+		}
+
+		public static final class ClimberIds {
+			public static final int hopperCanId = 13;
 		}
 	}
 
@@ -64,15 +68,15 @@ public final class Constants {
 		public static InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
 
 		static {
-			hoodMap.put(0.0,0.0);
-			hoodMap.put(0.0,0.0);
-			hoodMap.put(0.0,0.0);
-			hoodMap.put(0.0,0.0);
+			hoodMap.put(1.0,0.0);
+			hoodMap.put(2.0,5.0);
+			hoodMap.put(3.0,10.0);
+			hoodMap.put(4.0,15.0);
 
-			wheelMap.put(0.0,0.0);
-			wheelMap.put(0.0,0.0);
-			wheelMap.put(0.0,0.0);
-			wheelMap.put(0.0,0.0);
+			wheelMap.put(1.0,15.0);
+			wheelMap.put(2.0,30.0);
+			wheelMap.put(3.0,45.0);
+			wheelMap.put(4.0,80.0);
 
 			timeOfFlightMap.put(1.0,0.3);
 			timeOfFlightMap.put(2.0,0.5);
@@ -97,13 +101,13 @@ public final class Constants {
 	public static final class TuningValues {
 
 		public static final class ShooterValues {
-			public static final double kS = 0;
-			public static final double kV = 0;
-			public static final double kP = 0;
+			public static final double kS = 0.25;
+			public static final double kV = 0.12;
+			public static final double kP = 0.1;
 			public static final double kI = 0;
 			public static final double kD = 0;
 
-			public static final double runSpeed = 10;
+			public static final double runSpeed = 80;
 
 			// public static final class AngleFunction {
 			// 	public static final double x2coef = 1;
@@ -119,62 +123,62 @@ public final class Constants {
 		public static final class HoodValues {
 			public static final double kS = 0;
 			public static final double kG = 0;
-			public static final double kP = 0;
+			public static final double kP = 0.5;
 			public static final double kI = 0;
-			public static final double kD = 0;
+			public static final double kD = 0.005;
 		}
 
 		public static final class IntakeValues {
 			public static final double kS = 0;
 			public static final double kG = 0;
-			public static final double kP = 0.1;
+			public static final double kP = 0.3;
 			public static final double kI = 0;
 			public static final double kD = 0;
 
-			public static final double extended = 4;
-			public static final double retracted = 0;
+			public static final double extended = -8;
+			public static final double retracted = 1;
 			public static final double tolerance = 1;
 
 			public static final double intakeRunSpeed = 0.8;
 		}
 
-		public static final class FeederValues {
-			public static final double feederRunSpeed = 0.8;
+		public static final class HopperValues {
+			public static final double hopperRunSpeed = 0.4;
 		}
 
-		public static final class HopperValues {
-			public static final double hopperRunSpeed = 0.8;
+		public static final class FeederValues {
+			public static final double feederRunSpeed = -0.8;
 		}
 	}
 
 	public static final class CurrentLimits {
 
 		public static final class ShooterLimits {
-			public static final double maxLimit = 10;
+			public static final double maxLimit = 100;
 		}
 
 		public static final class HoodLimits {
-			public static final double maxLimit = 8;
-			public static final double currentLimit = 4;
+			public static final double maxLimit = 60;
+			public static final double currentLimit = 8;
 			public static final double duration = 0.1;
 		}
 
 		public static final class IntakeLimits {
-			public static final double maxLimit = 10;
-			public static final double currentLimit = 10;
+			public static final double maxLimit = 100;
+			public static final double currentLimit = 50;
 			public static final double duration = 0.1;
 		}
 
 		public static final class IntakeRollerLimits {
-			public static final double maxLimit = 50;
+			public static final double maxLimit = 120;
 		}
 
 		public static final class HopperLimits {
-			public static final double maxLimit = 50;
+			public static final double maxLimit = 120;
 		}
 
 		public static final class FeederLimits {
-			public static final double maxLimit = 50;
+			public static final double maxLimit = 120;
 		}
 	}
 

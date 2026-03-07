@@ -14,9 +14,12 @@ public class ZeroIntake extends Command {
     double currentDraw;
     double time;
     double spikeStartTime;
+    boolean hasZeroed;
 
     public ZeroIntake(IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
+        hasZeroed = false;
+
         addRequirements((Subsystem) intakeSubsystem);
     }
 
@@ -29,25 +32,32 @@ public class ZeroIntake extends Command {
     // Slowly run intake and record stator current
     @Override
     public void execute() {
-        currentDraw = this.intakeSubsystem.getCurrent();
-        time = Timer.getFPGATimestamp();
-        this.intakeSubsystem.runRotation(-0.1);
+        if (!hasZeroed) {
+            currentDraw = this.intakeSubsystem.getCurrent();
+            time = Timer.getFPGATimestamp();
+            this.intakeSubsystem.runRotation(0.1);
 
-       if (currentDraw < currentLimit) {
-            spikeStartTime = time;
+            if (currentDraw < currentLimit) {
+                spikeStartTime = time;
+            }
+
+            // Detect when stator current is above threshold for enough time
+            // When stator current is above threshold for enough time, stop motor and zero the motor
+            if (time - spikeStartTime > IntakeLimits.duration) {
+                hasZeroed = true;
+                this.intakeSubsystem.zeroRotation();
+            }
+        }
+        else {
+            this.intakeSubsystem.runRotation(0);
         }
     }
-
-    // When stator current is above threshold for enough time, stop motor and zero the hood
     @Override
     public void end(boolean interrupted) {
-        this.intakeSubsystem.runRotation(0);
-        this.intakeSubsystem.zeroRotation();
     }
-
-    // Detect when stator current is above threshold for enough time
+    
     @Override
     public boolean isFinished() {
-        return (time - spikeStartTime > IntakeLimits.duration);
+        return false;
     }
 }

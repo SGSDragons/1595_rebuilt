@@ -22,14 +22,14 @@ public class EnableHood extends Command {
     // set target position based on distance to the goal
     @Override
     public void initialize() {
-        targetPosition = Aiming.getWheelValue(this.goalAim.getAdjustedDistance());
+        targetPosition = Aiming.getHoodValue(this.goalAim.getAdjustedDistance());
         this.hoodSubsystem.setTargetPosition(targetPosition);
     }
 
     // always try to reach position
     @Override
     public void execute() {
-        targetPosition = Aiming.getWheelValue(this.goalAim.getAdjustedDistance());
+        targetPosition = Aiming.getHoodValue(this.goalAim.getAdjustedDistance());
         this.hoodSubsystem.setTargetPosition(targetPosition);
         this.hoodSubsystem.enableHood();
     }

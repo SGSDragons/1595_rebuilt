@@ -4,56 +4,56 @@
     {
       "anchor": {
         "x": 3.5,
-        "y": 0.625
+        "y": 7.5
       },
       "prevControl": null,
       "nextControl": {
         "x": 3.5,
-        "y": 0.9744653209248088
+        "y": 7.25
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.5,
-        "y": 0.625
+        "x": 6.5,
+        "y": 7.5
       },
       "prevControl": {
-        "x": 0.3041628829575386,
-        "y": 0.4696042999678032
+        "x": 6.250002330894349,
+        "y": 7.5010795562704855
       },
       "nextControl": {
-        "x": 0.7769016801323949,
-        "y": 0.8447199952393873
+        "x": 7.359044702400646,
+        "y": 7.4962904170329985
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.5105499999929113,
-        "y": 3.139
+        "x": 7.806422222222222,
+        "y": 7.164149999999999
       },
       "prevControl": {
-        "x": 1.7616013401774833,
-        "y": 2.810323522950588
+        "x": 7.806422222222222,
+        "y": 7.443115194574432
       },
       "nextControl": {
-        "x": 3.588872222215133,
-        "y": 3.612222222216722
+        "x": 7.806422222222222,
+        "y": 6.880491434974462
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.5755666666666666,
-        "y": 3.13851111111111
+        "x": 7.806422222222222,
+        "y": 6.060633333333333
       },
       "prevControl": {
-        "x": 3.2418666666666667,
-        "y": 3.362633333333332
+        "x": 8.295194444444444,
+        "y": 3.8536
       },
       "nextControl": null,
       "isLocked": false,
@@ -62,8 +62,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 180.0
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 4.855064751836216
     }
   ],
   "constraintZones": [],
@@ -71,7 +71,7 @@
   "eventMarkers": [
     {
       "name": "Shoot",
-      "waypointRelativePos": 2.4550359712230216,
+      "waypointRelativePos": 0.9,
       "endWaypointRelativePos": null,
       "command": null
     }

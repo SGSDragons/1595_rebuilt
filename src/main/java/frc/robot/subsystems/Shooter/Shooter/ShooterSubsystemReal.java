@@ -5,10 +5,12 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareID.ShooterIds;
 import frc.robot.Constants.TuningValues.ShooterValues;
@@ -19,37 +21,55 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
     
     TalonFX leftShooter;
     TalonFX rightShooter;
-    TalonFX shooterMotor;
 
     VelocityVoltage targetVelocity;
 
     public ShooterSubsystemReal() {
-        // Make shooterMotor control both left and right shooters
-        shooterMotor = new TalonFX(ShooterIds.leftShooterCanId);
+        // Make leftShooter control both left and right shooters
+        leftShooter = new TalonFX(ShooterIds.leftShooterCanId);
         rightShooter = new TalonFX(ShooterIds.rightShooterCanId);
-        rightShooter.setControl(new Follower(shooterMotor.getDeviceID(), MotorAlignmentValue.Opposed));
 
+        leftShooter.setNeutralMode(NeutralModeValue.Brake);
         rightShooter.setNeutralMode(NeutralModeValue.Brake);
-        shooterMotor.setNeutralMode(NeutralModeValue.Brake);
 
-        var shooterConfig = new TalonFXConfiguration();
 
-        shooterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        shooterConfig.CurrentLimits.StatorCurrentLimit = ShooterLimits.maxLimit;
+        var leftShooterConfig = new TalonFXConfiguration();
 
-        shooterConfig.Slot0.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
-        shooterConfig.Slot0.kS = ShooterValues.kS;
-        shooterConfig.Slot0.kG = ShooterValues.kV;
-        shooterConfig.Slot0.kP = ShooterValues.kP;
-        shooterConfig.Slot0.kI = ShooterValues.kI;
-        shooterConfig.Slot0.kD = ShooterValues.kD;
+        leftShooterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        leftShooterConfig.CurrentLimits.StatorCurrentLimit = ShooterLimits.maxLimit;
+        leftShooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-        shooterMotor.getConfigurator().apply(shooterConfig);
+        leftShooterConfig.Slot0.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
+        leftShooterConfig.Slot0.kS = ShooterValues.kS;
+        leftShooterConfig.Slot0.kV = ShooterValues.kV;
+        leftShooterConfig.Slot0.kP = ShooterValues.kP;
+        leftShooterConfig.Slot0.kI = ShooterValues.kI;
+        leftShooterConfig.Slot0.kD = ShooterValues.kD;
+
+        leftShooter.getConfigurator().apply(leftShooterConfig);
+        
+
+        var rightShooterConfig = new TalonFXConfiguration();
+
+        rightShooterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        rightShooterConfig.CurrentLimits.StatorCurrentLimit = ShooterLimits.maxLimit;
+        rightShooterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+        rightShooterConfig.Slot0.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
+        rightShooterConfig.Slot0.kS = ShooterValues.kS;
+        rightShooterConfig.Slot0.kV = ShooterValues.kV;
+        rightShooterConfig.Slot0.kP = ShooterValues.kP;
+        rightShooterConfig.Slot0.kI = ShooterValues.kI;
+        rightShooterConfig.Slot0.kD = ShooterValues.kD;
+
+        rightShooter.getConfigurator().apply(rightShooterConfig);
+
         targetVelocity = new VelocityVoltage(0).withVelocity(ShooterValues.runSpeed);
     }
 
     public void runShooter() {
-        shooterMotor.setControl(targetVelocity);
+        leftShooter.setControl(targetVelocity);
+        rightShooter.setControl(targetVelocity);
     }
 
     public void setTargetVelocity(double velocity) {
@@ -57,15 +77,17 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
     }
 
     public double getVelocity() {
-        return shooterMotor.getVelocity().getValueAsDouble();
+        return (leftShooter.getVelocity().getValueAsDouble() + leftShooter.getVelocity().getValueAsDouble()) / 2;
     }
     
     @Override
     public void periodic() {
-
+        telemetry();
     }
 
     public void telemetry() {
-        
+        SmartDashboard.putNumber("Shooter Target", targetVelocity.Velocity);
+        SmartDashboard.putNumber("Rotation Velocity", getVelocity());
+        SmartDashboard.putNumber("Rotation Current", leftShooter.getStatorCurrent().getValueAsDouble());
     }
 }

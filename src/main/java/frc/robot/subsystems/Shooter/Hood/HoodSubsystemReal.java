@@ -72,9 +72,9 @@ public class HoodSubsystemReal extends HoodSubsystem {
     }
 
     public void telemetry() {
-        SmartDashboard.putNumber("Target Position", targetPosition.Position);
+        SmartDashboard.putNumber("Hood Target", targetPosition.Position);
         SmartDashboard.putNumber("Hood Position", getPosition());
-        SmartDashboard.putNumber("Hood Voltage", hoodMotor.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("Hood Voltage", getCurrent());
     }
 }
 
