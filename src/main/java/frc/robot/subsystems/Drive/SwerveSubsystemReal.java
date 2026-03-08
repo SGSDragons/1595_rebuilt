@@ -19,6 +19,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -27,8 +28,10 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -107,14 +110,29 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         publishTunables();
     }
 
+    public void telemetry() {
+    }
+
     @Override
     public void periodic() {
         swerveDrive.updateOdometry();
-        PoseEstimate poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-        if (poseEst != null && poseEst.tagCount > 0) {
+        LimelightHelpers.SetRobotOrientation("limelight-two", getHeading().getDegrees(), 0, 0, 0, 0, 0 );
+        LimelightHelpers.SetRobotOrientation("limelight-three", getHeading().getDegrees(), 0, 0, 0, 0, 0 );
+
+        PoseEstimate LL2poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight2");
+        if (LL2poseEst != null && LL2poseEst.tagCount > 0) {
             swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
-                poseEst.pose,
-                poseEst.timestampSeconds,
+                LL2poseEst.pose,
+                LL2poseEst.timestampSeconds,
+                VecBuilder.fill(0.7, 0.7, 1e10)
+                );
+        }
+
+        PoseEstimate LL3poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight3a");
+        if (LL3poseEst != null && LL3poseEst.tagCount > 0) {
+            swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
+                LL3poseEst.pose,
+                LL3poseEst.timestampSeconds,
                 VecBuilder.fill(0.7, 0.7, 1e10)
                 );
         }
@@ -260,6 +278,8 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
             if (magnitude < 0.1) {
                 joystick = Translation2d.kZero;
             }
+
+            System.out.println(aimer.getCurrentDistance());
 
             magnitude = scale*Math.pow(magnitude, 3);
             joystick = joystick.times(magnitude);

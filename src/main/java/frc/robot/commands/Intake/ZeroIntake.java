@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.CurrentLimits.IntakeLimits;
+import frc.robot.Constants.TuningValues.IntakeValues;
 import frc.robot.subsystems.Intake.Rotation.IntakeSubsystem;
 
 public class ZeroIntake extends Command {

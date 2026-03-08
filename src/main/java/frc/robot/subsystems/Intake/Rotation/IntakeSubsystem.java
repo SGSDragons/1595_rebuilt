@@ -8,6 +8,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
 
+    public enum IntakeStates {
+        EXTENDED,
+        RETRACTED,
+        ZEROED
+    }
+
+    public PositionVoltage targetPosition;
+
     public IntakeSubsystem() {}
 
     public void runRotation(double power) {} 
@@ -16,9 +24,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void gotoPosition() {}
 
-    public void setTargetPosition(double position) {}
+    public void setTargetPosition(IntakeStates position) {}
 
     public double getPosition() { return 0; }
+
+    public IntakeStates getTargetPosition() { return IntakeStates.EXTENDED; }
 
     public boolean isExtended() { return false; }
 

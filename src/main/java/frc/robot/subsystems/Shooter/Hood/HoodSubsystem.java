@@ -16,6 +16,11 @@ import frc.robot.Constants.TuningValues.HoodValues;
 
 public class HoodSubsystem extends SubsystemBase {
 
+    public enum HoodStates {
+        ENABLED,
+        ZEROED
+    }
+
     public HoodSubsystem() {}
 
     public void runHood(double power) {} 

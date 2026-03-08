@@ -8,15 +8,15 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareID.IntakeIds;
 import frc.robot.Constants.TuningValues.IntakeValues;
 import frc.robot.Constants.CurrentLimits.IntakeLimits;
 
 public class IntakeSubsystemReal extends IntakeSubsystem {
     
-    TalonFX rotationMotor;
     PositionVoltage targetPosition;
+    IntakeStates state;
+    TalonFX rotationMotor;
 
     public IntakeSubsystemReal() {
 
@@ -36,7 +36,8 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
         rotationConfig.Slot0.kD = IntakeValues.kD;
 
         rotationMotor.getConfigurator().apply(rotationConfig);
-        targetPosition = new PositionVoltage(0).withPosition(0);
+        state = IntakeStates.RETRACTED;
+        targetPosition = new PositionVoltage(0).withPosition(IntakeValues.retracted);
     }
 
     public void runRotation(double power) {
@@ -51,12 +52,19 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
         rotationMotor.setControl(targetPosition);
     }
 
-    public void setTargetPosition(double position) {
-        targetPosition = new PositionVoltage(0).withPosition(position);
+    public void setTargetPosition(IntakeStates position) {
+        if (position == IntakeStates.RETRACTED) {
+            targetPosition = new PositionVoltage(0).withPosition(IntakeValues.retracted);
+        } else {
+            targetPosition = new PositionVoltage(0).withPosition(IntakeValues.extended);
+        }
     }
 
     public double getPosition() {
         return rotationMotor.getPosition().getValueAsDouble();
+    }
+    public IntakeStates getTargetPosition() {
+        return state;
     }
 
     public boolean isExtended() {

@@ -24,7 +24,6 @@ public class RunIntakeRollers extends Command {
     @Override
     public void execute() {
         this.intakeRollerSubsystem.runRollers(IntakeValues.intakeRunSpeed);
-        SmartDashboard.putNumber("running", Timer.getFPGATimestamp());
     }
 
     @Override

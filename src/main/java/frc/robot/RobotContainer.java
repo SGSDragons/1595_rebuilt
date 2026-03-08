@@ -9,7 +9,6 @@ import frc.robot.commands.Feeder.RunFeeder;
 import frc.robot.commands.Intake.IntakeToPosition;
 import frc.robot.commands.Intake.RunIntakeRollers;
 import frc.robot.commands.Intake.ZeroIntake;
-import frc.robot.commands.Intake.IntakeToPosition.IntakePosition;
 import frc.robot.commands.Shooter.EnableHood;
 import frc.robot.commands.Shooter.EnableShooter;
 import frc.robot.commands.Shooter.RunShooter;
@@ -25,6 +24,7 @@ import frc.robot.subsystems.Feeder.Hopper.HopperSubsystemReal;
 import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystem;
 import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystemReal;
 import frc.robot.subsystems.Intake.Rotation.IntakeSubsystem;
+import frc.robot.subsystems.Intake.Rotation.IntakeSubsystem.IntakeStates;
 import frc.robot.subsystems.Intake.Rotation.IntakeSubsystemReal;
 import frc.robot.subsystems.Shooter.Hood.HoodSubsystem;
 import frc.robot.subsystems.Shooter.Hood.HoodSubsystemReal;
@@ -69,16 +69,16 @@ public class RobotContainer {
 
 	// The robot's subsystems and commands are defined here...
 	// private final SwerveSubsystem drive = new SwerveSubsystem();
-	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(1.0), new Pose2d(7.5, 0.625, Rotation2d.kZero));
+	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(6.0), new Pose2d(7.5, 0.625, Rotation2d.kZero));
 
-	private final IntakeSubsystem intake = new IntakeSubsystem();
+	private final IntakeSubsystem intake = new IntakeSubsystemReal();
 	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystem();
 
-	private final HopperSubsystemReal hopper = new HopperSubsystemReal();
-	private final FeederSubsystemReal feeder = new FeederSubsystemReal();
+	private final HopperSubsystem hopper = new HopperSubsystemReal();
+	private final FeederSubsystem feeder = new FeederSubsystemReal();
 
-	private final ShooterSubsystemReal shooter = new ShooterSubsystemReal();
-	private final HoodSubsystemReal hood = new HoodSubsystemReal();
+	private final ShooterSubsystem shooter = new ShooterSubsystemReal();
+	private final HoodSubsystem hood = new HoodSubsystemReal();
 
 	private final ClimberSubsystem climber = new ClimberSubsystem();
 
@@ -94,8 +94,8 @@ public class RobotContainer {
 	Command shootWithHood = new ParallelCommandGroup(new RunFeeder(hopper, feeder), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
 	Command shootWithoutHood = new RunFeeder(hopper, feeder);
 
-	Command intakeOut = new ParallelCommandGroup(new IntakeToPosition(intake, IntakePosition.EXTENDED), new RunIntakeRollers(intakeRollers));
-	Command intakeIn = new ParallelRaceGroup(new IntakeToPosition(intake, IntakePosition.RETRACTED), new RunIntakeRollers(intakeRollers));
+	Command intakeOut = new ParallelCommandGroup(new IntakeToPosition(intake, IntakeStates.EXTENDED), new RunIntakeRollers(intakeRollers));
+	Command intakeIn = new ParallelRaceGroup(new IntakeToPosition(intake, IntakeStates.RETRACTED), new RunIntakeRollers(intakeRollers));
 
   	public RobotContainer() {
 		configureBindings();
@@ -146,8 +146,8 @@ public class RobotContainer {
 
 	private void configureBindings() {
 
-		// drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
-		// driverController.leftBumper().whileTrue(drive.pointAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
+		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
+		driverController.leftBumper().whileTrue(drive.pointAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
 
 		operatorController.b().whileTrue(shootWithoutHood);
 		operatorController.a().whileTrue(shootWithHood);
@@ -165,8 +165,8 @@ public class RobotContainer {
 
 		driverController.x().onTrue(Commands.runOnce(drive::updateAnglePIDF));
 
-		// drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
-		// driverController.leftBumper().whileTrue(drive.pointAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
+		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
+		driverController.leftBumper().whileTrue(drive.pointAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
 
 		operatorController.b().whileTrue(shootWithoutHood);
 		operatorController.a().whileTrue(shootWithHood);

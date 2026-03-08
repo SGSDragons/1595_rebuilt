@@ -6,18 +6,13 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.CurrentLimits.IntakeLimits;
 import frc.robot.Constants.TuningValues.IntakeValues;
 import frc.robot.subsystems.Intake.Rotation.IntakeSubsystem;
-import frc.robot.subsystems.Intake.Rotation.IntakeSubsystemReal;
+import frc.robot.subsystems.Intake.Rotation.IntakeSubsystem.IntakeStates;
 
 
 public class IntakeToPosition extends Command {
 
-    public enum IntakePosition {
-        EXTENDED,
-        RETRACTED
-    }
-
     private final IntakeSubsystem intakeSubsystem;
-    private IntakePosition position;
+    private IntakeStates position;
     
     final double currentLimit = IntakeLimits.currentLimit;
     double currentDraw;
@@ -25,7 +20,7 @@ public class IntakeToPosition extends Command {
     double spikeStartTime;
     boolean hasZeroed;
 
-    public IntakeToPosition(IntakeSubsystem intake, IntakePosition position) {
+    public IntakeToPosition(IntakeSubsystem intake, IntakeStates position) {
         this.intakeSubsystem = intake;
         this.position = position;
         addRequirements((Subsystem) intake);
@@ -34,12 +29,7 @@ public class IntakeToPosition extends Command {
     // Set target speed
     @Override
     public void initialize() {  
-        if (this.position == IntakePosition.EXTENDED) {
-            this.intakeSubsystem.setTargetPosition(IntakeValues.extended);
-        }
-        else {
-            this.intakeSubsystem.setTargetPosition(IntakeValues.retracted);
-        }
+        this.intakeSubsystem.setTargetPosition(this.position);
         currentDraw = this.intakeSubsystem.getCurrent();
         time = Timer.getFPGATimestamp();
     }
@@ -58,9 +48,9 @@ public class IntakeToPosition extends Command {
 
         // Detect when stator current is above threshold for enough time
         // When stator current is above threshold for enough time, set the target position to extended to not break the motor
-        if (time - spikeStartTime > IntakeLimits.duration && this.position == IntakePosition.RETRACTED) {
-            this.position = IntakePosition.EXTENDED;
-            this.intakeSubsystem.setTargetPosition(IntakeValues.extended);
+        if (time - spikeStartTime > IntakeLimits.duration && this.position == IntakeStates.RETRACTED) {
+            this.position = IntakeStates.EXTENDED;
+            this.intakeSubsystem.setTargetPosition(this.position);
         }
     }
 
@@ -71,11 +61,11 @@ public class IntakeToPosition extends Command {
 
     @Override
     public boolean isFinished() {
-        if (this.position == IntakePosition.EXTENDED) {
+        if (this.position == IntakeStates.EXTENDED) {
             return this.intakeSubsystem.isExtended();
         }
         else {
-            return this.intakeSubsystem.isExtended();
+            return this.intakeSubsystem.isRetracted();
         }
     }
 }
