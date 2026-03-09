@@ -60,6 +60,11 @@ public final class Constants {
 		public static final class ClimberIds {
 			public static final int hopperCanId = 13;
 		}
+
+		public static final class LimeLightNames {
+			public static final String limelight2 = "limelight-two";
+			public static final String limelight3a = "limelight-three";
+		}
 	}
 
 	public static final class Aiming {

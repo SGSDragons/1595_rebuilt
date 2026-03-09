@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.HardwareID.LimeLightNames;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.GoalAim;
@@ -116,11 +117,12 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
     @Override
     public void periodic() {
         swerveDrive.updateOdometry();
-        LimelightHelpers.SetRobotOrientation("limelight-two", getHeading().getDegrees(), 0, 0, 0, 0, 0 );
-        LimelightHelpers.SetRobotOrientation("limelight-three", getHeading().getDegrees(), 0, 0, 0, 0, 0 );
+        LimelightHelpers.SetRobotOrientation(LimeLightNames.limelight2, getHeading().getDegrees(), 0, 0, 0, 0, 0 );
+        LimelightHelpers.SetRobotOrientation(LimeLightNames.limelight3a, getHeading().getDegrees(), 0, 0, 0, 0, 0 );
 
-        PoseEstimate LL2poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight2");
+        PoseEstimate LL2poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimeLightNames.limelight2);
         if (LL2poseEst != null && LL2poseEst.tagCount > 0) {
+            System.out.println("limelight");
             swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
                 LL2poseEst.pose,
                 LL2poseEst.timestampSeconds,
@@ -128,7 +130,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
                 );
         }
 
-        PoseEstimate LL3poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight3a");
+        PoseEstimate LL3poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimeLightNames.limelight3a);
         if (LL3poseEst != null && LL3poseEst.tagCount > 0) {
             swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
                 LL3poseEst.pose,
@@ -136,6 +138,8 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
                 VecBuilder.fill(0.7, 0.7, 1e10)
                 );
         }
+
+        System.out.println(getPose());
     }
 
     public void initializeAutoBuilder() {
