@@ -69,16 +69,16 @@ public class RobotContainer {
 
 	// The robot's subsystems and commands are defined here...
 	// private final SwerveSubsystem drive = new SwerveSubsystem();
-	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(6.0), new Pose2d(7.5, 0.625, Rotation2d.kZero));
+	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(0.0), new Pose2d(3.5, 0.625, Rotation2d.kZero));
 
-	private final IntakeSubsystem intake = new IntakeSubsystemReal();
+	private final IntakeSubsystem intake = new IntakeSubsystem();
 	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystem();
 
 	private final HopperSubsystem hopper = new HopperSubsystemReal();
 	private final FeederSubsystem feeder = new FeederSubsystemReal();
 
 	private final ShooterSubsystem shooter = new ShooterSubsystemReal();
-	private final HoodSubsystem hood = new HoodSubsystemReal();
+	private final HoodSubsystem hood = new HoodSubsystem();
 
 	private final ClimberSubsystem climber = new ClimberSubsystem();
 
