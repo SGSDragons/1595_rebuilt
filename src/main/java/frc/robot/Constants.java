@@ -74,9 +74,9 @@ public final class Constants {
 
 		static {
 			hoodMap.put(1.0,0.0);
-			hoodMap.put(2.0,5.0);
-			hoodMap.put(3.0,10.0);
-			hoodMap.put(4.0,15.0);
+			hoodMap.put(2.0,2.0);
+			hoodMap.put(3.0,4.0);
+			hoodMap.put(4.0,6.0);
 
 			wheelMap.put(1.0,15.0);
 			wheelMap.put(2.0,30.0);
@@ -131,6 +131,9 @@ public final class Constants {
 			public static final double kP = 0.5;
 			public static final double kI = 0;
 			public static final double kD = 0.005;
+
+			public static final double max = -8;
+			public static final double min = 0;
 		}
 
 		public static final class IntakeValues {

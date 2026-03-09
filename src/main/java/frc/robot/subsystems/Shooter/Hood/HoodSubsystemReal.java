@@ -51,6 +51,7 @@ public class HoodSubsystemReal extends HoodSubsystem {
     }
 
     public void setTargetPosition(double position) {
+        position = Math.min(HoodValues.max, Math.max(0, position));
         targetPosition = new PositionVoltage(0).withPosition(position);
     }
 
