@@ -49,7 +49,7 @@ public final class Constants {
 
 		public static final class IntakeIds {
 			public static final int rotationCanId = 18;
-			public static final int rollerCanId = 0;
+			public static final int rollerCanId = 20;
 		}
 
 		public static final class FeederIds {
@@ -73,20 +73,47 @@ public final class Constants {
 		public static InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
 
 		static {
-			hoodMap.put(1.0,0.0);
-			hoodMap.put(2.0,2.0);
-			hoodMap.put(3.0,4.0);
-			hoodMap.put(4.0,6.0);
+			hoodMap.put(1.225,1.5);
+			hoodMap.put(1.529,2.75);
+			hoodMap.put(1.834,3.0);
+			hoodMap.put(2.138,3.25);
+			hoodMap.put(2.443,3.65);
+			hoodMap.put(2.747,3.90);
+			hoodMap.put(3.052,4.20);
+			hoodMap.put(3.357,4.50);
+			hoodMap.put(3.661,4.65);
+			// hoodMap.put(3.0,0.0);
+			// hoodMap.put(3.0,0.0);
+			// hoodMap.put(3.0,0.0);
+			// hoodMap.put(3.0,0.0);
 
-			wheelMap.put(1.0,15.0);
-			wheelMap.put(2.0,30.0);
-			wheelMap.put(3.0,45.0);
-			wheelMap.put(4.0,80.0);
+			wheelMap.put(1.225,65.0);
+			wheelMap.put(1.529,65.0);
+			wheelMap.put(1.834,67.0);
+			wheelMap.put(2.138,68.0);
+			wheelMap.put(2.443,70.0);
+			wheelMap.put(2.747,72.0);
+			wheelMap.put(3.052,75.0);
+			wheelMap.put(3.357,77.0);
+			wheelMap.put(3.661,80.0);
+			// wheelMap.put(2.0,75.0);
+			// wheelMap.put(2.0,75.0);
+			// wheelMap.put(2.0,75.0);
+			// wheelMap.put(2.0,75.0);
 
-			timeOfFlightMap.put(1.0,0.3);
-			timeOfFlightMap.put(2.0,0.5);
-			timeOfFlightMap.put(3.0,0.8);
-			timeOfFlightMap.put(4.0,1.0);
+			timeOfFlightMap.put(1.225,0.3);
+			timeOfFlightMap.put(1.529,0.5);
+			timeOfFlightMap.put(1.834,0.8);
+			timeOfFlightMap.put(2.138,1.3);
+			timeOfFlightMap.put(2.443,1.5);
+			timeOfFlightMap.put(2.747,1.5);
+			timeOfFlightMap.put(3.052,1.5);
+			timeOfFlightMap.put(3.357,1.5);
+			timeOfFlightMap.put(3.661,1.5);
+			// timeOfFlightMap.put(2.0,1.5);
+			// timeOfFlightMap.put(2.0,1.5);
+			// timeOfFlightMap.put(2.0,1.5);
+			// timeOfFlightMap.put(2.0,1.5);
 		}
 
 		public static double getHoodValue(double distance) {
@@ -109,10 +136,10 @@ public final class Constants {
 			public static final double kS = 0.25;
 			public static final double kV = 0.12;
 			public static final double kP = 0.1;
-			public static final double kI = 0;
+			public static final double kI = 0.05;
 			public static final double kD = 0;
 
-			public static final double runSpeed = 80;
+			public static final double runSpeed = 90;
 
 			// public static final class AngleFunction {
 			// 	public static final double x2coef = 1;
@@ -126,26 +153,27 @@ public final class Constants {
  		}
 
 		public static final class HoodValues {
-			public static final double kS = 0;
+			public static final double kS = 0.6;
 			public static final double kG = 0;
-			public static final double kP = 0.5;
+			public static final double kP = 1;
 			public static final double kI = 0;
-			public static final double kD = 0.005;
+			public static final double kD = 0.01;
 
-			public static final double max = -8;
 			public static final double min = 0;
+			public static final double max = 8;
+			public static final double tolerance = 0.1;
 		}
 
 		public static final class IntakeValues {
-			public static final double kS = 0;
+			public static final double kS = 0.2;
 			public static final double kG = 0;
-			public static final double kP = 0.3;
-			public static final double kI = 0;
-			public static final double kD = 0;
+			public static final double kP = 0.4;
+			public static final double kI = 0.01;
+			public static final double kD = 0.0;
 
-			public static final double extended = -8;
-			public static final double retracted = 1;
-			public static final double tolerance = 1;
+			public static final double extended = 9;
+			public static final double retracted = 1.5;
+			public static final double tolerance = 0.5;
 
 			public static final double intakeRunSpeed = 0.8;
 		}
@@ -155,7 +183,7 @@ public final class Constants {
 		}
 
 		public static final class FeederValues {
-			public static final double feederRunSpeed = -0.8;
+			public static final double feederRunSpeed = 0.8;
 		}
 	}
 
@@ -167,7 +195,7 @@ public final class Constants {
 
 		public static final class HoodLimits {
 			public static final double maxLimit = 60;
-			public static final double currentLimit = 8;
+			public static final double currentLimit = 25;
 			public static final double duration = 0.1;
 		}
 
@@ -175,6 +203,7 @@ public final class Constants {
 			public static final double maxLimit = 100;
 			public static final double currentLimit = 50;
 			public static final double duration = 0.1;
+			public static final double maxTravelTime = 2;
 		}
 
 		public static final class IntakeRollerLimits {

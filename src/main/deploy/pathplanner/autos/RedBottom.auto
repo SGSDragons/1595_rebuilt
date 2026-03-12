@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TestPath2"
+            "pathName": "RedBottom"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootAtGoal"
           }
         }
       ]

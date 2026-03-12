@@ -27,6 +27,7 @@ public class ZeroHood extends Command {
     public void initialize() {  
         currentDraw = this.hoodSubsystem.getCurrent();
         time = Timer.getFPGATimestamp();
+        hasZeroed = false;
     }
 
     // Slowly run hood down and record stator current

@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.CurrentLimits.IntakeLimits;
 import frc.robot.Constants.TuningValues.IntakeValues;
 import frc.robot.subsystems.Intake.Rotation.IntakeSubsystem;
+import frc.robot.subsystems.Intake.Rotation.IntakeSubsystem.IntakeStates;
 
 public class ZeroIntake extends Command {
 
@@ -28,6 +29,7 @@ public class ZeroIntake extends Command {
     public void initialize() {  
         currentDraw = this.intakeSubsystem.getCurrent();
         time = Timer.getFPGATimestamp();
+        hasZeroed = (this.intakeSubsystem.getTargetPosition() == IntakeStates.EXTENDED);
     }
 
     // Slowly run intake and record stator current
@@ -36,7 +38,7 @@ public class ZeroIntake extends Command {
         if (!hasZeroed) {
             currentDraw = this.intakeSubsystem.getCurrent();
             time = Timer.getFPGATimestamp();
-            this.intakeSubsystem.runRotation(0.1);
+            this.intakeSubsystem.runRotation(-0.1);
 
             if (currentDraw < currentLimit) {
                 spikeStartTime = time;

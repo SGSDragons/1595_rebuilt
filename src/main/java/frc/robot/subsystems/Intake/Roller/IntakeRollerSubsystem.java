@@ -10,7 +10,7 @@ public class IntakeRollerSubsystem extends SubsystemBase {
 
     public void runRollers(double power) {} 
 
-    public void stopRotation() {} 
+    public void stopRollers() {} 
  
     public double getCurrent() { return 0; }
 

@@ -29,8 +29,8 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
         leftShooter = new TalonFX(ShooterIds.leftShooterCanId);
         rightShooter = new TalonFX(ShooterIds.rightShooterCanId);
 
-        leftShooter.setNeutralMode(NeutralModeValue.Brake);
-        rightShooter.setNeutralMode(NeutralModeValue.Brake);
+        leftShooter.setNeutralMode(NeutralModeValue.Coast);
+        rightShooter.setNeutralMode(NeutralModeValue.Coast);
 
 
         var leftShooterConfig = new TalonFXConfiguration();
@@ -87,7 +87,7 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
 
     public void telemetry() {
         SmartDashboard.putNumber("Shooter Target", targetVelocity.Velocity);
-        SmartDashboard.putNumber("Rotation Velocity", getVelocity());
-        SmartDashboard.putNumber("Rotation Current", leftShooter.getStatorCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Shooter Velocity", getVelocity());
+        SmartDashboard.putNumber("Shooter Current", leftShooter.getStatorCurrent().getValueAsDouble());
     }
 }

@@ -3,6 +3,7 @@ package frc.robot.subsystems.Feeder.Feeder;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -22,6 +23,7 @@ public class FeederSubsystemReal extends FeederSubsystem {
 
         rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         rollerConfig.CurrentLimits.StatorCurrentLimit = FeederLimits.maxLimit;
+        rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         feederMotor.getConfigurator().apply(rollerConfig);
     }

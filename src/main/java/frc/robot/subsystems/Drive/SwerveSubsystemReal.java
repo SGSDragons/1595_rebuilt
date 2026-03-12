@@ -45,6 +45,7 @@ import frc.robot.subsystems.GoalAim;
 
 import java.io.Console;
 import java.io.File;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
@@ -112,6 +113,12 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
     }
 
     public void telemetry() {
+        if (FieldConstants.isRedAlliance()) {
+            SmartDashboard.putNumber("Distance to Goal", getPose().getTranslation().getDistance(FieldConstants.redGoal));
+        }
+        else {
+            SmartDashboard.putNumber("Distance to Goal", getPose().getTranslation().getDistance(FieldConstants.blueGoal));
+        }
     }
 
     @Override
@@ -120,17 +127,18 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         LimelightHelpers.SetRobotOrientation(LimeLightNames.limelight2, getHeading().getDegrees(), 0, 0, 0, 0, 0 );
         LimelightHelpers.SetRobotOrientation(LimeLightNames.limelight3a, getHeading().getDegrees(), 0, 0, 0, 0, 0 );
 
-        PoseEstimate LL2poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimeLightNames.limelight2);
+        PoseEstimate LL2poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightNames.limelight2);
         if (LL2poseEst != null && LL2poseEst.tagCount > 0) {
-            System.out.println("limelight");
             swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
                 LL2poseEst.pose,
                 LL2poseEst.timestampSeconds,
                 VecBuilder.fill(0.7, 0.7, 1e10)
                 );
+                // VecBuilder.fill(0, 0, 0)
+                // );
         }
 
-        PoseEstimate LL3poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimeLightNames.limelight3a);
+        PoseEstimate LL3poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightNames.limelight3a);
         if (LL3poseEst != null && LL3poseEst.tagCount > 0) {
             swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
                 LL3poseEst.pose,
@@ -139,7 +147,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
                 );
         }
 
-        System.out.println(getPose());
+        telemetry();
     }
 
     public void initializeAutoBuilder() {
@@ -161,7 +169,10 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
                 this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
                 this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds, feedforwards) -> drive(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-                new PPLTVController(0.02), // PPLTVController is the built in path following controller for differential drive trains
+                new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                ),
                 config, // The robot configuration
                 () -> FieldConstants.isRedAlliance(), // Red or Blue Alliance
                 this // Reference to this subsystem to set requirements
@@ -272,7 +283,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
     }
 
     @Override
-    public Command pointAtGoal(DoubleSupplier translationX, DoubleSupplier translationY, GoalAim aimer, double scale) {
+    public Command aimAtGoal(DoubleSupplier translationX, DoubleSupplier translationY, GoalAim aimer, double scale) {
         swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
         return run(() -> {
 
@@ -283,7 +294,34 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
                 joystick = Translation2d.kZero;
             }
 
-            System.out.println(aimer.getCurrentDistance());
+            magnitude = scale*Math.pow(magnitude, 3);
+            joystick = joystick.times(magnitude);
+            
+
+            Translation2d scaledInputs = SwerveMath.scaleTranslation(joystick, 0.8);
+            Translation2d vector = aimer.pointAtGoal();
+
+            // Make the robot move
+            driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(
+                    scaledInputs.getX(),
+                    scaledInputs.getY(),
+                    vector.getX(),
+                    vector.getY(),
+                    swerveDrive.getOdometryHeading().getRadians(),
+                    swerveDrive.getMaximumChassisVelocity()));
+        });
+    }
+
+    @Override
+    public Command pointAtGoal(double translationX, double translationY, GoalAim aimer, double scale) {
+        swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
+        return run(() -> {
+            Translation2d joystick = new Translation2d(translationX, translationY);
+            double magnitude = joystick.getNorm();
+          
+            if (magnitude < 0.1) {
+                joystick = Translation2d.kZero;
+            }
 
             magnitude = scale*Math.pow(magnitude, 3);
             joystick = joystick.times(magnitude);

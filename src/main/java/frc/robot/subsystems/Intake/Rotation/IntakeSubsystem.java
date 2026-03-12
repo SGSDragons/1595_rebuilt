@@ -15,6 +15,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public PositionVoltage targetPosition;
+    IntakeStates state;
 
     public IntakeSubsystem() {}
 
@@ -28,7 +29,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public double getPosition() { return 0; }
 
-    public IntakeStates getTargetPosition() { return IntakeStates.EXTENDED; }
+    public IntakeStates getTargetPosition() { return state; }
+
+    public IntakeStates getState() { return state; }
+
+    public void setState() {}
 
     public boolean isExtended() { return false; }
 

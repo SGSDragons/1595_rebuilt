@@ -4,6 +4,7 @@ package frc.robot.subsystems.Intake.Rotation;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
@@ -15,7 +16,6 @@ import frc.robot.Constants.CurrentLimits.IntakeLimits;
 public class IntakeSubsystemReal extends IntakeSubsystem {
     
     PositionVoltage targetPosition;
-    IntakeStates state;
     TalonFX rotationMotor;
 
     public IntakeSubsystemReal() {
@@ -27,6 +27,7 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
 
         rotationConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         rotationConfig.CurrentLimits.StatorCurrentLimit = IntakeLimits.maxLimit;
+        rotationConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         rotationConfig.Slot0.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
         rotationConfig.Slot0.kS = IntakeValues.kS;
@@ -63,16 +64,31 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
     public double getPosition() {
         return rotationMotor.getPosition().getValueAsDouble();
     }
+
     public IntakeStates getTargetPosition() {
+        if (targetPosition.Position == IntakeValues.retracted) {
+            return IntakeStates.RETRACTED;
+        } else {
+            return IntakeStates.EXTENDED;
+        }
+    }
+
+    public IntakeStates getState() {
         return state;
     }
 
+    public void setState(IntakeStates newState) {
+        state = newState;
+    }
+
     public boolean isExtended() {
-        return (Math.abs(getPosition() - IntakeValues.extended) < IntakeValues.tolerance);
+        // return (Math.abs(getPosition() - IntakeValues.extended) < IntakeValues.tolerance);
+        return (getPosition() > IntakeValues.extended-1);
     }
 
     public boolean isRetracted() {
-        return (Math.abs(getPosition() - IntakeValues.retracted) < IntakeValues.tolerance);
+        // return (Math.abs(getPosition() - IntakeValues.retracted) < IntakeValues.tolerance);
+        return (getPosition() < IntakeValues.retracted+0.5);
     }
  
     public double getCurrent() {
@@ -85,6 +101,12 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
 
     @Override
     public void periodic() {
+        if (isExtended()) {
+            state = IntakeStates.EXTENDED;
+        } 
+        else if (isRetracted()) {
+            state = IntakeStates.RETRACTED;
+        }
         telemetry();
     }
 

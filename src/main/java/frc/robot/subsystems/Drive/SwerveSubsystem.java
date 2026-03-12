@@ -57,7 +57,9 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param aimer Used to find goal heaading offset.
      * @return A drive command.
      */
-    public Command pointAtGoal(DoubleSupplier translationX, DoubleSupplier translationY, GoalAim aimer, double scale) { return runOnce(null); }
+    public Command aimAtGoal(DoubleSupplier translationX, DoubleSupplier translationY, GoalAim aimer, double scale) { return runOnce(null); }
+
+    public Command pointAtGoal(double translationX, double translationY, GoalAim aimer, double scale) { return runOnce(null); }
 
     public Pose2d getPose() { return Pose2d.kZero; }
 

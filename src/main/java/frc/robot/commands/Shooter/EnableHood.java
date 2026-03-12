@@ -31,7 +31,14 @@ public class EnableHood extends Command {
     public void execute() {
         targetPosition = Aiming.getHoodValue(this.goalAim.getAdjustedDistance());
         this.hoodSubsystem.setTargetPosition(targetPosition);
-        this.hoodSubsystem.enableHood();
+
+        // if it's close enough prevent hood from oscilating 
+        if (this.hoodSubsystem.atTargetPosition()) {
+            this.hoodSubsystem.runHood(0);
+        }
+        else {
+            this.hoodSubsystem.enableHood();
+        }
     }
 
     // ends when button is released and runs zero command

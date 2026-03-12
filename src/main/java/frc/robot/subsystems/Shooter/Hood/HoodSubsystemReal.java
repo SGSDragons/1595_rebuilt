@@ -4,9 +4,11 @@ package frc.robot.subsystems.Shooter.Hood;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,6 +30,7 @@ public class HoodSubsystemReal extends HoodSubsystem {
 
         hoodConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         hoodConfig.CurrentLimits.StatorCurrentLimit = HoodLimits.maxLimit;
+        hoodConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         hoodConfig.Slot0.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
         hoodConfig.Slot0.kS = HoodValues.kS;
@@ -51,8 +54,12 @@ public class HoodSubsystemReal extends HoodSubsystem {
     }
 
     public void setTargetPosition(double position) {
-        position = Math.min(HoodValues.max, Math.max(0, position));
+        position = Math.max(HoodValues.min, Math.min(position, HoodValues.max));
         targetPosition = new PositionVoltage(0).withPosition(position);
+    }
+
+    public boolean atTargetPosition() {
+        return (Math.abs(getPosition() - targetPosition.Position) < HoodValues.tolerance);
     }
 
     public double getCurrent() {

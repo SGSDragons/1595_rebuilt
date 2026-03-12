@@ -11,24 +11,31 @@ import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystem;
 public class RunIntakeRollers extends Command {
 
     private final IntakeRollerSubsystem intakeRollerSubsystem;
+    private boolean runForward;
 
-    public RunIntakeRollers(IntakeRollerSubsystem intakeRollerSubsystem) {
+    public RunIntakeRollers(IntakeRollerSubsystem intakeRollerSubsystem, boolean runForward) {
         this.intakeRollerSubsystem = intakeRollerSubsystem;
+        this.runForward = runForward;
         addRequirements((Subsystem) intakeRollerSubsystem);
     }
 
     @Override
-    public void initialize() {  
+    public void initialize() { 
     }
 
     @Override
     public void execute() {
-        this.intakeRollerSubsystem.runRollers(IntakeValues.intakeRunSpeed);
+        if (runForward) {
+            this.intakeRollerSubsystem.runRollers(IntakeValues.intakeRunSpeed);
+        }
+        else {
+            this.intakeRollerSubsystem.runRollers(-IntakeValues.intakeRunSpeed);
+        }
     }
 
     @Override
     public void end(boolean interrupted) {
-        this.intakeRollerSubsystem.runRollers(0);
+        this.intakeRollerSubsystem.stopRollers();;
     }
 
     @Override

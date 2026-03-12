@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Double Swipe"
+            "pathName": "BlueBottom"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootAtGoal"
           }
         }
       ]
