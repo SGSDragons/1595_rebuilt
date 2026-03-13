@@ -10,12 +10,14 @@ public class GoalAim {
     
     SwerveSubsystem swerve;
     Translation2d goalPosition;
-    boolean isRed;
 
-    public GoalAim(SwerveSubsystem swerve, boolean isRed) {
+    public GoalAim(SwerveSubsystem swerve) {
         this.swerve = swerve;
+        updateAlliance();
+    }
 
-        if (isRed) {
+    public void updateAlliance() {
+        if (FieldConstants.isRedAlliance()) {
             goalPosition = FieldConstants.redGoal;
         }
         else {

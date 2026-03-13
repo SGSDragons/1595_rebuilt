@@ -69,28 +69,26 @@ public class RobotContainer {
 
 	// The robot's subsystems and commands are defined here...
 	// private final SwerveSubsystem drive = new SwerveSubsystem();
-	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(1.0), new Pose2d(3.5, 4.05, Rotation2d.kZero));
+	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(0.0), new Pose2d(3.5, 4.05, Rotation2d.k180deg));
 
-	private final IntakeSubsystem intake = new IntakeSubsystem();
+	private final IntakeSubsystem intake = new IntakeSubsystemReal();
 	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystemReal();
 
 	private final HopperSubsystem hopper = new HopperSubsystemReal();
 	private final FeederSubsystem feeder = new FeederSubsystemReal();
 
-	private final ShooterSubsystem shooter = new ShooterSubsystemReal();
-	private final HoodSubsystem hood = new HoodSubsystemReal();
+	private final ShooterSubsystem shooter = new ShooterSubsystem();
+	private final HoodSubsystem hood = new HoodSubsystem();
 
 	private final ClimberSubsystem climber = new ClimberSubsystem();
 
 	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.driverControllerPort);
 	private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.operatorControllerPort);
 
-	// private final boolean isRedAlliance = FieldConstants.isRedAlliance();
-	private final boolean isRedAlliance = true;
-
+	boolean isRedAlliance = FieldConstants.isRedAlliance();
 
 	DriverSticks driver = new DriverSticks();
-	GoalAim goalAimer = new GoalAim(drive, isRedAlliance);
+	GoalAim goalAimer = new GoalAim(drive);
 
 	Command shootWithHood = new ParallelCommandGroup(new RunFeeder(hopper, feeder), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
 	Command shootWithoutHood = new RunFeeder(hopper, feeder);
@@ -100,7 +98,7 @@ public class RobotContainer {
 	Command intakeOut = new IntakeToPosition(intake, IntakeStates.EXTENDED);
 	Command intakeIn = new IntakeToPosition(intake, IntakeStates.RETRACTED);
 
-	// Command shootAtGoal = new ParallelCommandGroup(drive.pointAtGoal(0, 0, goalAimer, 1.0), shootWithHood);
+	Command shootAtGoal = new ParallelCommandGroup(drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0), shootWithHood);
 
   	public RobotContainer() {
 		configureBindings();
@@ -134,7 +132,7 @@ public class RobotContainer {
 	class DriverSticks {
 		private final double inverter = isRedAlliance ? 1.0 : -1.0;
 		double readAxis(XboxController.Axis axis) {
-		return driverController.getRawAxis(axis.value);
+			return driverController.getRawAxis(axis.value);
 		}
 		public double translateX() { return inverter*readAxis(Axis.kLeftY); }
 		public double translateY() { return inverter*readAxis(Axis.kLeftX); }
@@ -150,11 +148,20 @@ public class RobotContainer {
 		NamedCommands.registerCommand("intakeOut", intakeOut);
 		NamedCommands.registerCommand("runIntakeRollers", runIntakeRollers);
 
-		// NamedCommands.registerCommand("shootAtGoal", shootAtGoal);
+		NamedCommands.registerCommand("shootAtGoal", shootAtGoal);
 	}
 
-	private void configureBindings() {
+	public void reconfigAlliance() {
+		isRedAlliance = FieldConstants.isRedAlliance();
 
+		goalAimer.updateAlliance();
+		driver = new DriverSticks();
+		shootWithHood = new ParallelCommandGroup(new RunFeeder(hopper, feeder), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
+		shootAtGoal = new ParallelCommandGroup(drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0), shootWithHood);
+	}
+
+
+	public void configureBindings() {
 		// drive.setDefaultCommand(drive.driveRelative(driver::translateX, driver::translateY, driver::lookX));
 		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
 		driverController.leftBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
@@ -174,7 +181,6 @@ public class RobotContainer {
 	}
 
 	public void configureTestBindings() {
-
 		driverController.x().onTrue(Commands.runOnce(drive::updateAnglePIDF));
 
 		// drive.setDefaultCommand(drive.driveRelative(driver::translateX, driver::translateY, driver::lookX));

@@ -108,7 +108,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         // race conditions.
         swerveDrive.stopOdometryThread();
         
-        initializeAutoBuilder();
+        configureAutoBuilder();
         publishTunables();
     }
 
@@ -150,7 +150,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         telemetry();
     }
 
-    public void initializeAutoBuilder() {
+    public void configureAutoBuilder() {
 
         // Load the RobotConfig from the GUI settings. You should probably
         // store this in your Constants file
@@ -174,7 +174,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
                 new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
                 ),
                 config, // The robot configuration
-                () -> FieldConstants.isRedAlliance(), // Red or Blue Alliance
+                () -> false, // Flip alliance
                 this // Reference to this subsystem to set requirements
         );
     }
@@ -288,35 +288,6 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         return run(() -> {
 
             Translation2d joystick = new Translation2d(translationX.getAsDouble(), translationY.getAsDouble());
-            double magnitude = joystick.getNorm();
-          
-            if (magnitude < 0.1) {
-                joystick = Translation2d.kZero;
-            }
-
-            magnitude = scale*Math.pow(magnitude, 3);
-            joystick = joystick.times(magnitude);
-            
-
-            Translation2d scaledInputs = SwerveMath.scaleTranslation(joystick, 0.8);
-            Translation2d vector = aimer.pointAtGoal();
-
-            // Make the robot move
-            driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(
-                    scaledInputs.getX(),
-                    scaledInputs.getY(),
-                    vector.getX(),
-                    vector.getY(),
-                    swerveDrive.getOdometryHeading().getRadians(),
-                    swerveDrive.getMaximumChassisVelocity()));
-        });
-    }
-
-    @Override
-    public Command pointAtGoal(double translationX, double translationY, GoalAim aimer, double scale) {
-        swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
-        return run(() -> {
-            Translation2d joystick = new Translation2d(translationX, translationY);
             double magnitude = joystick.getNorm();
           
             if (magnitude < 0.1) {

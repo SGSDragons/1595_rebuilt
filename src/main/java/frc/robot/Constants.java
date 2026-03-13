@@ -101,15 +101,15 @@ public final class Constants {
 			// wheelMap.put(2.0,75.0);
 			// wheelMap.put(2.0,75.0);
 
-			timeOfFlightMap.put(1.225,0.3);
-			timeOfFlightMap.put(1.529,0.5);
-			timeOfFlightMap.put(1.834,0.8);
-			timeOfFlightMap.put(2.138,1.3);
-			timeOfFlightMap.put(2.443,1.5);
-			timeOfFlightMap.put(2.747,1.5);
-			timeOfFlightMap.put(3.052,1.5);
-			timeOfFlightMap.put(3.357,1.5);
-			timeOfFlightMap.put(3.661,1.5);
+			timeOfFlightMap.put(1.225,0.0);
+			timeOfFlightMap.put(1.529,0.0);
+			timeOfFlightMap.put(1.834,0.0);
+			timeOfFlightMap.put(2.138,0.0);
+			timeOfFlightMap.put(2.443,0.0);
+			timeOfFlightMap.put(2.747,0.0);
+			timeOfFlightMap.put(3.052,0.0);
+			timeOfFlightMap.put(3.357,0.0);
+			timeOfFlightMap.put(3.661,0.0);
 			// timeOfFlightMap.put(2.0,1.5);
 			// timeOfFlightMap.put(2.0,1.5);
 			// timeOfFlightMap.put(2.0,1.5);
@@ -225,8 +225,8 @@ public final class Constants {
 			return (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red);
 		}
 
-		public static final Translation2d redGoal = new Translation2d(12,4);
-		public static final Translation2d blueGoal = new Translation2d(4.5,4);
+		public static final Translation2d redGoal = new Translation2d(11.92,4.05);
+		public static final Translation2d blueGoal = new Translation2d(4.625,4.05);
 	}
 
 }
