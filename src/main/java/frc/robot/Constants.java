@@ -139,7 +139,7 @@ public final class Constants {
 			public static final double kI = 0.05;
 			public static final double kD = 0;
 
-			public static final double runSpeed = 90;
+			public static final double runSpeed = 20;
 
 			// public static final class AngleFunction {
 			// 	public static final double x2coef = 1;
@@ -172,6 +172,7 @@ public final class Constants {
 			public static final double kD = 0.0;
 
 			public static final double extended = 9;
+			public static final double bounce = 6;
 			public static final double retracted = 1.5;
 			public static final double tolerance = 0.5;
 

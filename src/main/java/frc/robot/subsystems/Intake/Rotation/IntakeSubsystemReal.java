@@ -56,6 +56,8 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
     public void setTargetPosition(IntakeStates position) {
         if (position == IntakeStates.RETRACTED) {
             targetPosition = new PositionVoltage(0).withPosition(IntakeValues.retracted);
+        } else if (position == IntakeStates.BOUNCE) {
+            targetPosition = new PositionVoltage(0).withPosition(IntakeValues.bounce);
         } else {
             targetPosition = new PositionVoltage(0).withPosition(IntakeValues.extended);
         }
@@ -114,5 +116,7 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
         SmartDashboard.putNumber("Rotation Target", targetPosition.Position);
         SmartDashboard.putNumber("Rotation Position", getPosition());
         SmartDashboard.putNumber("Rotation Current", getCurrent());
+
+        SmartDashboard.putNumber("state position", this.state == IntakeStates.EXTENDED ? 1 : 0);
     }
 }

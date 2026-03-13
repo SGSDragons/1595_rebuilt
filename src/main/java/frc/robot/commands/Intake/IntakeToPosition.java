@@ -1,5 +1,6 @@
 package frc.robot.commands.Intake;
 
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,12 +19,12 @@ public class IntakeToPosition extends Command {
     final double currentLimit = IntakeLimits.currentLimit;
     private double startTime;
     private double time;
+    private boolean safety = false;
 
     public IntakeToPosition(IntakeSubsystem intake, IntakeStates position) {
         this.intakeSubsystem = intake;
         this.position = position;
-
-        System.out.println(this.position);
+        // System.out.println(this.position);
 
         addRequirements((Subsystem) intake);
     }
@@ -34,33 +35,37 @@ public class IntakeToPosition extends Command {
         this.intakeSubsystem.setTargetPosition(this.position);
         startTime = Timer.getFPGATimestamp();
         time = Timer.getFPGATimestamp();
+
+        // SmartDashboard.putNumber("target position", this.position == IntakeStates.EXTENDED ? 1 : 0);
     }
 
     @Override
     public void execute() {
         this.intakeSubsystem.gotoPosition();
 
-        // Detect when intake takes to long to move
+        // Detect when intake takes too long to move
         // set the target position to extended to not break the motor
         time = Timer.getFPGATimestamp();
         if (time - startTime > IntakeLimits.maxTravelTime && this.intakeSubsystem.getPosition() > 2.0) {
-            // this.position = IntakeStates.EXTENDED;
+            this.position = IntakeStates.EXTENDED;
             this.intakeSubsystem.setTargetPosition(IntakeStates.EXTENDED);
             startTime = Timer.getFPGATimestamp();
+            safety = true; 
         }
     }
 
     @Override
     public void end(boolean interrupted) {
         this.intakeSubsystem.stopRotation();
-        // SmartDashboard.putData("position ", this.position);
+        if (safety) {
+            this.position = IntakeStates.RETRACTED;
+        }
+        safety = false;
+        // SmartDashboard.putNumber("end position", this.position == IntakeStates.EXTENDED ? 1 : 0);
     }
 
     @Override
     public boolean isFinished() {
-        if (this.intakeSubsystem.getState() == this.position) {
-            return true;
-        }
         if (this.position == IntakeStates.EXTENDED && this.intakeSubsystem.isExtended()) {
             return true;
         }

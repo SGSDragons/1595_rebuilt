@@ -69,10 +69,10 @@ public class RobotContainer {
 
 	// The robot's subsystems and commands are defined here...
 	// private final SwerveSubsystem drive = new SwerveSubsystem();
-	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(0.0), new Pose2d(3.5, 4.05, Rotation2d.k180deg));
+	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(0.5), new Pose2d(13.0, 4.05, Rotation2d.kZero));
 
-	private final IntakeSubsystem intake = new IntakeSubsystemReal();
-	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystemReal();
+	private final IntakeSubsystem intake = new IntakeSubsystem();
+	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystem();
 
 	private final HopperSubsystem hopper = new HopperSubsystemReal();
 	private final FeederSubsystem feeder = new FeederSubsystemReal();
@@ -97,8 +97,9 @@ public class RobotContainer {
 	Command outtakeIntakeRollers = new RunIntakeRollers(intakeRollers, false);
 	Command intakeOut = new IntakeToPosition(intake, IntakeStates.EXTENDED);
 	Command intakeIn = new IntakeToPosition(intake, IntakeStates.RETRACTED);
+	Command intakeBounce = new IntakeToPosition(intake, IntakeStates.BOUNCE);
 
-	Command shootAtGoal = new ParallelCommandGroup(drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0), shootWithHood);
+	// Command shootAtGoal = new ParallelCommandGroup(drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0), shootWithHood);
 
   	public RobotContainer() {
 		configureBindings();
@@ -148,7 +149,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("intakeOut", intakeOut);
 		NamedCommands.registerCommand("runIntakeRollers", runIntakeRollers);
 
-		NamedCommands.registerCommand("shootAtGoal", shootAtGoal);
+		// NamedCommands.registerCommand("shootAtGoal", shootAtGoal);
 	}
 
 	public void reconfigAlliance() {
@@ -157,7 +158,7 @@ public class RobotContainer {
 		goalAimer.updateAlliance();
 		driver = new DriverSticks();
 		shootWithHood = new ParallelCommandGroup(new RunFeeder(hopper, feeder), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
-		shootAtGoal = new ParallelCommandGroup(drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0), shootWithHood);
+		// shootAtGoal = new ParallelCommandGroup(drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0), shootWithHood);
 	}
 
 
@@ -174,7 +175,8 @@ public class RobotContainer {
 
 		operatorController.povUp().onTrue(intakeOut);
 		operatorController.povDown().onTrue(intakeIn);
-		intake.setDefaultCommand(new ZeroIntake(intake));
+		operatorController.povLeft().onTrue(intakeBounce);
+		// intake.setDefaultCommand(new ZeroIntake(intake));
 
 		operatorController.rightBumper().whileTrue(runIntakeRollers);
 		operatorController.leftBumper().whileTrue(outtakeIntakeRollers);
@@ -195,7 +197,7 @@ public class RobotContainer {
 
 		operatorController.povUp().onTrue(intakeOut);
 		operatorController.povDown().onTrue(intakeIn);
-		intake.setDefaultCommand(new ZeroIntake(intake));
+		// intake.setDefaultCommand(new ZeroIntake(intake));
 
 		operatorController.rightBumper().whileTrue(runIntakeRollers);
 		operatorController.leftBumper().whileTrue(outtakeIntakeRollers);
