@@ -1,4 +1,4 @@
-package frc.robot.commands.Shooter;
+package frc.robot.commands.Shooter.Shooter;
 
 import org.ironmaple.simulation.Goal;
 

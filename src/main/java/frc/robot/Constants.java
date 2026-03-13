@@ -117,11 +117,13 @@ public final class Constants {
 		}
 
 		public static double getHoodValue(double distance) {
-			return hoodMap.get(distance);
+			// return hoodMap.get(distance);
+			return hoodMap.get(distance+0.5);
 		}
 
 		public static double getWheelValue(double distance) {
-			return wheelMap.get(distance);
+			// return wheelMap.get(distance);
+			return wheelMap.get(distance+0.5);
 		}
 
 		public static double getFlightValue(double distance) {
@@ -139,7 +141,7 @@ public final class Constants {
 			public static final double kI = 0.05;
 			public static final double kD = 0;
 
-			public static final double runSpeed = 20;
+			public static final double runSpeed = 10;
 
 			// public static final class AngleFunction {
 			// 	public static final double x2coef = 1;

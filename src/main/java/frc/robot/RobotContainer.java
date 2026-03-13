@@ -9,10 +9,10 @@ import frc.robot.commands.Feeder.RunFeeder;
 import frc.robot.commands.Intake.IntakeToPosition;
 import frc.robot.commands.Intake.RunIntakeRollers;
 import frc.robot.commands.Intake.ZeroIntake;
-import frc.robot.commands.Shooter.EnableHood;
-import frc.robot.commands.Shooter.EnableShooter;
-import frc.robot.commands.Shooter.RunShooter;
-import frc.robot.commands.Shooter.ZeroHood;
+import frc.robot.commands.Shooter.Hood.EnableHood;
+import frc.robot.commands.Shooter.Hood.ZeroHood;
+import frc.robot.commands.Shooter.Shooter.EnableShooter;
+import frc.robot.commands.Shooter.Shooter.RunShooter;
 import frc.robot.subsystems.GoalAim;
 import frc.robot.subsystems.Climber.ClimberSubsystem;
 import frc.robot.subsystems.Drive.SwerveSubsystem;
@@ -69,7 +69,7 @@ public class RobotContainer {
 
 	// The robot's subsystems and commands are defined here...
 	// private final SwerveSubsystem drive = new SwerveSubsystem();
-	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(0.5), new Pose2d(13.0, 4.05, Rotation2d.kZero));
+	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(1.5), new Pose2d(13.0, 4.05, Rotation2d.kZero));
 
 	private final IntakeSubsystem intake = new IntakeSubsystem();
 	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystem();
@@ -77,8 +77,8 @@ public class RobotContainer {
 	private final HopperSubsystem hopper = new HopperSubsystemReal();
 	private final FeederSubsystem feeder = new FeederSubsystemReal();
 
-	private final ShooterSubsystem shooter = new ShooterSubsystem();
-	private final HoodSubsystem hood = new HoodSubsystem();
+	private final ShooterSubsystem shooter = new ShooterSubsystemReal();
+	private final HoodSubsystem hood = new HoodSubsystemReal();
 
 	private final ClimberSubsystem climber = new ClimberSubsystem();
 
@@ -90,11 +90,13 @@ public class RobotContainer {
 	DriverSticks driver = new DriverSticks();
 	GoalAim goalAimer = new GoalAim(drive);
 
+	Command startShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
 	Command shootWithHood = new ParallelCommandGroup(new RunFeeder(hopper, feeder), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
 	Command shootWithoutHood = new RunFeeder(hopper, feeder);
 
 	Command runIntakeRollers = new RunIntakeRollers(intakeRollers, true);
 	Command outtakeIntakeRollers = new RunIntakeRollers(intakeRollers, false);
+
 	Command intakeOut = new IntakeToPosition(intake, IntakeStates.EXTENDED);
 	Command intakeIn = new IntakeToPosition(intake, IntakeStates.RETRACTED);
 	Command intakeBounce = new IntakeToPosition(intake, IntakeStates.BOUNCE);
@@ -142,6 +144,7 @@ public class RobotContainer {
 	}
 
 	private void registerCommands() {
+		NamedCommands.registerCommand("startShooter", startShooter);
 		NamedCommands.registerCommand("shootWithHood", shootWithHood);
 		NamedCommands.registerCommand("shootWithoutHood", shootWithoutHood);
 
@@ -155,6 +158,9 @@ public class RobotContainer {
 	public void reconfigAlliance() {
 		isRedAlliance = FieldConstants.isRedAlliance();
 
+		Pose2d currentPose = drive.getPose();
+		drive.resetOdometry(new Pose2d(currentPose.getTranslation(), currentPose.getRotation().plus(Rotation2d.k180deg)));
+
 		goalAimer.updateAlliance();
 		driver = new DriverSticks();
 		shootWithHood = new ParallelCommandGroup(new RunFeeder(hopper, feeder), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
@@ -163,6 +169,9 @@ public class RobotContainer {
 
 
 	public void configureBindings() {
+
+
+
 		// drive.setDefaultCommand(drive.driveRelative(driver::translateX, driver::translateY, driver::lookX));
 		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
 		driverController.leftBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
