@@ -72,6 +72,9 @@ public final class Constants {
 		public static InterpolatingDoubleTreeMap wheelMap = new InterpolatingDoubleTreeMap();
 		public static InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
 
+		public static double closeShot = 1.5;
+		public static double offset = 0.5;
+
 		static {
 			hoodMap.put(1.225,1.5);
 			hoodMap.put(1.529,2.75);
@@ -118,12 +121,12 @@ public final class Constants {
 
 		public static double getHoodValue(double distance) {
 			// return hoodMap.get(distance);
-			return hoodMap.get(distance+0.5);
+			return hoodMap.get(distance+offset);
 		}
 
 		public static double getWheelValue(double distance) {
 			// return wheelMap.get(distance);
-			return wheelMap.get(distance+0.5);
+			return wheelMap.get(distance+offset);
 		}
 
 		public static double getFlightValue(double distance) {
@@ -174,7 +177,6 @@ public final class Constants {
 			public static final double kD = 0.0;
 
 			public static final double extended = 9;
-			public static final double bounce = 6;
 			public static final double retracted = 1.5;
 			public static final double tolerance = 0.5;
 

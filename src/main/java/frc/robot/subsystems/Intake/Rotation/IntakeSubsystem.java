@@ -11,12 +11,10 @@ public class IntakeSubsystem extends SubsystemBase {
     public enum IntakeStates {
         EXTENDED,
         RETRACTED,
-        BOUNCE,
         ZEROED
     }
 
     public PositionVoltage targetPosition;
-    IntakeStates state;
 
     public IntakeSubsystem() {}
 
@@ -29,12 +27,6 @@ public class IntakeSubsystem extends SubsystemBase {
     public void setTargetPosition(IntakeStates position) {}
 
     public double getPosition() { return 0; }
-
-    public IntakeStates getTargetPosition() { return state; }
-
-    public IntakeStates getState() { return state; }
-
-    public void setState() {}
 
     public boolean isExtended() { return false; }
 

@@ -37,7 +37,6 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
         rotationConfig.Slot0.kD = IntakeValues.kD;
 
         rotationMotor.getConfigurator().apply(rotationConfig);
-        state = IntakeStates.RETRACTED;
         targetPosition = new PositionVoltage(0).withPosition(IntakeValues.retracted);
     }
 
@@ -56,8 +55,6 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
     public void setTargetPosition(IntakeStates position) {
         if (position == IntakeStates.RETRACTED) {
             targetPosition = new PositionVoltage(0).withPosition(IntakeValues.retracted);
-        } else if (position == IntakeStates.BOUNCE) {
-            targetPosition = new PositionVoltage(0).withPosition(IntakeValues.bounce);
         } else {
             targetPosition = new PositionVoltage(0).withPosition(IntakeValues.extended);
         }
@@ -67,29 +64,11 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
         return rotationMotor.getPosition().getValueAsDouble();
     }
 
-    public IntakeStates getTargetPosition() {
-        if (targetPosition.Position == IntakeValues.retracted) {
-            return IntakeStates.RETRACTED;
-        } else {
-            return IntakeStates.EXTENDED;
-        }
-    }
-
-    public IntakeStates getState() {
-        return state;
-    }
-
-    public void setState(IntakeStates newState) {
-        state = newState;
-    }
-
     public boolean isExtended() {
-        // return (Math.abs(getPosition() - IntakeValues.extended) < IntakeValues.tolerance);
         return (getPosition() > IntakeValues.extended-1);
     }
 
     public boolean isRetracted() {
-        // return (Math.abs(getPosition() - IntakeValues.retracted) < IntakeValues.tolerance);
         return (getPosition() < IntakeValues.retracted+0.5);
     }
  
@@ -103,12 +82,6 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
 
     @Override
     public void periodic() {
-        if (isExtended()) {
-            state = IntakeStates.EXTENDED;
-        } 
-        else if (isRetracted()) {
-            state = IntakeStates.RETRACTED;
-        }
         telemetry();
     }
 
@@ -117,6 +90,6 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
         SmartDashboard.putNumber("Rotation Position", getPosition());
         SmartDashboard.putNumber("Rotation Current", getCurrent());
 
-        SmartDashboard.putNumber("state position", this.state == IntakeStates.EXTENDED ? 1 : 0);
+        SmartDashboard.putNumber("state position", isExtended() ? 1 : 0);
     }
 }

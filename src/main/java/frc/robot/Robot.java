@@ -54,6 +54,7 @@ public class Robot extends TimedRobot {
     if (robotContainer.isRedAlliance != FieldConstants.isRedAlliance()) {
       robotContainer.reconfigAlliance();
     }
+
     CommandScheduler.getInstance().run();
   }
 

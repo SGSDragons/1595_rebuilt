@@ -29,7 +29,9 @@ public class ZeroIntake extends Command {
     public void initialize() {  
         currentDraw = this.intakeSubsystem.getCurrent();
         time = Timer.getFPGATimestamp();
-        hasZeroed = (this.intakeSubsystem.getTargetPosition() != IntakeStates.RETRACTED);
+
+        // prevent zeroing when extended
+        hasZeroed = this.intakeSubsystem.isExtended();
     }
 
     // Slowly run intake and record stator current
