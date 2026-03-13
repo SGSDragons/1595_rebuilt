@@ -77,7 +77,7 @@ public class RobotContainer {
 	private final HopperSubsystem hopper = new HopperSubsystemReal();
 	private final FeederSubsystem feeder = new FeederSubsystemReal();
 
-	private final ShooterSubsystem shooter = new ShooterSubsystemReal();
+	private final ShooterSubsystem shooter = new ShooterSubsystemReal(new GoalAim(drive));
 	private final HoodSubsystem hood = new HoodSubsystemReal();
 
 	private final ClimberSubsystem climber = new ClimberSubsystem();
@@ -91,7 +91,7 @@ public class RobotContainer {
 	GoalAim goalAimer = new GoalAim(drive);
 
 	Command startShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
-	Command shootWithHood = new ParallelCommandGroup(new RunFeeder(hopper, feeder), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
+	Command shootWithHood = new ParallelCommandGroup(new RunFeeder(hopper, feeder), new EnableHood(hood, goalAimer));
 	Command shootWithoutHood = new RunFeeder(hopper, feeder);
 
 	Command runIntakeRollers = new RunIntakeRollers(intakeRollers, true);
@@ -133,7 +133,7 @@ public class RobotContainer {
 	// Thus, Blue axis are inverted.
 
 	class DriverSticks {
-		private final double inverter = isRedAlliance ? 1.0 : -1.0;
+		private final double inverter = isRedAlliance ? 1.0 : 1.0;
 		double readAxis(XboxController.Axis axis) {
 			return driverController.getRawAxis(axis.value);
 		}
@@ -157,10 +157,7 @@ public class RobotContainer {
 
 	public void reconfigAlliance() {
 		isRedAlliance = FieldConstants.isRedAlliance();
-
-		Pose2d currentPose = drive.getPose();
-		drive.resetOdometry(new Pose2d(currentPose.getTranslation(), currentPose.getRotation().plus(Rotation2d.k180deg)));
-
+		
 		goalAimer.updateAlliance();
 		driver = new DriverSticks();
 		shootWithHood = new ParallelCommandGroup(new RunFeeder(hopper, feeder), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
@@ -169,18 +166,28 @@ public class RobotContainer {
 
 
 	public void configureBindings() {
-
-
+		// if (isRedAlliance) {
+		// 	Pose2d current = drive.getPose();
+		// 	drive.resetOdometry(new Pose2d(current.getTranslation(), current.getRotation().plus(Rotation2d.k180deg)));
+		// }
+		
+		driver = new DriverSticks();
 
 		// drive.setDefaultCommand(drive.driveRelative(driver::translateX, driver::translateY, driver::lookX));
-		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
+		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX));
+		driverController.povDown().onTrue(drive.runOnce(drive::zeroGyro));
 		driverController.leftBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
 
 		operatorController.b().whileTrue(shootWithoutHood);
 		operatorController.a().whileTrue(shootWithHood);
+
+		// TODO: Also enable shooting based on position?
+		operatorController.x().onTrue(shooter.runOnce(shooter::enableShooting));
+		operatorController.y().onTrue(shooter.runOnce(shooter::disableShooting));
+
 		hood.setDefaultCommand(new ZeroHood(hood));
 
-		shooter.setDefaultCommand(new RunShooter(shooter));
+		// shooter.setDefaultCommand(new RunShooter(shooter));
 
 		operatorController.povUp().onTrue(intakeOut);
 		operatorController.povDown().onTrue(intakeIn);
@@ -192,6 +199,14 @@ public class RobotContainer {
 	}
 
 	public void configureTestBindings() {
+
+		drive.zeroGyro();
+		if (FieldConstants.isRedAlliance()) {
+			drive.resetOdometry(new Pose2d(13.0, 4.05, Rotation2d.k180deg));
+		} else {
+			drive.resetOdometry(new Pose2d(3.0, 4.05, Rotation2d.kZero));
+		}
+		
 		driverController.x().onTrue(Commands.runOnce(drive::updateAnglePIDF));
 
 		// drive.setDefaultCommand(drive.driveRelative(driver::translateX, driver::translateY, driver::lookX));

@@ -265,6 +265,22 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         });
     }
 
+    public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX)
+    {
+      return run(() -> {
+        
+        Translation2d joystick = new Translation2d(translationX.getAsDouble(), translationY.getAsDouble());
+        if (joystick.getNorm() < 0.1) {
+            joystick = Translation2d.kZero;
+        }
+        double omega = MathUtil.applyDeadband(angularRotationX.getAsDouble(), 0.2);
+        omega = Math.pow(omega, 3) * swerveDrive.getMaximumChassisAngularVelocity() / 4.0;
+
+        // Make the robot move
+        swerveDrive.drive(joystick, omega, true, false);
+      });
+    }
+
     @Override
     public Command driveRelative(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX)
     {

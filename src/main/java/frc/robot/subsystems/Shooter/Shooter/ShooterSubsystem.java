@@ -19,4 +19,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public void periodic() { telemetry(); }
 
     public void telemetry() {}
+
+    public void enableShooting() {}
+    public void disableShooting() {}
 }

@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareID.ShooterIds;
 import frc.robot.Constants.TuningValues.ShooterValues;
+import frc.robot.subsystems.GoalAim;
+import frc.robot.Constants.Aiming;
 import frc.robot.Constants.CurrentLimits.ShooterLimits;
 
 
@@ -24,14 +26,18 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
 
     VelocityVoltage targetVelocity;
 
-    public ShooterSubsystemReal() {
+    boolean shooting = false;
+    GoalAim aiming;
+
+    public ShooterSubsystemReal(GoalAim aiming) {
+        this.aiming = aiming;
+
         // Make leftShooter control both left and right shooters
         leftShooter = new TalonFX(ShooterIds.leftShooterCanId);
         rightShooter = new TalonFX(ShooterIds.rightShooterCanId);
 
         leftShooter.setNeutralMode(NeutralModeValue.Coast);
         rightShooter.setNeutralMode(NeutralModeValue.Coast);
-
 
         var leftShooterConfig = new TalonFXConfiguration();
 
@@ -67,13 +73,11 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
         targetVelocity = new VelocityVoltage(0).withVelocity(ShooterValues.runSpeed);
     }
 
-    public void runShooter() {
-        leftShooter.setControl(targetVelocity);
-        rightShooter.setControl(targetVelocity);
+    public void enableShooting() {
+        this.shooting = true;
     }
-
-    public void setTargetVelocity(double velocity) {
-        targetVelocity = new VelocityVoltage(0).withVelocity(velocity);
+    public void disableShooting() {
+        this.shooting = false;
     }
 
     public double getVelocity() {
@@ -82,6 +86,11 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
     
     @Override
     public void periodic() {
+        if (shooting) {
+            targetVelocity = new VelocityVoltage(aiming.getAdjustedDistance());
+        } else {
+            targetVelocity =  new VelocityVoltage(ShooterValues.runSpeed);
+        }
         telemetry();
     }
 
