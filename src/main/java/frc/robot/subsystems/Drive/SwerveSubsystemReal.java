@@ -241,23 +241,12 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
         return run(() -> {
 
-            Translation2d joystick = new Translation2d(translationX.getAsDouble(), translationY.getAsDouble());
-            double magnitude = joystick.getNorm();
-          
-            if (magnitude < 0.1) {
-                joystick = Translation2d.kZero;
-            }
-
-            magnitude = scale*Math.pow(magnitude, 3);
-            joystick = joystick.times(magnitude);
-            
-
-            Translation2d scaledInputs = SwerveMath.scaleTranslation(joystick, 0.8);
+            Translation2d joystick = normalizeTranslation(translationX.getAsDouble(), translationY.getAsDouble());
 
             // Make the robot move
             driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(
-                    scaledInputs.getX(),
-                    scaledInputs.getY(),
+                    joystick.getX(),
+                    joystick.getY(),
                     headingX.getAsDouble(),
                     headingY.getAsDouble(),
                     swerveDrive.getOdometryHeading().getRadians(),
@@ -265,15 +254,25 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         });
     }
 
+    public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX)
+    {
+      return run(() -> {
+
+        Translation2d joystick = normalizeTranslation(translationX.getAsDouble(), translationY.getAsDouble());
+        double omega = MathUtil.applyDeadband(angularRotationX.getAsDouble(), 0.2);
+        omega = Math.pow(omega, 3) * swerveDrive.getMaximumChassisAngularVelocity() / 4.0;
+
+        // Make the robot move
+        swerveDrive.drive(joystick, omega, true, false);
+      });
+    }
+
     @Override
     public Command driveRelative(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX)
     {
       return run(() -> {
-        
-        Translation2d joystick = new Translation2d(translationX.getAsDouble(), translationY.getAsDouble());
-        if (joystick.getNorm() < 0.1) {
-            joystick = Translation2d.kZero;
-        }
+
+        Translation2d joystick = normalizeTranslation(translationX.getAsDouble(), translationY.getAsDouble());
         double omega = MathUtil.applyDeadband(angularRotationX.getAsDouble(), 0.2);
         omega = Math.pow(omega, 3) * swerveDrive.getMaximumChassisAngularVelocity() / 4.0;
 
@@ -287,29 +286,38 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
         return run(() -> {
 
-            Translation2d joystick = new Translation2d(translationX.getAsDouble(), translationY.getAsDouble());
-            double magnitude = joystick.getNorm();
-          
-            if (magnitude < 0.1) {
-                joystick = Translation2d.kZero;
-            }
-
-            magnitude = scale*Math.pow(magnitude, 3);
-            joystick = joystick.times(magnitude);
-            
-
-            Translation2d scaledInputs = SwerveMath.scaleTranslation(joystick, 0.8);
+            Translation2d joystick = normalizeTranslation(translationX.getAsDouble(), translationY.getAsDouble());
             Translation2d vector = aimer.pointAtGoal();
 
-            // Make the robot move
-            driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(
-                    scaledInputs.getX(),
-                    scaledInputs.getY(),
+            double headingError = Math.abs(vector.getAngle().minus(getHeading()).getDegrees());
+
+            if (joystick.getSquaredNorm() < 0.01 && headingError < 2) {
+                swerveDrive.lockPose();
+            } else {
+                // Make the robot move
+                driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(
+                    joystick.getX(),
+                    joystick.getY(),
                     vector.getX(),
                     vector.getY(),
                     swerveDrive.getOdometryHeading().getRadians(),
                     swerveDrive.getMaximumChassisVelocity()));
+            }
         });
+    }
+
+    Translation2d normalizeTranslation(double x, double y) {
+        Translation2d joystick = new Translation2d(x, y);
+        double magnitude = joystick.getSquaredNorm();
+        if (magnitude > 1.0) {
+            // When the combination of x and y is more than 1, normalize
+            // it to a circle
+            return joystick.div(Math.sqrt(magnitude));
+        } else {
+            // When it's less than 1, use a cubic scale so small tilts
+            // have a weaker impact on the magnitude
+            return joystick.times(Math.pow(magnitude, 3));
+        }
     }
 
     /**
