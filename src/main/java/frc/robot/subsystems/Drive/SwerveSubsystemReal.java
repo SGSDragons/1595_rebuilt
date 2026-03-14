@@ -289,7 +289,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
             Translation2d joystick = normalizeTranslation(translationX.getAsDouble(), translationY.getAsDouble());
             Translation2d vector = aimer.pointAtGoal();
 
-            double headingError = Math.abs(vector.getAngle().minus(getHeading()).getDegrees());
+            double headingError = Math.abs(vector.getAngle().minus(swerveDrive.getOdometryHeading()).getDegrees());
 
             if (joystick.getSquaredNorm() < 0.01 && headingError < 2) {
                 swerveDrive.lockPose();
@@ -298,8 +298,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
                 driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(
                     joystick.getX(),
                     joystick.getY(),
-                    vector.getX(),
-                    vector.getY(),
+                    vector.getAngle().getRadians(),
                     swerveDrive.getOdometryHeading().getRadians(),
                     swerveDrive.getMaximumChassisVelocity()));
             }
