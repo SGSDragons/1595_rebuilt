@@ -32,7 +32,7 @@ public class GoalAim {
         // Find the X and Y offsets between the robot and goal, normalize, and turn to Translation2d
         Translation2d heading = goalPosition.minus(robotPosition);
         heading = heading.div(heading.getNorm());
-        heading = new Translation2d(heading.getY(), heading.getX());
+        heading = new Translation2d(heading.getX(), heading.getY());
         
         return heading;
     }
