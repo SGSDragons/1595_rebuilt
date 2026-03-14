@@ -11,9 +11,28 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "runFeeder"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "pointAtGoal"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "enableShooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "runFeeder"
+                }
+              }
+            ]
           }
         }
       ]

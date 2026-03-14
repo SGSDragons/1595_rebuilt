@@ -86,8 +86,6 @@ public class RobotContainer {
 	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.driverControllerPort);
 	private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.operatorControllerPort);
 
-	boolean isRedAlliance = FieldConstants.isRedAlliance();
-
 	DriverSticks driver = new DriverSticks();
 	GoalAim goalAimer = new GoalAim(drive);
 
@@ -102,7 +100,9 @@ public class RobotContainer {
 	Command intakeOut = new IntakeToPosition(intake, IntakeStates.EXTENDED);
 	Command intakeIn = new IntakeToPosition(intake, IntakeStates.RETRACTED);
 
-	// Command shootAtGoal = new ParallelCommandGroup(drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0), shootWithHood);
+	Command pointAtGoal = drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0);
+
+	Command reconfigAlliance = Commands.runOnce(() -> reconfigAlliance());
 
   	public RobotContainer() {
 		configureBindings();
@@ -134,7 +134,7 @@ public class RobotContainer {
 	// Thus, Blue axis are inverted.
 
 	class DriverSticks {
-		private final double inverter = isRedAlliance ? 1.0 : -1.0;
+		private final double inverter = FieldConstants.isRedAlliance() ? 1.0 : -1.0;
 		double readAxis(XboxController.Axis axis) {
 			return driverController.getRawAxis(axis.value);
 		}
@@ -155,23 +155,21 @@ public class RobotContainer {
 		NamedCommands.registerCommand("intakeOut", intakeOut);
 		NamedCommands.registerCommand("runIntakeRollers", runIntakeRollers);
 
-		// NamedCommands.registerCommand("shootAtGoal", shootAtGoal);
+		NamedCommands.registerCommand("pointAtGoal", pointAtGoal);
 	}
 
 	public void reconfigAlliance() {
-		isRedAlliance = FieldConstants.isRedAlliance();
-
 		Pose2d currentPose = drive.getPose();
-		drive.resetOdometry(new Pose2d(currentPose.getTranslation(), currentPose.getRotation().plus(Rotation2d.k180deg)));
 
 		goalAimer.updateAlliance();
 		driver = new DriverSticks();
 		enableShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
-		// shootAtGoal = new ParallelCommandGroup(drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0), shootWithHood);
+		pointAtGoal = drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0);
 	}
 
 
 	public void configureBindings() {
+		driverController.a().onTrue(reconfigAlliance);
 
 		// drive.setDefaultCommand(drive.driveRelative(driver::translateX, driver::translateY, driver::lookX));
 		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
@@ -194,6 +192,7 @@ public class RobotContainer {
 	}
 
 	public void configureTestBindings() {
+		driverController.a().onTrue(reconfigAlliance);
 		driverController.x().onTrue(Commands.runOnce(drive::updateAnglePIDF));
 
 		// drive.setDefaultCommand(drive.driveRelative(driver::translateX, driver::translateY, driver::lookX));
