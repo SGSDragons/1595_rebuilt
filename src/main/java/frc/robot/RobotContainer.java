@@ -6,9 +6,7 @@ package frc.robot;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Feeder.RunFeeder;
-import frc.robot.commands.Intake.IntakeToPosition;
 import frc.robot.commands.Intake.RunIntakeRollers;
-import frc.robot.commands.Intake.ZeroIntake;
 import frc.robot.commands.Shooter.CloseShot;
 import frc.robot.commands.Shooter.EnableHood;
 import frc.robot.commands.Shooter.EnableShooter;
@@ -23,23 +21,14 @@ import frc.robot.subsystems.Feeder.Feeder.FeederSubsystemReal;
 import frc.robot.subsystems.Feeder.Hopper.HopperSubsystem;
 import frc.robot.subsystems.Feeder.Hopper.HopperSubsystemReal;
 import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystem;
-import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystemReal;
 import frc.robot.subsystems.Intake.Rotation.IntakeSubsystem;
-import frc.robot.subsystems.Intake.Rotation.IntakeSubsystem.IntakeStates;
-import frc.robot.subsystems.Intake.Rotation.IntakeSubsystemReal;
 import frc.robot.subsystems.Shooter.Hood.HoodSubsystem;
 import frc.robot.subsystems.Shooter.Hood.HoodSubsystemReal;
 import frc.robot.subsystems.Shooter.Shooter.ShooterSubsystem;
 import frc.robot.subsystems.Shooter.Shooter.ShooterSubsystemReal;
-import swervelib.parser.PIDFConfig;
-
-import java.util.List;
-import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -49,14 +38,9 @@ import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
 /**
@@ -99,8 +83,8 @@ public class RobotContainer {
 	Command runIntakeRollers = new RunIntakeRollers(intakeRollers, true);
 	Command outtakeIntakeRollers = new RunIntakeRollers(intakeRollers, false);
 
-	Command intakeOut = new IntakeToPosition(intake, IntakeStates.EXTENDED);
-	Command intakeIn = new IntakeToPosition(intake, IntakeStates.RETRACTED);
+	Command intakeOut = intake.runOnce(intake::gotoExtended);
+	Command intakeIn = intake.runOnce(intake::gotoRetracted);
 
 	// Command shootAtGoal = new ParallelCommandGroup(drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0), shootWithHood);
 
@@ -187,7 +171,6 @@ public class RobotContainer {
 
 		operatorController.povUp().onTrue(intakeOut);
 		operatorController.povDown().onTrue(intakeIn);
-		intake.setDefaultCommand(new ZeroIntake(intake));
 
 		operatorController.rightBumper().whileTrue(runIntakeRollers);
 		operatorController.leftBumper().whileTrue(outtakeIntakeRollers);
@@ -210,7 +193,6 @@ public class RobotContainer {
 
 		operatorController.povUp().onTrue(intakeOut);
 		operatorController.povDown().onTrue(intakeIn);
-		intake.setDefaultCommand(new ZeroIntake(intake));
 
 		operatorController.rightBumper().whileTrue(runIntakeRollers);
 		operatorController.leftBumper().whileTrue(outtakeIntakeRollers);
