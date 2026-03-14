@@ -9,34 +9,22 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class IntakeSubsystem extends SubsystemBase {
 
     public enum IntakeStates {
-        EXTENDED,
-        RETRACTED,
-        ZEROED
+        EXTENDED(9.0),
+        RETRACTED(1.5),
+        ZEROED(0.0);
+
+        public final double position;
+        IntakeStates(double p) {
+            position = p;
+        }
+
     }
 
     public PositionVoltage targetPosition;
 
     public IntakeSubsystem() {}
 
-    public void runRotation(double power) {} 
-
-    public void stopRotation() {} 
-
-    public void gotoPosition() {}
-
-    public void setTargetPosition(IntakeStates position) {}
-
-    public double getPosition() { return 0; }
-
-    public boolean isExtended() { return false; }
-
-    public boolean isRetracted() { return false; }
- 
-    public double getCurrent() { return 0; }
-
-    public void zeroRotation() {}
-
-    public void periodic() { telemetry(); }
-
-    public void telemetry() {}
+    public void gotoRetracted() {}
+    public void gotoExtended() {}
+    public void gotoZeroed() {}
 }

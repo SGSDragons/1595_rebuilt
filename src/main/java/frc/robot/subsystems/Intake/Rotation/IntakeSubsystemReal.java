@@ -8,15 +8,18 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.HardwareID.IntakeIds;
 import frc.robot.Constants.TuningValues.IntakeValues;
 import frc.robot.Constants.CurrentLimits.IntakeLimits;
 
 public class IntakeSubsystemReal extends IntakeSubsystem {
     
-    PositionVoltage targetPosition;
     TalonFX rotationMotor;
+    IntakeStates target = IntakeStates.ZEROED;
+    boolean zeroed = false;
+    double deadline = Double.POSITIVE_INFINITY; // No predefined time.
 
     public IntakeSubsystemReal() {
 
@@ -37,59 +40,103 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
         rotationConfig.Slot0.kD = IntakeValues.kD;
 
         rotationMotor.getConfigurator().apply(rotationConfig);
-        targetPosition = new PositionVoltage(0).withPosition(IntakeValues.retracted);
     }
 
-    public void runRotation(double power) {
-        rotationMotor.set(power);
-    } 
-
-    public void stopRotation() {
-        rotationMotor.stopMotor();
-    } 
-
-    public void gotoPosition() {
-        rotationMotor.setControl(targetPosition);
-    }
-
-    public void setTargetPosition(IntakeStates position) {
-        if (position == IntakeStates.RETRACTED) {
-            targetPosition = new PositionVoltage(0).withPosition(IntakeValues.retracted);
-        } else {
-            targetPosition = new PositionVoltage(0).withPosition(IntakeValues.extended);
+    public void gotoRetracted() {
+        if (target != IntakeStates.RETRACTED) {
+            target = IntakeStates.RETRACTED;
+            deadline = IntakeLimits.maxTravelTime + Timer.getFPGATimestamp();
         }
     }
 
-    public double getPosition() {
-        return rotationMotor.getPosition().getValueAsDouble();
+    public void gotoExtended() {
+        if (target != IntakeStates.EXTENDED) {
+            target = IntakeStates.EXTENDED;
+            deadline = IntakeLimits.maxTravelTime + Timer.getFPGATimestamp();
+        }
     }
 
-    public boolean isExtended() {
-        return (getPosition() > IntakeValues.extended-1);
-    }
-
-    public boolean isRetracted() {
-        return (getPosition() < IntakeValues.retracted+0.5);
-    }
- 
-    public double getCurrent() {
-        return rotationMotor.getStatorCurrent().getValueAsDouble();
-    }
-
-    public void zeroRotation() {
-        rotationMotor.setPosition(0);
+    public void gotoZeroed() {
+        if (target != IntakeStates.ZEROED) {
+            target = IntakeStates.ZEROED;
+            deadline = IntakeLimits.duration + Timer.getFPGATimestamp();
+        }
     }
 
     @Override
     public void periodic() {
+        if (target == IntakeStates.RETRACTED) {
+            doRetracting();
+        }
+        if (target == IntakeStates.ZEROED) {
+            doZeroing();
+        }
+        if (target == IntakeStates.EXTENDED) {
+            doExtending();
+        }
+
         telemetry();
     }
 
-    public void telemetry() {
-        SmartDashboard.putNumber("Rotation Target", targetPosition.Position);
-        SmartDashboard.putNumber("Rotation Position", getPosition());
-        SmartDashboard.putNumber("Rotation Current", getCurrent());
+    private void doZeroing() {
+        if (zeroed) {
+            // It's finished
+            return;
+        }
 
-        SmartDashboard.putNumber("state position", isExtended() ? 1 : 0);
+        double now = Timer.getFPGATimestamp();
+        if (now < deadline) {
+            rotationMotor.set(-0.1);
+            if (getCurrent() < IntakeLimits.currentLimit) {
+                // Assuming it's making progress and extend the deadline
+                deadline = now + IntakeLimits.duration;
+            }
+        } else {
+            // The current has been too high for too long. Assume it has
+            // stalled and zeroing is complete
+            deadline = Double.POSITIVE_INFINITY;
+            zeroed = true;
+            rotationMotor.stopMotor();
+            rotationMotor.setPosition(0.0);
+        }
+    }
+
+    private void doRetracting() {
+        double now = Timer.getFPGATimestamp();
+        if (getPosition() < target.position+0.5) {
+            // Begin rezeroing
+            gotoZeroed();
+        } else if (now < deadline) {
+            // Still retracting and hasn't taken too long.
+            rotationMotor.setControl(new PositionVoltage(target.position));
+        } else {
+            // Abort and try to go back to extended.
+            gotoExtended();
+        }
+    }
+
+    private void doExtending() {
+        if (getPosition() < target.position) {
+            rotationMotor.setControl(new PositionVoltage(target.position));
+        } else {
+            deadline = Double.POSITIVE_INFINITY;
+            rotationMotor.stopMotor();
+        }
+    }
+
+    private double getPosition() {
+        return rotationMotor.getPosition().getValueAsDouble();
+    }
+
+    private double getCurrent() {
+        return rotationMotor.getStatorCurrent().getValueAsDouble();
+    }
+
+    private void telemetry() {
+        var table = NetworkTableInstance.getDefault().getTable("Intake");
+        table.getEntry("Rotation Target").setDouble(target.position);
+        table.getEntry("Rotation Position").setDouble(getPosition());
+        table.getEntry("Rotation Current").setDouble(getCurrent());
+        table.getEntry("isExtended").setBoolean(getPosition() > IntakeStates.EXTENDED.position-1);
     }
 }
