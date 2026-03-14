@@ -92,7 +92,7 @@ public class RobotContainer {
 	Command enableShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
 	Command closeShot = new CloseShot(shooter, hood, goalAimer);
 
-	Command runFeeder = new RunFeeder(hopper, feeder);
+	Command runFeeder = new ParallelCommandGroup(new RunFeeder(hopper, feeder), new RunIntakeRollers(intakeRollers, true));
 
 	Command runIntakeRollers = new RunIntakeRollers(intakeRollers, true);
 	Command outtakeIntakeRollers = new RunIntakeRollers(intakeRollers, false);

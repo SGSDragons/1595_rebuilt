@@ -20,7 +20,7 @@ import frc.robot.Constants.CurrentLimits.HoodLimits;
 public class HoodSubsystemReal extends HoodSubsystem {
     
     public TalonFX hoodMotor;
-    PositionVoltage targetPosition;
+    private PositionVoltage targetPosition;
 
     public HoodSubsystemReal() {
         hoodMotor = new TalonFX(HoodIds.hoodCanId);
