@@ -70,10 +70,10 @@ public class RobotContainer {
 
 	// The robot's subsystems and commands are defined here...
 	// private final SwerveSubsystem drive = new SwerveSubsystem();
-	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(1.5), new Pose2d(13.0, 4.05, Rotation2d.kZero));
+	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(4.0), new Pose2d(13.0, 4.05, Rotation2d.kZero));
 
-	private final IntakeSubsystem intake = new IntakeSubsystem();
-	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystem();
+	private final IntakeSubsystem intake = new IntakeSubsystemReal();
+	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystemReal();
 
 	private final HopperSubsystem hopper = new HopperSubsystemReal();
 	private final FeederSubsystem feeder = new FeederSubsystemReal();
@@ -103,6 +103,7 @@ public class RobotContainer {
 	Command pointAtGoal = drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0);
 
 	Command reconfigAlliance = Commands.runOnce(() -> reconfigAlliance());
+	Command reverseDirection = Commands.runOnce(() -> reverseDirection());
 
   	public RobotContainer() {
 		configureBindings();
@@ -153,6 +154,8 @@ public class RobotContainer {
 
 		NamedCommands.registerCommand("intakeIn", intakeIn);
 		NamedCommands.registerCommand("intakeOut", intakeOut);
+		NamedCommands.registerCommand("zeroIntake", new ZeroIntake(intake));
+
 		NamedCommands.registerCommand("runIntakeRollers", runIntakeRollers);
 
 		NamedCommands.registerCommand("pointAtGoal", pointAtGoal);
@@ -167,13 +170,21 @@ public class RobotContainer {
 		pointAtGoal = drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0);
 	}
 
+	public void reverseDirection() {
+		Pose2d current = drive.getPose();
+		drive.resetOdometry(new Pose2d(current.getTranslation(), drive.getHeading().plus(Rotation2d.k180deg)));
+	}
+
 
 	public void configureBindings() {
 		driverController.a().onTrue(reconfigAlliance);
+		driverController.povDown().onTrue(reverseDirection);
 
 		// drive.setDefaultCommand(drive.driveRelative(driver::translateX, driver::translateY, driver::lookX));
 		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
-		driverController.leftBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
+		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
+		driverController.leftBumper().whileTrue(drive.driveCommand(driver::translateX, driver::translateY,driver::lookX, driver::lookY, 0.25));
+
 
 		operatorController.b().whileTrue(enableShooter);
 		operatorController.a().whileTrue(closeShot);
@@ -193,11 +204,13 @@ public class RobotContainer {
 
 	public void configureTestBindings() {
 		driverController.a().onTrue(reconfigAlliance);
+		driverController.povDown().onTrue(reverseDirection);
 		driverController.x().onTrue(Commands.runOnce(drive::updateAnglePIDF));
 
 		// drive.setDefaultCommand(drive.driveRelative(driver::translateX, driver::translateY, driver::lookX));
 		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
-		driverController.leftBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
+		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
+		driverController.leftBumper().whileTrue(drive.driveCommand(driver::translateX, driver::translateY,driver::lookX, driver::lookY, 0.25));
 
 		operatorController.b().whileTrue(enableShooter);
 		operatorController.a().whileTrue(closeShot);
