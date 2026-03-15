@@ -97,15 +97,15 @@
     {
       "anchor": {
         "x": 10.94,
-        "y": 7.449999999999999
+        "y": 7.55
       },
       "prevControl": {
         "x": 9.772502911457302,
-        "y": 7.449999999999999
+        "y": 7.55
       },
       "nextControl": {
         "x": 12.140648153011707,
-        "y": 7.449999999999999
+        "y": 7.55
       },
       "isLocked": false,
       "linkedName": null
@@ -116,12 +116,12 @@
         "y": 7.05
       },
       "prevControl": {
-        "x": 13.41090864123038,
-        "y": 7.429030331172613
+        "x": 13.404627777777778,
+        "y": 7.647883333333333
       },
       "nextControl": {
-        "x": 14.069091358769619,
-        "y": 6.670969668827384
+        "x": 13.985570700080983,
+        "y": 6.612209929729563
       },
       "isLocked": false,
       "linkedName": null
@@ -155,26 +155,40 @@
     },
     {
       "waypointRelativePos": 4,
-      "rotationDegrees": 59.096614369009785
+      "rotationDegrees": 81.19331303243312
     },
     {
       "waypointRelativePos": 5,
-      "rotationDegrees": 29.86860437989018
+      "rotationDegrees": 139.40735179731448
     },
     {
       "waypointRelativePos": 6,
-      "rotationDegrees": -0.7553757946094433
+      "rotationDegrees": -179.64942536993337
     },
     {
       "waypointRelativePos": 7,
-      "rotationDegrees": -16.903091459915977
+      "rotationDegrees": 175.15857077259022
     },
     {
       "waypointRelativePos": 8,
       "rotationDegrees": 0.0
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 4.0,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [
     {
       "fieldPosition": {
@@ -201,7 +215,7 @@
     },
     {
       "name": "intakeOut",
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 0.5,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -212,7 +226,7 @@
     },
     {
       "name": "runIntakeRollers",
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 2.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -243,7 +257,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -131.37653363645668
   },
   "reversed": false,
   "folder": null,

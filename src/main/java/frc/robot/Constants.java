@@ -140,11 +140,11 @@ public final class Constants {
 		public static final class ShooterValues {
 			public static final double kS = 0.25;
 			public static final double kV = 0.12;
-			public static final double kP = 0.1;
+			public static final double kP = 0.5;
 			public static final double kI = 0.05;
 			public static final double kD = 0;
 
-			public static final double runSpeed = 10;
+			public static final double runSpeed = 25;
 
 			// public static final class AngleFunction {
 			// 	public static final double x2coef = 1;
@@ -180,7 +180,7 @@ public final class Constants {
 			public static final double retracted = 1.5;
 			public static final double tolerance = 0.5;
 
-			public static final double intakeRunSpeed = 0.8;
+			public static final double intakeRunSpeed = 0.7;
 		}
 
 		public static final class HopperValues {

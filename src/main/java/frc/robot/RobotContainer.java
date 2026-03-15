@@ -70,7 +70,7 @@ public class RobotContainer {
 
 	// The robot's subsystems and commands are defined here...
 	// private final SwerveSubsystem drive = new SwerveSubsystem();
-	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(4.0), new Pose2d(13.0, 4.05, Rotation2d.kZero));
+	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(3.0), new Pose2d(13.0, 4.05, Rotation2d.kZero));
 
 	private final IntakeSubsystem intake = new IntakeSubsystemReal();
 	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystemReal();
@@ -164,7 +164,6 @@ public class RobotContainer {
 	public void reconfigAlliance() {
 		Pose2d currentPose = drive.getPose();
 
-		goalAimer.updateAlliance();
 		driver = new DriverSticks();
 		enableShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
 		pointAtGoal = drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0);
@@ -183,7 +182,7 @@ public class RobotContainer {
 		// drive.setDefaultCommand(drive.driveRelative(driver::translateX, driver::translateY, driver::lookX));
 		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
 		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
-		driverController.leftBumper().whileTrue(drive.driveCommand(driver::translateX, driver::translateY,driver::lookX, driver::lookY, 0.25));
+		driverController.leftBumper().whileTrue(drive.driveCommand(driver::translateX, driver::translateY,driver::lookX, driver::lookY, 0.5));
 
 
 		operatorController.b().whileTrue(enableShooter);

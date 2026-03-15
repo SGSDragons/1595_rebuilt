@@ -97,15 +97,15 @@
     {
       "anchor": {
         "x": 5.6,
-        "y": 7.45
+        "y": 7.55
       },
       "prevControl": {
         "x": 6.767497088542698,
-        "y": 7.45
+        "y": 7.55
       },
       "nextControl": {
         "x": 4.399351846988291,
-        "y": 7.45
+        "y": 7.55
       },
       "isLocked": false,
       "linkedName": null
@@ -116,12 +116,12 @@
         "y": 7.050306784660767
       },
       "prevControl": {
-        "x": 3.129088495575221,
-        "y": 7.429339601769912
+        "x": 3.2210333333333336,
+        "y": 7.62268888888889
       },
       "nextControl": {
-        "x": 2.4709115044247785,
-        "y": 6.671273967551623
+        "x": 2.5025676812960342,
+        "y": 6.645956527883255
       },
       "isLocked": false,
       "linkedName": null
@@ -155,26 +155,40 @@
     },
     {
       "waypointRelativePos": 4,
-      "rotationDegrees": 107.08281006336121
+      "rotationDegrees": 91.71626068363959
     },
     {
       "waypointRelativePos": 5,
-      "rotationDegrees": 129.64417495714483
+      "rotationDegrees": 25.529599626146744
     },
     {
       "waypointRelativePos": 6,
-      "rotationDegrees": 180.0
+      "rotationDegrees": -0.3943676292813373
     },
     {
       "waypointRelativePos": 7,
-      "rotationDegrees": -178.5436413656602
+      "rotationDegrees": -3.1723699201008597
     },
     {
       "waypointRelativePos": 8,
       "rotationDegrees": 0.0
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 4.0,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [
     {
       "fieldPosition": {
@@ -201,7 +215,7 @@
     },
     {
       "name": "intakeOut",
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 0.5,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -212,7 +226,7 @@
     },
     {
       "name": "runIntakeRollers",
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 2.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -243,7 +257,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -44.80047711692701
   },
   "reversed": false,
   "folder": null,
