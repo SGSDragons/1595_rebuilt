@@ -5,6 +5,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.HardwareID.FeederIds;
@@ -22,7 +24,7 @@ public class FeederSubsystemReal extends FeederSubsystem {
         var rollerConfig = new TalonFXConfiguration();
 
         rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        rollerConfig.CurrentLimits.StatorCurrentLimit = FeederLimits.maxLimit;
+        rollerConfig.CurrentLimits.StatorCurrentLimit = FeederLimits.statorLimit;
         rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         feederMotor.getConfigurator().apply(rollerConfig);
@@ -39,13 +41,23 @@ public class FeederSubsystemReal extends FeederSubsystem {
     public double getCurrent() {
         return feederMotor.getStatorCurrent().getValueAsDouble();
     }
+
+    public void resetCurrentLimits() {
+        var rollerConfig = new TalonFXConfiguration();
+
+        rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        rollerConfig.CurrentLimits.StatorCurrentLimit = 100;
+        rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+        feederMotor.getConfigurator().apply(rollerConfig);
+    }
     
     @Override
     public void periodic() {
-
+        telemetry();
     }
 
     public void telemetry() {
-        
+        SmartDashboard.putNumber("Feeder Current", getCurrent());
     }
 }

@@ -72,8 +72,8 @@ public final class Constants {
 		public static InterpolatingDoubleTreeMap wheelMap = new InterpolatingDoubleTreeMap();
 		public static InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
 
-		public static double closeShot = 1.5;
-		public static double offset = 0.5;
+		public static double closeShot = 1.3;
+		public static double wheelExtra = 10;
 
 		static {
 			hoodMap.put(1.225,1.5);
@@ -121,12 +121,12 @@ public final class Constants {
 
 		public static double getHoodValue(double distance) {
 			// return hoodMap.get(distance);
-			return hoodMap.get(distance+offset);
+			return hoodMap.get(distance);
 		}
 
 		public static double getWheelValue(double distance) {
 			// return wheelMap.get(distance);
-			return wheelMap.get(distance+offset);
+			return wheelMap.get(distance)+wheelExtra;
 		}
 
 		public static double getFlightValue(double distance) {
@@ -138,9 +138,11 @@ public final class Constants {
 	public static final class TuningValues {
 
 		public static final class ShooterValues {
+			
+			// Increase This
 			public static final double kS = 0.25;
-			public static final double kV = 0.12;
-			public static final double kP = 0.5;
+			public static final double kV = 0.15;
+			public static final double kP = 0.7;
 			public static final double kI = 0.05;
 			public static final double kD = 0;
 
@@ -180,7 +182,8 @@ public final class Constants {
 			public static final double retracted = 1.5;
 			public static final double tolerance = 0.5;
 
-			public static final double intakeRunSpeed = 0.7;
+			public static final double intakeFastRunSpeed = 0.7;
+			public static final double intakeSlowRunSpeed = 0.4;
 		}
 
 		public static final class HopperValues {
@@ -195,32 +198,32 @@ public final class Constants {
 	public static final class CurrentLimits {
 
 		public static final class ShooterLimits {
-			public static final double maxLimit = 100;
+			public static final double statorLimit = 100;
 		}
 
 		public static final class HoodLimits {
-			public static final double maxLimit = 60;
+			public static final double statorLimit = 40;
 			public static final double currentLimit = 25;
 			public static final double duration = 0.1;
 		}
 
 		public static final class IntakeLimits {
-			public static final double maxLimit = 100;
+			public static final double statorLimit = 90;
 			public static final double currentLimit = 50;
 			public static final double duration = 0.1;
 			public static final double maxTravelTime = 2;
 		}
 
 		public static final class IntakeRollerLimits {
-			public static final double maxLimit = 120;
+			public static final double statorLimit = 60;
 		}
 
 		public static final class HopperLimits {
-			public static final double maxLimit = 120;
+			public static final double statorLimit = 60;
 		}
 
 		public static final class FeederLimits {
-			public static final double maxLimit = 120;
+			public static final double statorLimit = 60;
 		}
 	}
 

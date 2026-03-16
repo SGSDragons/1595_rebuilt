@@ -6,16 +6,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.TuningValues.IntakeValues;
 import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystem;
+import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystem.IntakeRollerSpeeds;
 
 
 public class RunIntakeRollers extends Command {
 
     private final IntakeRollerSubsystem intakeRollerSubsystem;
-    private boolean runForward;
+    private IntakeRollerSpeeds speed;
 
-    public RunIntakeRollers(IntakeRollerSubsystem intakeRollerSubsystem, boolean runForward) {
+    public RunIntakeRollers(IntakeRollerSubsystem intakeRollerSubsystem, IntakeRollerSpeeds speed) {
         this.intakeRollerSubsystem = intakeRollerSubsystem;
-        this.runForward = runForward;
+        this.speed = speed;
         addRequirements((Subsystem) intakeRollerSubsystem);
     }
 
@@ -25,11 +26,13 @@ public class RunIntakeRollers extends Command {
 
     @Override
     public void execute() {
-        if (runForward) {
-            this.intakeRollerSubsystem.runRollers(IntakeValues.intakeRunSpeed);
+        if (speed == IntakeRollerSpeeds.FAST) {
+            this.intakeRollerSubsystem.runRollers(IntakeValues.intakeFastRunSpeed);
+        } else if (speed == IntakeRollerSpeeds.SLOW) {
+            this.intakeRollerSubsystem.runRollers(IntakeValues.intakeSlowRunSpeed);
         }
         else {
-            this.intakeRollerSubsystem.runRollers(-IntakeValues.intakeRunSpeed);
+            this.intakeRollerSubsystem.runRollers(IntakeValues.intakeFastRunSpeed);
         }
     }
 

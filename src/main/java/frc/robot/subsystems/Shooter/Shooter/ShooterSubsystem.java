@@ -16,6 +16,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public double getVelocity() { return 0; }
 
+    public void resetCurrentLimits() {}
+
     public void periodic() { telemetry(); }
 
     public void telemetry() {}

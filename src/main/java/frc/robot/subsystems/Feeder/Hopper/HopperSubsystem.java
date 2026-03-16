@@ -1,5 +1,8 @@
 package frc.robot.subsystems.Feeder.Hopper;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.InvertedValue;
+
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -13,6 +16,8 @@ public class HopperSubsystem extends SubsystemBase {
     public void stopRotation() {} 
  
     public double getCurrent() { return 0; }
+
+    public void resetCurrentLimits() {}
 
     public void periodic() { telemetry(); }
 

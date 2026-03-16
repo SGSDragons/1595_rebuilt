@@ -41,8 +41,6 @@ public class CloseShot extends Command {
 
     @Override
     public void execute() {
-        targetSpeed = Aiming.getWheelValue(this.goalAim.getAdjustedDistance());
-
         this.shooterSubsystem.setTargetVelocity(targetSpeed);
         this.shooterSubsystem.runShooter();
 

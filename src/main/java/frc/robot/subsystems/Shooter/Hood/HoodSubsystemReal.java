@@ -29,7 +29,7 @@ public class HoodSubsystemReal extends HoodSubsystem {
         var hoodConfig = new TalonFXConfiguration();
 
         hoodConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        hoodConfig.CurrentLimits.StatorCurrentLimit = HoodLimits.maxLimit;
+        hoodConfig.CurrentLimits.StatorCurrentLimit = HoodLimits.statorLimit;
         hoodConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         hoodConfig.Slot0.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
@@ -82,7 +82,7 @@ public class HoodSubsystemReal extends HoodSubsystem {
     public void telemetry() {
         SmartDashboard.putNumber("Hood Target", targetPosition.Position);
         SmartDashboard.putNumber("Hood Position", getPosition());
-        SmartDashboard.putNumber("Hood Voltage", getCurrent());
+        SmartDashboard.putNumber("Hood Current", getCurrent());
     }
 }
 

@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Feeder.RunFeeder;
 import frc.robot.commands.Intake.IntakeToPosition;
 import frc.robot.commands.Intake.RunIntakeRollers;
+import frc.robot.commands.WaitCommand;
 import frc.robot.commands.Intake.ZeroIntake;
 import frc.robot.commands.Shooter.CloseShot;
 import frc.robot.commands.Shooter.EnableHood;
@@ -24,6 +25,7 @@ import frc.robot.subsystems.Feeder.Hopper.HopperSubsystem;
 import frc.robot.subsystems.Feeder.Hopper.HopperSubsystemReal;
 import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystem;
 import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystemReal;
+import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystem.IntakeRollerSpeeds;
 import frc.robot.subsystems.Intake.Rotation.IntakeSubsystem;
 import frc.robot.subsystems.Intake.Rotation.IntakeSubsystem.IntakeStates;
 import frc.robot.subsystems.Intake.Rotation.IntakeSubsystemReal;
@@ -70,7 +72,7 @@ public class RobotContainer {
 
 	// The robot's subsystems and commands are defined here...
 	// private final SwerveSubsystem drive = new SwerveSubsystem();
-	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(3.0), new Pose2d(13.0, 4.05, Rotation2d.kZero));
+	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(4.0), new Pose2d(13.0, 4.05, Rotation2d.kZero));
 
 	private final IntakeSubsystem intake = new IntakeSubsystemReal();
 	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystemReal();
@@ -92,10 +94,12 @@ public class RobotContainer {
 	Command enableShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
 	Command closeShot = new CloseShot(shooter, hood, goalAimer);
 
-	Command runFeeder = new ParallelCommandGroup(new RunFeeder(hopper, feeder), new RunIntakeRollers(intakeRollers, true));
+	Command runFeeder = new ParallelCommandGroup(new RunFeeder(hopper, feeder, true), new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.SLOW));
 
-	Command runIntakeRollers = new RunIntakeRollers(intakeRollers, true);
-	Command outtakeIntakeRollers = new RunIntakeRollers(intakeRollers, false);
+	Command runIntakeRollers = new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.FAST);
+	Command outtakeBalls = new ParallelCommandGroup(new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.REVERSE), new RunFeeder(hopper, feeder, false));
+
+	Command resetCurrent = Commands.runOnce(() -> resetCurrentLimits());
 
 	Command intakeOut = new IntakeToPosition(intake, IntakeStates.EXTENDED);
 	Command intakeIn = new IntakeToPosition(intake, IntakeStates.RETRACTED);
@@ -104,6 +108,8 @@ public class RobotContainer {
 
 	Command reconfigAlliance = Commands.runOnce(() -> reconfigAlliance());
 	Command reverseDirection = Commands.runOnce(() -> reverseDirection());
+
+	Command sleep8 = new WaitCommand(8.0);
 
   	public RobotContainer() {
 		configureBindings();
@@ -159,11 +165,12 @@ public class RobotContainer {
 		NamedCommands.registerCommand("runIntakeRollers", runIntakeRollers);
 
 		NamedCommands.registerCommand("pointAtGoal", pointAtGoal);
+
+		NamedCommands.registerCommand("sleep8", sleep8);
 	}
 
 	public void reconfigAlliance() {
-		Pose2d currentPose = drive.getPose();
-
+		drive.configureAutoBuilder();
 		driver = new DriverSticks();
 		enableShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
 		pointAtGoal = drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0);
@@ -174,6 +181,12 @@ public class RobotContainer {
 		drive.resetOdometry(new Pose2d(current.getTranslation(), drive.getHeading().plus(Rotation2d.k180deg)));
 	}
 
+	public void resetCurrentLimits() {
+		intakeRollers.resetCurrentLimits();
+		hopper.resetCurrentLimits();
+		feeder.resetCurrentLimits();
+	}
+
 
 	public void configureBindings() {
 		driverController.a().onTrue(reconfigAlliance);
@@ -182,11 +195,14 @@ public class RobotContainer {
 		// drive.setDefaultCommand(drive.driveRelative(driver::translateX, driver::translateY, driver::lookX));
 		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
 		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
-		driverController.leftBumper().whileTrue(drive.driveCommand(driver::translateX, driver::translateY,driver::lookX, driver::lookY, 0.5));
+		driverController.leftBumper().whileTrue(drive.lockSwerveDrive(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 0.25));
+		
+		driverController.leftTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 0.25));
+		driverController.rightTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY, driver::translateY, driver::translateX, 1.0));
 
 
-		operatorController.b().whileTrue(enableShooter);
-		operatorController.a().whileTrue(closeShot);
+		operatorController.a().whileTrue(enableShooter);
+		operatorController.b().whileTrue(closeShot);
 
 		hood.setDefaultCommand(new ZeroHood(hood));
 		shooter.setDefaultCommand(new RunShooter(shooter));
@@ -198,21 +214,26 @@ public class RobotContainer {
 		intake.setDefaultCommand(new ZeroIntake(intake));
 
 		operatorController.rightBumper().whileTrue(runIntakeRollers);
-		operatorController.leftBumper().whileTrue(outtakeIntakeRollers);
+		operatorController.leftBumper().whileTrue(outtakeBalls);
+
+		operatorController.x().onTrue(resetCurrent);
 	}
 
 	public void configureTestBindings() {
+		driverController.x().onTrue(Commands.runOnce(drive::updateAnglePIDF));
+
 		driverController.a().onTrue(reconfigAlliance);
 		driverController.povDown().onTrue(reverseDirection);
-		driverController.x().onTrue(Commands.runOnce(drive::updateAnglePIDF));
 
 		// drive.setDefaultCommand(drive.driveRelative(driver::translateX, driver::translateY, driver::lookX));
 		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
 		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
-		driverController.leftBumper().whileTrue(drive.driveCommand(driver::translateX, driver::translateY,driver::lookX, driver::lookY, 0.25));
+		driverController.leftBumper().whileTrue(drive.lockSwerveDrive(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 0.5));
+		driverController.leftTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY,driver::lookX, driver::lookY, 0.5));
 
-		operatorController.b().whileTrue(enableShooter);
-		operatorController.a().whileTrue(closeShot);
+
+		operatorController.a().whileTrue(enableShooter);
+		operatorController.b().whileTrue(closeShot);
 
 		hood.setDefaultCommand(new ZeroHood(hood));
 		shooter.setDefaultCommand(new RunShooter(shooter));
@@ -224,7 +245,9 @@ public class RobotContainer {
 		intake.setDefaultCommand(new ZeroIntake(intake));
 
 		operatorController.rightBumper().whileTrue(runIntakeRollers);
-		operatorController.leftBumper().whileTrue(outtakeIntakeRollers);
+		operatorController.leftBumper().whileTrue(outtakeBalls);
+
+		operatorController.x().onTrue(resetCurrent);
 	}
 
 

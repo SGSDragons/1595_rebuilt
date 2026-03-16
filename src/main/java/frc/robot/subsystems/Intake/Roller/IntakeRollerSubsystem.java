@@ -6,6 +6,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeRollerSubsystem extends SubsystemBase {
 
+    public enum IntakeRollerSpeeds {
+        FAST,
+        SLOW,
+        REVERSE
+    }
+
     public IntakeRollerSubsystem() {}
 
     public void runRollers(double power) {} 
@@ -13,6 +19,8 @@ public class IntakeRollerSubsystem extends SubsystemBase {
     public void stopRollers() {} 
  
     public double getCurrent() { return 0; }
+
+    public void resetCurrentLimits() {}
 
     public void periodic() { telemetry(); }
 

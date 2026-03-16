@@ -117,7 +117,7 @@
       },
       "prevControl": {
         "x": 3.1958388888888885,
-        "y": 0.5077777777777771
+        "y": 0.507777777777777
       },
       "nextControl": {
         "x": 2.5040297328386014,
@@ -173,10 +173,10 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.0,
+      "minWaypointRelativePos": 2.0,
       "maxWaypointRelativePos": 4.0,
       "constraints": {
-        "maxVelocity": 1.5,
+        "maxVelocity": 2.0,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -185,18 +185,7 @@
       }
     }
   ],
-  "pointTowardsZones": [
-    {
-      "fieldPosition": {
-        "x": 4.625,
-        "y": 4.05
-      },
-      "rotationOffset": 0.0,
-      "minWaypointRelativePos": 8.0,
-      "maxWaypointRelativePos": 8.0,
-      "name": "Point Towards Zone"
-    }
-  ],
+  "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "zeroHood",
@@ -233,7 +222,7 @@
     },
     {
       "name": "enableShooter",
-      "waypointRelativePos": 7.0,
+      "waypointRelativePos": 6.5,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -256,7 +245,7 @@
     "rotation": 47.4354628665865
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Old",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 90.0

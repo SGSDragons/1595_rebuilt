@@ -31,6 +31,12 @@
                 "data": {
                   "name": "runFeeder"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeIn"
+                }
               }
             ]
           }
@@ -39,6 +45,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Old",
   "choreoAuto": false
 }

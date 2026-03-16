@@ -174,7 +174,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
                 new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
                 ),
                 config, // The robot configuration
-                () -> false, // Flip alliance
+                () -> FieldConstants.isRedAlliance(), // Flip alliance
                 this // Reference to this subsystem to set requirements
         );
     }
@@ -309,6 +309,40 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
                     vector.getY(),
                     swerveDrive.getOdometryHeading().getRadians(),
                     swerveDrive.getMaximumChassisVelocity()));
+        });
+    }
+
+    @Override
+    public Command lockSwerveDrive(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX, DoubleSupplier headingY, double scale) {
+        swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
+        return run(() -> {
+
+            Translation2d joystick = new Translation2d(translationX.getAsDouble(), translationY.getAsDouble());
+            double magnitude = joystick.getNorm();
+          
+            if (magnitude < 0.1) {
+                joystick = Translation2d.kZero;
+            }
+
+            magnitude = scale*Math.pow(magnitude, 3);
+            joystick = joystick.times(magnitude);
+            
+
+            Translation2d scaledInputs = SwerveMath.scaleTranslation(joystick, 0.8);
+
+            if (magnitude < 0.2) {
+                lock();
+            }
+
+            else{
+            driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(
+                    scaledInputs.getX(),
+                    scaledInputs.getY(),
+                    headingX.getAsDouble(),
+                    headingY.getAsDouble(),
+                    swerveDrive.getOdometryHeading().getRadians(),
+                    swerveDrive.getMaximumChassisVelocity()));
+            }
         });
     }
 

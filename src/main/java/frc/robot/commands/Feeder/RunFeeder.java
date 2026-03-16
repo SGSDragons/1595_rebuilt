@@ -12,10 +12,12 @@ public class RunFeeder extends Command {
 
     private final HopperSubsystem hopperSubsystem;
     private final FeederSubsystem feederSubsystem;
+    private boolean runForward;
 
-    public RunFeeder(HopperSubsystem hopperSubsystem, FeederSubsystem feederSubsystem) {
+    public RunFeeder(HopperSubsystem hopperSubsystem, FeederSubsystem feederSubsystem, boolean runForward) {
         this.hopperSubsystem = hopperSubsystem;
         this.feederSubsystem = feederSubsystem;
+        this.runForward = runForward;
 
         addRequirements((Subsystem) hopperSubsystem, (Subsystem) feederSubsystem);
     }
@@ -26,8 +28,14 @@ public class RunFeeder extends Command {
 
     @Override
     public void execute() {
-        this.hopperSubsystem.runRollers(HopperValues.hopperRunSpeed);
-        this.feederSubsystem.runRollers(FeederValues.feederRunSpeed);
+        if (runForward) {
+            this.hopperSubsystem.runRollers(HopperValues.hopperRunSpeed);
+            this.feederSubsystem.runRollers(FeederValues.feederRunSpeed);
+        } else {
+            this.hopperSubsystem.runRollers(-HopperValues.hopperRunSpeed);
+            this.feederSubsystem.runRollers(-FeederValues.feederRunSpeed);
+        }
+    
     }
 
     @Override

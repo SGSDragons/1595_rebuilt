@@ -45,13 +45,13 @@ public class IntakeToPosition extends Command {
 
         // Detect when intake takes too long to move
         // set the target position to extended to not break the motor
-        time = Timer.getFPGATimestamp();
-        if (time - startTime > IntakeLimits.maxTravelTime && this.intakeSubsystem.getPosition() > 2.0) {
-            this.position = IntakeStates.EXTENDED;
-            this.intakeSubsystem.setTargetPosition(IntakeStates.EXTENDED);
-            startTime = Timer.getFPGATimestamp();
-            safety = true; 
-        }
+        // time = Timer.getFPGATimestamp();
+        // if (time - startTime > IntakeLimits.maxTravelTime && this.intakeSubsystem.getPosition() > 2.0) {
+        //     this.position = IntakeStates.EXTENDED;
+        //     this.intakeSubsystem.setTargetPosition(IntakeStates.EXTENDED);
+        //     startTime = Timer.getFPGATimestamp();
+        //     safety = true; 
+        // }
     }
 
     @Override

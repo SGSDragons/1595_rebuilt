@@ -59,6 +59,8 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public Command aimAtGoal(DoubleSupplier translationX, DoubleSupplier translationY, GoalAim aimer, double scale) { return runOnce(null); }
 
+    public Command lockSwerveDrive(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX, DoubleSupplier headingY, double scale) { return runOnce(null); }
+
     public Pose2d getPose() { return Pose2d.kZero; }
 
     public ChassisSpeeds getRobotVelocity() { return new ChassisSpeeds(); }

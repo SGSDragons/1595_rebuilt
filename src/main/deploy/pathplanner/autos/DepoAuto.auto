@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BlueBottom"
+            "pathName": "Depo"
           }
         },
         {
@@ -45,6 +45,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Old",
+  "folder": null,
   "choreoAuto": false
 }
