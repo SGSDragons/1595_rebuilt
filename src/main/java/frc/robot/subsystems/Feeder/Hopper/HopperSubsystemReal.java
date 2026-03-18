@@ -29,18 +29,27 @@ public class HopperSubsystemReal extends HopperSubsystem {
 
     }
 
+    @Override
     public void runRollers(double power) {
         hopperMotor.set(power);
     } 
 
+    @Override
     public void stopRotation() {
         hopperMotor.stopMotor();
     } 
  
-    public double getCurrent() {
-        return hopperMotor.getStatorCurrent().getValueAsDouble();
+    @Override
+    public double getSupplyCurrent() {
+        return hopperMotor.getSupplyCurrent().getValueAsDouble();
     }
 
+    @Override
+    public double getStatorCurrent() {
+        return hopperMotor.getSupplyCurrent().getValueAsDouble();
+    }
+
+    @Override
     public void resetCurrentLimits() {
         var rollerConfig = new TalonFXConfiguration();
 
@@ -56,7 +65,10 @@ public class HopperSubsystemReal extends HopperSubsystem {
         telemetry();
     }
 
+    @Override
+
     public void telemetry() {
-        SmartDashboard.putNumber("Hopper Current", getCurrent());
+        SmartDashboard.putNumber("Hopper Supply Current", getSupplyCurrent());
+        SmartDashboard.putNumber("Hopper Stator Current", getStatorCurrent());
     }
 }

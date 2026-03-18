@@ -8,11 +8,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.simulation.ElevatorSim;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareID.HoodIds;
 import frc.robot.Constants.TuningValues.HoodValues;
 import frc.robot.Constants.CurrentLimits.HoodLimits;
@@ -45,27 +41,38 @@ public class HoodSubsystemReal extends HoodSubsystem {
         // Mechanism2d arm = new Mechanism2d(2, 3);
     }
 
+    @Override
     public void runHood(double power) {
         hoodMotor.set(power);
     } 
 
+    @Override
     public void enableHood() {
         hoodMotor.setControl(targetPosition);
     }
 
+    @Override
     public void setTargetPosition(double position) {
         position = Math.max(HoodValues.min, Math.min(position, HoodValues.max));
         targetPosition = new PositionVoltage(0).withPosition(position);
     }
 
+    @Override
     public boolean atTargetPosition() {
         return (Math.abs(getPosition() - targetPosition.Position) < HoodValues.tolerance);
     }
 
-    public double getCurrent() {
+    @Override
+    public double getSupplyCurrent() {
+        return hoodMotor.getSupplyCurrent().getValueAsDouble();
+    }
+
+    @Override
+    public double getStatorCurrent() {
         return hoodMotor.getStatorCurrent().getValueAsDouble();
     }
 
+    @Override
     public double getPosition() {
         return hoodMotor.getPosition().getValueAsDouble();
     }
@@ -79,10 +86,12 @@ public class HoodSubsystemReal extends HoodSubsystem {
         telemetry();
     }
 
+    @Override
     public void telemetry() {
         SmartDashboard.putNumber("Hood Target", targetPosition.Position);
         SmartDashboard.putNumber("Hood Position", getPosition());
-        SmartDashboard.putNumber("Hood Current", getCurrent());
+        SmartDashboard.putNumber("Hood Supply Current", getSupplyCurrent());
+        SmartDashboard.putNumber("Hood Stator Current", getStatorCurrent());
     }
 }
 

@@ -30,18 +30,27 @@ public class IntakeRollerSubsystemReal extends IntakeRollerSubsystem {
 
     }
 
+    @Override
     public void runRollers(double power) {
         rollerMotor.set(power);
     } 
 
+    @Override
     public void stopRollers() {
         rollerMotor.stopMotor();
     } 
  
-    public double getCurrent() {
+    @Override
+    public double getSupplyCurrent() {
+        return rollerMotor.getSupplyCurrent().getValueAsDouble();
+    }
+
+    @Override
+    public double getStatorCurrent() {
         return rollerMotor.getStatorCurrent().getValueAsDouble();
     }
 
+    @Override
     public void resetCurrentLimits() {
         var rollerConfig = new TalonFXConfiguration();
 
@@ -57,7 +66,9 @@ public class IntakeRollerSubsystemReal extends IntakeRollerSubsystem {
         telemetry();
     }
 
+    @Override
     public void telemetry() {
-        SmartDashboard.putNumber("IntakeRoller Current", getCurrent());
+        SmartDashboard.putNumber("IntakeRoller Supply Current", getSupplyCurrent());
+        SmartDashboard.putNumber("IntakeRoller Stator Current", getStatorCurrent());
     }
 }

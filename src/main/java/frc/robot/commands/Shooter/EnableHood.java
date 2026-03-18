@@ -41,7 +41,6 @@ public class EnableHood extends Command {
         }
     }
 
-    // ends when button is released and runs zero command
     @Override
     public void end(boolean interrupted) {
     }

@@ -14,7 +14,7 @@ import frc.robot.Constants.Aiming;
 public class RunShooter extends Command {
 
     private final ShooterSubsystem shooterSubsystem;
-    double targetspeed;
+    private double targetpower;
 
     public RunShooter(ShooterSubsystem shooterSubsystem) {
         this.shooterSubsystem = shooterSubsystem;
@@ -23,16 +23,19 @@ public class RunShooter extends Command {
 
     @Override
     public void initialize() {
-        targetspeed = ShooterValues.runSpeed;
-        this.shooterSubsystem.setTargetVelocity(targetspeed);
+        targetpower = ShooterValues.runSpeed/100;
     }
 
     @Override
     public void execute() {
-        this.shooterSubsystem.runShooter();
+        if (this.shooterSubsystem.getAverageVelocity() < ShooterValues.runSpeed) {
+            this.shooterSubsystem.runAtPower(targetpower);
+        }
+        else {
+            this.shooterSubsystem.runAtPower(0.0);
+        }
     }
 
-    // default command
     @Override
     public void end(boolean interrupted) {
     }

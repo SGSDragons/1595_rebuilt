@@ -45,6 +45,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Axis;
@@ -94,10 +95,10 @@ public class RobotContainer {
 	Command enableShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
 	Command closeShot = new CloseShot(shooter, hood, goalAimer);
 
-	Command runFeeder = new ParallelCommandGroup(new RunFeeder(hopper, feeder, true), new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.SLOW));
+	Command runFeeder = new ParallelCommandGroup(new RunFeeder(hopper, feeder, shooter, true), new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.SLOW));
 
 	Command runIntakeRollers = new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.FAST);
-	Command outtakeBalls = new ParallelCommandGroup(new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.REVERSE), new RunFeeder(hopper, feeder, false));
+	Command outtakeBalls = new ParallelCommandGroup(new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.REVERSE), new RunFeeder(hopper, feeder, shooter, false));
 
 	Command resetCurrent = Commands.runOnce(() -> resetCurrentLimits());
 
@@ -108,6 +109,7 @@ public class RobotContainer {
 
 	Command reconfigAlliance = Commands.runOnce(() -> reconfigAlliance());
 	Command reverseDirection = Commands.runOnce(() -> reverseDirection());
+	Command resetOdometry = Commands.runOnce(() -> drive.resetOdometry(new Pose2d(Translation2d.kZero, Rotation2d.kZero)));
 
 	Command sleep8 = new WaitCommand(8.0);
 
@@ -141,7 +143,8 @@ public class RobotContainer {
 	// Thus, Blue axis are inverted.
 
 	class DriverSticks {
-		private final double inverter = FieldConstants.isRedAlliance() ? 1.0 : -1.0;
+		// private final double inverter = FieldConstants.isRedAlliance() ? 1.0 : -1.0;
+		private final double inverter = 1.0;
 		double readAxis(XboxController.Axis axis) {
 			return driverController.getRawAxis(axis.value);
 		}
@@ -224,6 +227,7 @@ public class RobotContainer {
 
 		driverController.a().onTrue(reconfigAlliance);
 		driverController.povDown().onTrue(reverseDirection);
+		driverController.povUp().onTrue(resetOdometry);
 
 		// drive.setDefaultCommand(drive.driveRelative(driver::translateX, driver::translateY, driver::lookX));
 		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));

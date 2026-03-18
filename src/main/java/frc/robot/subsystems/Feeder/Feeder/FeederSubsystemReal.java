@@ -7,7 +7,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.HardwareID.FeederIds;
 import frc.robot.Constants.CurrentLimits.FeederLimits;
@@ -30,15 +29,23 @@ public class FeederSubsystemReal extends FeederSubsystem {
         feederMotor.getConfigurator().apply(rollerConfig);
     }
 
+    @Override
     public void runRollers(double power) {
         feederMotor.set(power);
     } 
 
+    @Override
     public void stopRotation() {
         feederMotor.stopMotor();
     } 
  
-    public double getCurrent() {
+    @Override
+    public double getSupplyCurrent() {
+        return feederMotor.getSupplyCurrent().getValueAsDouble();
+    }
+
+    @Override
+    public double getStatorCurrent() {
         return feederMotor.getStatorCurrent().getValueAsDouble();
     }
 
@@ -57,7 +64,9 @@ public class FeederSubsystemReal extends FeederSubsystem {
         telemetry();
     }
 
+    @Override
     public void telemetry() {
-        SmartDashboard.putNumber("Feeder Current", getCurrent());
+        SmartDashboard.putNumber("Feeder Supply Current", getSupplyCurrent());
+        SmartDashboard.putNumber("Feeder Stator Current", getStatorCurrent());
     }
 }

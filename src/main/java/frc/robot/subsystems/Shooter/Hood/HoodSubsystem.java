@@ -31,7 +31,9 @@ public class HoodSubsystem extends SubsystemBase {
 
     public boolean atTargetPosition() { return false; }
 
-    public double getCurrent() { return 0; }
+    public double getSupplyCurrent() { return 0; }
+
+    public double getStatorCurrent() { return 0; }
 
     public double getPosition() { return 0; }
 

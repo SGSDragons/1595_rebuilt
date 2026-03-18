@@ -1,8 +1,4 @@
 package frc.robot.subsystems.Shooter.Shooter;
-
-import com.ctre.phoenix6.controls.VelocityVoltage;
-
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -10,11 +6,23 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public ShooterSubsystem() {}
 
+    public void runAtPower(double power) {}
+
     public void runShooter() {}
 
     public void setTargetVelocity(double velocity) {}
 
-    public double getVelocity() { return 0; }
+    public boolean nearTargetSpeed() { return false; }
+
+    public double getLeftVelocity() { return 0; }
+
+    public double getRightVelocity() { return 0; }
+
+    public double getAverageVelocity() { return 0; }
+
+    public double getSupplyCurrent() { return 0; }
+
+    public double getStatorCurrent() { return 0; }
 
     public void resetCurrentLimits() {}
 

@@ -6,6 +6,7 @@ package frc.robot.subsystems.Drive;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.PIDConstants;
@@ -38,17 +39,13 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.Constants.HardwareID.LimeLightNames;
+import frc.robot.Constants.HardwareID.LimeLightConstants;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.GoalAim;
 
-import java.io.Console;
 import java.io.File;
-import java.io.InputStream;
 import java.util.Arrays;
-import java.util.function.BiConsumer;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -62,6 +59,8 @@ import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+
+import frc.robot.Constants.TuningValues.DrivingValues;;;
 
 public class SwerveSubsystemReal extends SwerveSubsystem {
 
@@ -112,6 +111,34 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         publishTunables();
     }
 
+    public double getSwerveSupplyCurrent() {
+        double totalCurrent = 0;
+
+        SwerveModule[] modules = swerveDrive.getModules();
+        for (int i=0; i<4; i++) {
+            TalonFX driveMotor = (TalonFX) modules[i].getDriveMotor().getMotor();
+            TalonFX angleMotor = (TalonFX) modules[i].getDriveMotor().getMotor();
+            totalCurrent += Math.abs(driveMotor.getSupplyCurrent().getValueAsDouble())+
+                            Math.abs(angleMotor.getSupplyCurrent().getValueAsDouble());
+        }
+
+        return totalCurrent;
+    }
+
+    public double getSwerveStatorCurrent() {
+        double totalCurrent = 0;
+
+        SwerveModule[] modules = swerveDrive.getModules();
+        for (int i=0; i<4; i++) {
+            TalonFX driveMotor = (TalonFX) modules[i].getDriveMotor().getMotor();
+            TalonFX angleMotor = (TalonFX) modules[i].getDriveMotor().getMotor();
+            totalCurrent += Math.abs(driveMotor.getStatorCurrent().getValueAsDouble())+ 
+                            Math.abs(angleMotor.getStatorCurrent().getValueAsDouble());
+        }
+
+        return totalCurrent;
+    }
+
     public void telemetry() {
         if (FieldConstants.isRedAlliance()) {
             SmartDashboard.putNumber("Distance to Goal", getPose().getTranslation().getDistance(FieldConstants.redGoal));
@@ -119,26 +146,31 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         else {
             SmartDashboard.putNumber("Distance to Goal", getPose().getTranslation().getDistance(FieldConstants.blueGoal));
         }
+
+        SmartDashboard.putNumber("Swerve Stator Current", getSwerveStatorCurrent());
+        SmartDashboard.putNumber("Swerve Supply Current", getSwerveSupplyCurrent());
     }
 
     @Override
     public void periodic() {
         swerveDrive.updateOdometry();
-        LimelightHelpers.SetRobotOrientation(LimeLightNames.limelight2, getHeading().getDegrees(), 0, 0, 0, 0, 0 );
-        LimelightHelpers.SetRobotOrientation(LimeLightNames.limelight3a, getHeading().getDegrees(), 0, 0, 0, 0, 0 );
+        LimelightHelpers.SetRobotOrientation(LimeLightConstants.limelight2, getHeading().getDegrees(), 0, 0, 0, 0, 0);
+        LimelightHelpers.SetRobotOrientation(LimeLightConstants.limelight3a, getHeading().getDegrees(), 0, 0, 0, 0, 0);
 
-        PoseEstimate LL2poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightNames.limelight2);
+        PoseEstimate LL2poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightConstants.limelight2);
+        // boolean acceptLL2Reading = (LL2poseEst != null && LL2poseEst.tagCount > 0 && LL2poseEst.avgTagDist < LimeLightConstants.maxReadDistance);
+
         if (LL2poseEst != null && LL2poseEst.tagCount > 0) {
             swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
                 LL2poseEst.pose,
                 LL2poseEst.timestampSeconds,
                 VecBuilder.fill(0.7, 0.7, 1e10)
                 );
-                // VecBuilder.fill(0, 0, 0)
-                // );
         }
 
-        PoseEstimate LL3poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightNames.limelight3a);
+        PoseEstimate LL3poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightConstants.limelight3a);
+        // boolean acceptLL3Reading = (LL3poseEst != null && LL3poseEst.tagCount > 0 && LL3poseEst.avgTagDist < LimeLightConstants.maxReadDistance);
+
         if (LL3poseEst != null && LL3poseEst.tagCount > 0) {
             swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
                 LL3poseEst.pose,
@@ -248,7 +280,8 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
                 joystick = Translation2d.kZero;
             }
 
-            magnitude = scale*Math.pow(magnitude, 3);
+            
+            magnitude = scale*Math.pow(magnitude, DrivingValues.joystickPower);
             joystick = joystick.times(magnitude);
             
 
@@ -294,7 +327,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
                 joystick = Translation2d.kZero;
             }
 
-            magnitude = scale*Math.pow(magnitude, 3);
+            magnitude = scale*Math.pow(magnitude, DrivingValues.joystickPower);
             joystick = joystick.times(magnitude);
             
 
@@ -324,7 +357,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
                 joystick = Translation2d.kZero;
             }
 
-            magnitude = scale*Math.pow(magnitude, 3);
+            magnitude = scale*Math.pow(magnitude, DrivingValues.joystickPower);
             joystick = joystick.times(magnitude);
             
 

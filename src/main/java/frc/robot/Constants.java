@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
+import frc.robot.Constants.TuningValues.ShooterValues;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -61,9 +62,11 @@ public final class Constants {
 			public static final int hopperCanId = 13;
 		}
 
-		public static final class LimeLightNames {
+		public static final class LimeLightConstants {
 			public static final String limelight2 = "limelight-two";
 			public static final String limelight3a = "limelight-three";
+
+			public static final double maxReadDistance = 5.0;
 		}
 	}
 
@@ -85,10 +88,20 @@ public final class Constants {
 			hoodMap.put(3.052,4.20);
 			hoodMap.put(3.357,4.50);
 			hoodMap.put(3.661,4.65);
-			// hoodMap.put(3.0,0.0);
-			// hoodMap.put(3.0,0.0);
-			// hoodMap.put(3.0,0.0);
-			// hoodMap.put(3.0,0.0);
+			hoodMap.put(3.9,4.96);
+			hoodMap.put(4.2,5.23);
+			hoodMap.put(4.5,5.60);
+			hoodMap.put(4.8,6.0);
+			hoodMap.put(5.1,6.40);
+			hoodMap.put(5.4,6.80);
+			hoodMap.put(5.7,7.20);
+			hoodMap.put(6.0,7.60);
+			// hoodMap.put(4.5,5.51);
+			// hoodMap.put(4.8,5.79);
+			// hoodMap.put(5.1,6.07);
+			// hoodMap.put(5.4,6.35);
+			// hoodMap.put(5.7,6.63);
+			// hoodMap.put(6.0,6.91);
 
 			wheelMap.put(1.225,65.0);
 			wheelMap.put(1.529,65.0);
@@ -99,64 +112,70 @@ public final class Constants {
 			wheelMap.put(3.052,75.0);
 			wheelMap.put(3.357,77.0);
 			wheelMap.put(3.661,80.0);
-			// wheelMap.put(2.0,75.0);
-			// wheelMap.put(2.0,75.0);
-			// wheelMap.put(2.0,75.0);
-			// wheelMap.put(2.0,75.0);
+			wheelMap.put(3.9,82.35);
+			// wheelMap.put(4.2,85.0);
+			// wheelMap.put(4.5,85.0);
+			// wheelMap.put(4.8,85.0);
+			// wheelMap.put(5.1,85.0);
+			// wheelMap.put(5.4,85.0);
+			// wheelMap.put(5.7,85.0);
+			// wheelMap.put(6.0,85.0);
 
-			timeOfFlightMap.put(1.225,0.0);
-			timeOfFlightMap.put(1.529,0.0);
-			timeOfFlightMap.put(1.834,0.0);
-			timeOfFlightMap.put(2.138,0.0);
-			timeOfFlightMap.put(2.443,0.0);
-			timeOfFlightMap.put(2.747,0.0);
-			timeOfFlightMap.put(3.052,0.0);
-			timeOfFlightMap.put(3.357,0.0);
-			timeOfFlightMap.put(3.661,0.0);
-			// timeOfFlightMap.put(2.0,1.5);
-			// timeOfFlightMap.put(2.0,1.5);
-			// timeOfFlightMap.put(2.0,1.5);
-			// timeOfFlightMap.put(2.0,1.5);
+			timeOfFlightMap.put(1.225,1.1);
+			timeOfFlightMap.put(1.529,1.12);
+			timeOfFlightMap.put(1.834,1.14);
+			timeOfFlightMap.put(2.138,1.16);
+			timeOfFlightMap.put(2.443,1.18);
+			timeOfFlightMap.put(2.747,1.2);
+			timeOfFlightMap.put(3.052,1.22);
+			timeOfFlightMap.put(3.357,1.24);
+			timeOfFlightMap.put(3.661,1.25);
+			timeOfFlightMap.put(3.9,1.25);
+			timeOfFlightMap.put(4.2,1.29);
+			timeOfFlightMap.put(4.5,1.31);
+			timeOfFlightMap.put(4.8,1.33);
+			timeOfFlightMap.put(5.1,1.35);
+			timeOfFlightMap.put(5.4,1.37);
+			timeOfFlightMap.put(5.7,1.39);
+			timeOfFlightMap.put(6.0,1.41);
 		}
 
 		public static double getHoodValue(double distance) {
-			// return hoodMap.get(distance);
 			return hoodMap.get(distance);
 		}
 
 		public static double getWheelValue(double distance) {
-			// return wheelMap.get(distance);
 			return wheelMap.get(distance)+wheelExtra;
 		}
 
 		public static double getFlightValue(double distance) {
 			return timeOfFlightMap.get(distance);
 		}
+
+		// Hood Regression
+		// y = 0.932525x+1.31822
+
+		// Shooter Regression
+		// y = 1.23898x^2 + 0.553157x + 61.35479
 	}
 
 
 	public static final class TuningValues {
 
+		public static final class DrivingValues {
+			public static final double joystickPower = 5;
+ 		}
+
 		public static final class ShooterValues {
-			
 			// Increase This
 			public static final double kS = 0.25;
-			public static final double kV = 0.15;
-			public static final double kP = 0.7;
+			public static final double kV = 0.2;
+			public static final double kP = 0.8;
 			public static final double kI = 0.05;
 			public static final double kD = 0;
 
 			public static final double runSpeed = 25;
-
-			// public static final class AngleFunction {
-			// 	public static final double x2coef = 1;
-			// 	public static final double xcoef = 0;
-			// 	public static final double constant = 0;
-
-			// 	public static double calculate(double input) {
-			// 		return x2coef*Math.pow(input,2) + xcoef*input + constant;
-			// 	}
-			// }
+			public static final double maxShooterSpeed = 87.5;
  		}
 
 		public static final class HoodValues {
@@ -208,22 +227,22 @@ public final class Constants {
 		}
 
 		public static final class IntakeLimits {
-			public static final double statorLimit = 90;
+			public static final double statorLimit = 100;
 			public static final double currentLimit = 50;
 			public static final double duration = 0.1;
 			public static final double maxTravelTime = 2;
 		}
 
 		public static final class IntakeRollerLimits {
-			public static final double statorLimit = 60;
+			public static final double statorLimit = 50;
 		}
 
 		public static final class HopperLimits {
-			public static final double statorLimit = 60;
+			public static final double statorLimit = 50;
 		}
 
 		public static final class FeederLimits {
-			public static final double statorLimit = 60;
+			public static final double statorLimit = 50;
 		}
 	}
 

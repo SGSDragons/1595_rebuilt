@@ -14,27 +14,27 @@ public class ZeroHood extends Command {
     double currentDraw;
     double time;
     double spikeStartTime;
-    boolean hasZeroed;
+    boolean shouldZero;
 
     public ZeroHood(HoodSubsystem hoodSubsystem) {
         this.hoodSubsystem = hoodSubsystem;
-        hasZeroed = false;
+        shouldZero = false;
 
         addRequirements((Subsystem) hoodSubsystem);
     }
 
     @Override
     public void initialize() {  
-        currentDraw = this.hoodSubsystem.getCurrent();
+        currentDraw = this.hoodSubsystem.getStatorCurrent();
         time = Timer.getFPGATimestamp();
-        hasZeroed = false;
+        shouldZero = true;
     }
 
     // Slowly run hood down and record stator current
     @Override
     public void execute() {
-        if (!hasZeroed) {
-            currentDraw = this.hoodSubsystem.getCurrent();
+        if (shouldZero) {
+            currentDraw = this.hoodSubsystem.getStatorCurrent();
             time = Timer.getFPGATimestamp();
             this.hoodSubsystem.runHood(-0.1);
 
@@ -45,7 +45,7 @@ public class ZeroHood extends Command {
             // Detect when stator current is above threshold for enough time
             // When stator current is above threshold for enough time, stop motor and zero the hood
             if (time - spikeStartTime > HoodLimits.duration) {
-                hasZeroed = true;
+                shouldZero = false;
                 this.hoodSubsystem.zeroHood();
             }
         }

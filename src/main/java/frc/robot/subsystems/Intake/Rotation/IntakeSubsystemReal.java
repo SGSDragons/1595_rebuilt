@@ -40,18 +40,22 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
         targetPosition = new PositionVoltage(0).withPosition(IntakeValues.retracted);
     }
 
+    @Override
     public void runRotation(double power) {
         rotationMotor.set(power);
     } 
 
+    @Override
     public void stopRotation() {
         rotationMotor.stopMotor();
     } 
 
+    @Override
     public void gotoPosition() {
         rotationMotor.setControl(targetPosition);
     }
 
+    @Override
     public void setTargetPosition(IntakeStates position) {
         if (position == IntakeStates.RETRACTED) {
             targetPosition = new PositionVoltage(0).withPosition(IntakeValues.retracted);
@@ -60,22 +64,32 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
         }
     }
 
+    @Override
     public double getPosition() {
         return rotationMotor.getPosition().getValueAsDouble();
     }
 
+    @Override
     public boolean isExtended() {
         return (getPosition() > IntakeValues.extended-1);
     }
 
+    @Override
     public boolean isRetracted() {
         return (getPosition() < IntakeValues.retracted+0.5);
     }
  
-    public double getCurrent() {
+    @Override
+    public double getSupplyCurrent() {
+        return rotationMotor.getSupplyCurrent().getValueAsDouble();
+    }
+
+    @Override
+    public double getStatorCurrent() {
         return rotationMotor.getStatorCurrent().getValueAsDouble();
     }
 
+    @Override
     public void zeroRotation() {
         rotationMotor.setPosition(0);
     }
@@ -85,10 +99,12 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
         telemetry();
     }
 
+    @Override
     public void telemetry() {
         SmartDashboard.putNumber("Rotation Target", targetPosition.Position);
         SmartDashboard.putNumber("Rotation Position", getPosition());
-        SmartDashboard.putNumber("Rotation Current", getCurrent());
+        SmartDashboard.putNumber("Rotation Supply Current", getSupplyCurrent());
+        SmartDashboard.putNumber("Rotation Stator Current", getStatorCurrent());
 
         SmartDashboard.putNumber("state position", isExtended() ? 1 : 0);
     }

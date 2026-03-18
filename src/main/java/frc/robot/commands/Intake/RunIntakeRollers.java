@@ -32,7 +32,7 @@ public class RunIntakeRollers extends Command {
             this.intakeRollerSubsystem.runRollers(IntakeValues.intakeSlowRunSpeed);
         }
         else {
-            this.intakeRollerSubsystem.runRollers(IntakeValues.intakeFastRunSpeed);
+            this.intakeRollerSubsystem.runRollers(-IntakeValues.intakeFastRunSpeed);
         }
     }
 

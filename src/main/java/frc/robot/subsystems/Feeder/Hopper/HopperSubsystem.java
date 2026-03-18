@@ -14,8 +14,10 @@ public class HopperSubsystem extends SubsystemBase {
     public void runRollers(double power) {} 
 
     public void stopRotation() {} 
- 
-    public double getCurrent() { return 0; }
+
+    public double getSupplyCurrent() { return 0; }
+
+    public double getStatorCurrent() { return 0; }
 
     public void resetCurrentLimits() {}
 

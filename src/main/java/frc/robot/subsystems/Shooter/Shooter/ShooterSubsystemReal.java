@@ -22,7 +22,7 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
     TalonFX leftShooter;
     TalonFX rightShooter;
 
-    VelocityVoltage targetVelocity;
+    private VelocityVoltage targetVelocity;
 
     public ShooterSubsystemReal() {
         // Make leftShooter control both left and right shooters
@@ -67,17 +67,55 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
         targetVelocity = new VelocityVoltage(0).withVelocity(ShooterValues.runSpeed);
     }
 
+    @Override
+    public void runAtPower(double power) {
+        leftShooter.set(power);
+        rightShooter.set(power);
+    }
+
+    @Override
     public void runShooter() {
         leftShooter.setControl(targetVelocity);
         rightShooter.setControl(targetVelocity);
     }
 
+    @Override
     public void setTargetVelocity(double velocity) {
-        targetVelocity = new VelocityVoltage(0).withVelocity(velocity);
+        if (velocity > ShooterValues.maxShooterSpeed) {
+            targetVelocity = new VelocityVoltage(0).withVelocity(ShooterValues.maxShooterSpeed);
+        } else {
+            targetVelocity = new VelocityVoltage(0).withVelocity(velocity);
+        }
     }
 
-    public double getVelocity() {
-        return (leftShooter.getVelocity().getValueAsDouble() + leftShooter.getVelocity().getValueAsDouble()) / 2;
+    @Override
+    public boolean nearTargetSpeed() {
+        return (getAverageVelocity() > targetVelocity.Velocity-10);
+    }
+
+    @Override
+    public double getLeftVelocity() {
+        return leftShooter.getVelocity().getValueAsDouble();
+    }
+
+    @Override
+    public double getRightVelocity() {
+        return rightShooter.getVelocity().getValueAsDouble();    
+    }
+
+    @Override
+    public double getAverageVelocity() {
+        return (rightShooter.getVelocity().getValueAsDouble() + leftShooter.getVelocity().getValueAsDouble()) / 2;    
+    }
+
+    @Override
+    public double getSupplyCurrent() {
+        return (leftShooter.getSupplyCurrent().getValueAsDouble() + leftShooter.getSupplyCurrent().getValueAsDouble()) / 2;
+    }
+
+    @Override
+    public double getStatorCurrent() {
+        return (leftShooter.getStatorCurrent().getValueAsDouble() + leftShooter.getStatorCurrent().getValueAsDouble()) / 2;
     }
     
     @Override
@@ -85,9 +123,15 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
         telemetry();
     }
 
+    @Override
     public void telemetry() {
         SmartDashboard.putNumber("Shooter Target", targetVelocity.Velocity);
-        SmartDashboard.putNumber("Shooter Velocity", getVelocity());
-        SmartDashboard.putNumber("Shooter Current", leftShooter.getStatorCurrent().getValueAsDouble());
+
+        SmartDashboard.putNumber("LeftShooter Velocity", getLeftVelocity());
+        SmartDashboard.putNumber("RightShooter Velocity", getRightVelocity());
+        SmartDashboard.putNumber("ShooterAverage Velocity", getAverageVelocity());
+
+        SmartDashboard.putNumber("Shooter Stator Current", leftShooter.getStatorCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Shooter Supply Current", leftShooter.getStatorCurrent().getValueAsDouble());
     }
 }

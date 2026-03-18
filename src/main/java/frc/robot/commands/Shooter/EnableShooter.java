@@ -30,7 +30,6 @@ public class EnableShooter extends Command {
         this.shooterSubsystem.setTargetVelocity(targetspeed);
     }
 
-    // run shooter and keep adjusting it if enabled is true
     @Override
     public void execute() {
         targetspeed = Aiming.getWheelValue(this.goalAim.getAdjustedDistance());
@@ -38,7 +37,6 @@ public class EnableShooter extends Command {
         this.shooterSubsystem.runShooter();
     }
 
-    // ends when button is released
     @Override
     public void end(boolean interrupted) {
     }
