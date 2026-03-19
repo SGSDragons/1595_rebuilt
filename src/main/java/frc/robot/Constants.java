@@ -170,7 +170,7 @@ public final class Constants {
 			// Increase This
 			public static final double kS = 0.25;
 			public static final double kV = 0.2;
-			public static final double kP = 0.8;
+			public static final double kP = 2.0;
 			public static final double kI = 0.05;
 			public static final double kD = 0;
 

@@ -11,12 +11,12 @@ import frc.robot.Constants.TuningValues.ShooterValues;
 import frc.robot.Constants.Aiming;
 
 
-public class RunShooter extends Command {
+public class DefaultShooter extends Command {
 
     private final ShooterSubsystem shooterSubsystem;
     private double targetpower;
 
-    public RunShooter(ShooterSubsystem shooterSubsystem) {
+    public DefaultShooter(ShooterSubsystem shooterSubsystem) {
         this.shooterSubsystem = shooterSubsystem;
         addRequirements((Subsystem) shooterSubsystem);
     }

@@ -3,17 +3,17 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Feeder.RunFeeder;
+import frc.robot.commands.Feeder.StopFeeder;
 import frc.robot.commands.Intake.IntakeToPosition;
 import frc.robot.commands.Intake.RunIntakeRollers;
-import frc.robot.commands.WaitCommand;
+import frc.robot.commands.Intake.StopIntakeRollers;
 import frc.robot.commands.Intake.ZeroIntake;
 import frc.robot.commands.Shooter.CloseShot;
 import frc.robot.commands.Shooter.EnableHood;
 import frc.robot.commands.Shooter.EnableShooter;
-import frc.robot.commands.Shooter.RunShooter;
+import frc.robot.commands.Shooter.DefaultShooter;
 import frc.robot.commands.Shooter.ZeroHood;
 import frc.robot.subsystems.GoalAim;
 import frc.robot.subsystems.Climber.ClimberSubsystem;
@@ -33,15 +33,10 @@ import frc.robot.subsystems.Shooter.Hood.HoodSubsystem;
 import frc.robot.subsystems.Shooter.Hood.HoodSubsystemReal;
 import frc.robot.subsystems.Shooter.Shooter.ShooterSubsystem;
 import frc.robot.subsystems.Shooter.Shooter.ShooterSubsystemReal;
-import swervelib.parser.PIDFConfig;
-
-import java.util.List;
-import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -52,14 +47,10 @@ import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
 /**
@@ -75,7 +66,7 @@ public class RobotContainer {
 	// private final SwerveSubsystem drive = new SwerveSubsystem();
 	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(4.0), new Pose2d(13.0, 4.05, Rotation2d.kZero));
 
-	private final IntakeSubsystem intake = new IntakeSubsystemReal();
+	private final IntakeSubsystem intake = new IntakeSubsystem();
 	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystemReal();
 
 	private final HopperSubsystem hopper = new HopperSubsystemReal();
@@ -92,26 +83,34 @@ public class RobotContainer {
 	DriverSticks driver = new DriverSticks();
 	GoalAim goalAimer = new GoalAim(drive);
 
+	Command zeroHood = new ZeroHood(hood);
 	Command enableShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
 	Command closeShot = new CloseShot(shooter, hood, goalAimer);
+	Command defaultShooter = new DefaultShooter(shooter);
 
 	Command runFeeder = new ParallelCommandGroup(new RunFeeder(hopper, feeder, shooter, true), new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.SLOW));
+	Command stopRollers = new ParallelRaceGroup(new StopFeeder(hopper, feeder), new StopIntakeRollers(intakeRollers));
 
 	Command runIntakeRollers = new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.FAST);
 	Command outtakeBalls = new ParallelCommandGroup(new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.REVERSE), new RunFeeder(hopper, feeder, shooter, false));
 
 	Command resetCurrent = Commands.runOnce(() -> resetCurrentLimits());
 
+	Command zeroIntake = new ZeroIntake(intake);
 	Command intakeOut = new IntakeToPosition(intake, IntakeStates.EXTENDED);
 	Command intakeIn = new IntakeToPosition(intake, IntakeStates.RETRACTED);
 
 	Command pointAtGoal = drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0);
+	Command sleep5 = Commands.waitSeconds(5.0);
+	Command sleep3 = Commands.waitSeconds(3.0);
 
 	Command reconfigAlliance = Commands.runOnce(() -> reconfigAlliance());
 	Command reverseDirection = Commands.runOnce(() -> reverseDirection());
 	Command resetOdometry = Commands.runOnce(() -> drive.resetOdometry(new Pose2d(Translation2d.kZero, Rotation2d.kZero)));
 
-	Command sleep8 = new WaitCommand(8.0);
+	// Add intakeIn
+	Command autoShoot = new ParallelRaceGroup(Commands.waitSeconds(5.0), new RunFeeder(hopper, feeder, shooter, false), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0));
+	Command resetForNext = new ParallelCommandGroup(new StopFeeder(hopper, feeder), new StopIntakeRollers(intakeRollers), new ZeroHood(hood), new DefaultShooter(shooter));
 
   	public RobotContainer() {
 		configureBindings();
@@ -119,6 +118,7 @@ public class RobotContainer {
 
 		// Auto Chooser 
 		autoChooser = AutoBuilder.buildAutoChooser();
+		autoChooser.addOption("Auto", new PathPlannerAuto("DepoDoubleAuto", true));
 		SmartDashboard.putData("Auto Chooser", autoChooser);
 
 		if (drive instanceof SwerveSubsystem) {
@@ -157,19 +157,23 @@ public class RobotContainer {
 	private void registerCommands() {
 		NamedCommands.registerCommand("enableShooter", enableShooter);
 		NamedCommands.registerCommand("closeShot", closeShot);
-		NamedCommands.registerCommand("zeroHood", new ZeroHood(hood));
+		NamedCommands.registerCommand("zeroHood", zeroHood);
+		NamedCommands.registerCommand("defaultShooter", defaultShooter);
 
 		NamedCommands.registerCommand("runFeeder", runFeeder);
+		NamedCommands.registerCommand("stopRollers", stopRollers);
+		NamedCommands.registerCommand("runIntakeRollers", runIntakeRollers);
 
 		NamedCommands.registerCommand("intakeIn", intakeIn);
 		NamedCommands.registerCommand("intakeOut", intakeOut);
-		NamedCommands.registerCommand("zeroIntake", new ZeroIntake(intake));
-
-		NamedCommands.registerCommand("runIntakeRollers", runIntakeRollers);
+		NamedCommands.registerCommand("zeroIntake", zeroIntake);
 
 		NamedCommands.registerCommand("pointAtGoal", pointAtGoal);
+		NamedCommands.registerCommand("sleep5", sleep5);
+		NamedCommands.registerCommand("sleep3", sleep3);
 
-		NamedCommands.registerCommand("sleep8", sleep8);
+		NamedCommands.registerCommand("autoShoot", autoShoot);
+		NamedCommands.registerCommand("resetForNext", resetForNext);
 	}
 
 	public void reconfigAlliance() {
@@ -200,21 +204,20 @@ public class RobotContainer {
 		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
 		driverController.leftBumper().whileTrue(drive.lockSwerveDrive(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 0.25));
 		
-		driverController.leftTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 0.25));
-		driverController.rightTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY, driver::translateY, driver::translateX, 1.0));
-
+		// Drive Tangent
+		// driverController.rightTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY, driver::translateY, driver::translateX, 1.0));
 
 		operatorController.a().whileTrue(enableShooter);
 		operatorController.b().whileTrue(closeShot);
 
 		hood.setDefaultCommand(new ZeroHood(hood));
-		shooter.setDefaultCommand(new RunShooter(shooter));
+		shooter.setDefaultCommand(defaultShooter);
 
 		operatorController.rightTrigger(0.2).whileTrue(runFeeder);
 
 		operatorController.povUp().onTrue(intakeOut);
 		operatorController.povDown().onTrue(intakeIn);
-		intake.setDefaultCommand(new ZeroIntake(intake));
+		intake.setDefaultCommand(zeroIntake);
 
 		operatorController.rightBumper().whileTrue(runIntakeRollers);
 		operatorController.leftBumper().whileTrue(outtakeBalls);
@@ -233,20 +236,21 @@ public class RobotContainer {
 		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
 		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
 		driverController.leftBumper().whileTrue(drive.lockSwerveDrive(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 0.5));
-		driverController.leftTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY,driver::lookX, driver::lookY, 0.5));
-
+		
+		// Drive Tangent
+		// driverController.rightTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY, driver::translateY, driver::translateX, 1.0));
 
 		operatorController.a().whileTrue(enableShooter);
 		operatorController.b().whileTrue(closeShot);
 
-		hood.setDefaultCommand(new ZeroHood(hood));
-		shooter.setDefaultCommand(new RunShooter(shooter));
+		hood.setDefaultCommand(zeroHood);
+		shooter.setDefaultCommand(defaultShooter);
 
 		operatorController.rightTrigger(0.2).whileTrue(runFeeder);
 
 		operatorController.povUp().onTrue(intakeOut);
 		operatorController.povDown().onTrue(intakeIn);
-		intake.setDefaultCommand(new ZeroIntake(intake));
+		intake.setDefaultCommand(zeroIntake);
 
 		operatorController.rightBumper().whileTrue(runIntakeRollers);
 		operatorController.leftBumper().whileTrue(outtakeBalls);
