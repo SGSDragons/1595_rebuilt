@@ -24,8 +24,8 @@ public class HoodSubsystemReal extends HoodSubsystem {
 
         var hoodConfig = new TalonFXConfiguration();
 
-        hoodConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        hoodConfig.CurrentLimits.StatorCurrentLimit = HoodLimits.statorLimit;
+        hoodConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        hoodConfig.CurrentLimits.SupplyCurrentLimit = HoodLimits.supplyLimit;
         hoodConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         hoodConfig.Slot0.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);

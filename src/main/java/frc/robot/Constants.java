@@ -55,6 +55,8 @@ public final class Constants {
 
 		public static final class FeederIds {
 			public static final int hopperCanId = 16;
+			public static final int leftSpinnerCanId = 0;
+			public static final int rightSpinnerCanId = 0;
 			public static final int feederCanId = 17;
 		}
 
@@ -76,7 +78,7 @@ public final class Constants {
 		public static InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
 
 		public static double closeShot = 1.3;
-		public static double wheelExtra = 10;
+		public static double wheelExtra = 5;
 
 		static {
 			hoodMap.put(1.225,1.5);
@@ -96,12 +98,6 @@ public final class Constants {
 			hoodMap.put(5.4,6.80);
 			hoodMap.put(5.7,7.20);
 			hoodMap.put(6.0,7.60);
-			// hoodMap.put(4.5,5.51);
-			// hoodMap.put(4.8,5.79);
-			// hoodMap.put(5.1,6.07);
-			// hoodMap.put(5.4,6.35);
-			// hoodMap.put(5.7,6.63);
-			// hoodMap.put(6.0,6.91);
 
 			wheelMap.put(1.225,65.0);
 			wheelMap.put(1.529,65.0);
@@ -113,9 +109,9 @@ public final class Constants {
 			wheelMap.put(3.357,77.0);
 			wheelMap.put(3.661,80.0);
 			wheelMap.put(3.9,82.35);
-			// wheelMap.put(4.2,85.0);
-			// wheelMap.put(4.5,85.0);
-			// wheelMap.put(4.8,85.0);
+			wheelMap.put(4.2,85.53);
+			wheelMap.put(4.5,88.93);
+			wheelMap.put(4.8,92.56);
 			// wheelMap.put(5.1,85.0);
 			// wheelMap.put(5.4,85.0);
 			// wheelMap.put(5.7,85.0);
@@ -168,14 +164,20 @@ public final class Constants {
 
 		public static final class ShooterValues {
 			// Increase This
-			public static final double kS = 0.25;
-			public static final double kV = 0.2;
-			public static final double kP = 2.0;
+			public static final double kS = 0.3;
+			public static final double kV = 0.15;
+			public static final double kP = 0.5;
 			public static final double kI = 0.05;
 			public static final double kD = 0;
 
+			// public static final double kS = 0.25;
+			// public static final double kV = 0.2;
+			// public static final double kP = 0.8;
+			// public static final double kI = 0.05;
+			// public static final double kD = 0;
+
 			public static final double runSpeed = 25;
-			public static final double maxShooterSpeed = 87.5;
+			public static final double maxShooterSpeed = 85.0;
  		}
 
 		public static final class HoodValues {
@@ -217,32 +219,32 @@ public final class Constants {
 	public static final class CurrentLimits {
 
 		public static final class ShooterLimits {
-			public static final double statorLimit = 100;
+			public static final double supplyLimit = 100;
 		}
 
 		public static final class HoodLimits {
-			public static final double statorLimit = 40;
+			public static final double supplyLimit = 40;
 			public static final double currentLimit = 25;
 			public static final double duration = 0.1;
 		}
 
 		public static final class IntakeLimits {
-			public static final double statorLimit = 100;
+			public static final double supplyLimit = 80;
 			public static final double currentLimit = 50;
 			public static final double duration = 0.1;
 			public static final double maxTravelTime = 2;
 		}
 
 		public static final class IntakeRollerLimits {
-			public static final double statorLimit = 50;
+			public static final double supplyLimit = 20;
 		}
 
 		public static final class HopperLimits {
-			public static final double statorLimit = 50;
+			public static final double supplyLimit = 10;
 		}
 
 		public static final class FeederLimits {
-			public static final double statorLimit = 50;
+			public static final double supplyLimit = 10;
 		}
 	}
 

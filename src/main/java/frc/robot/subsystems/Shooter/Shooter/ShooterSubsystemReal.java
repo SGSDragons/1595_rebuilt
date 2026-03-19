@@ -35,8 +35,8 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
 
         var leftShooterConfig = new TalonFXConfiguration();
 
-        leftShooterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        leftShooterConfig.CurrentLimits.StatorCurrentLimit = ShooterLimits.statorLimit;
+        leftShooterConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        leftShooterConfig.CurrentLimits.SupplyCurrentLimit = ShooterLimits.supplyLimit;
         leftShooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         leftShooterConfig.Slot0.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
@@ -51,8 +51,8 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
 
         var rightShooterConfig = new TalonFXConfiguration();
 
-        rightShooterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        rightShooterConfig.CurrentLimits.StatorCurrentLimit = ShooterLimits.statorLimit;
+        rightShooterConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        rightShooterConfig.CurrentLimits.SupplyCurrentLimit = ShooterLimits.supplyLimit;
         rightShooterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         rightShooterConfig.Slot0.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);

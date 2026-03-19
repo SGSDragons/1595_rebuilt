@@ -22,8 +22,8 @@ public class FeederSubsystemReal extends FeederSubsystem {
 
         var rollerConfig = new TalonFXConfiguration();
 
-        rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        rollerConfig.CurrentLimits.StatorCurrentLimit = FeederLimits.statorLimit;
+        rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        rollerConfig.CurrentLimits.SupplyCurrentLimit = FeederLimits.supplyLimit;
         rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         feederMotor.getConfigurator().apply(rollerConfig);
