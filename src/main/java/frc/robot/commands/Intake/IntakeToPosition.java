@@ -27,11 +27,12 @@ public class IntakeToPosition extends Command {
     @Override
     public void initialize() {  
         this.intakeSubsystem.setTargetPosition(this.position);
+        // System.out.println("Intake"+this.position);
     }
 
     @Override
     public void execute() {
-        this.intakeSubsystem.gotoPosition();
+        this.intakeSubsystem.gotoPosition();  
     }
 
     @Override

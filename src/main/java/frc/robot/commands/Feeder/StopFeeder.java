@@ -19,7 +19,8 @@ public class StopFeeder extends Command {
     }
 
     @Override   
-    public void initialize() {  
+    public void initialize() {
+        // System.out.println("Feeder stopped");  
     }
 
     @Override
@@ -27,7 +28,7 @@ public class StopFeeder extends Command {
     }
 
     @Override
-    public void end(boolean interrupted) {
+    public void end(boolean interrupted) {  
     }
 
     @Override

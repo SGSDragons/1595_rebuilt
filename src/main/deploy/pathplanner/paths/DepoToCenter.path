@@ -194,7 +194,7 @@
     },
     {
       "name": "enableShooter",
-      "waypointRelativePos": 5.25,
+      "waypointRelativePos": 5.5,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

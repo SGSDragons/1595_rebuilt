@@ -24,6 +24,7 @@ public class EnableHood extends Command {
     public void initialize() {
         targetPosition = Aiming.getHoodValue(this.goalAim.getAdjustedDistance());
         this.hoodSubsystem.setTargetPosition(targetPosition);
+        // System.out.println("Hood enabled"); 
     }
 
     // always try to reach position
@@ -38,7 +39,7 @@ public class EnableHood extends Command {
         }
         else {
             this.hoodSubsystem.enableHood();
-        }
+        } 
     }
 
     @Override

@@ -1,6 +1,8 @@
 package frc.robot.subsystems.Feeder.Feeder;
 
 
+import org.opencv.features2d.Feature2D;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -49,11 +51,24 @@ public class FeederSubsystemReal extends FeederSubsystem {
         return feederMotor.getStatorCurrent().getValueAsDouble();
     }
 
-    public void resetCurrentLimits() {
+    // Make sure it's able to un jam balls but prevent it from drawing to much power when shooting
+    @Override
+    public void increaseCurrentLimits() {
         var rollerConfig = new TalonFXConfiguration();
 
-        rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        rollerConfig.CurrentLimits.StatorCurrentLimit = 100;
+        rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        rollerConfig.CurrentLimits.SupplyCurrentLimit = 50;
+        rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+        feederMotor.getConfigurator().apply(rollerConfig);
+    }
+
+    @Override
+    public void decreaseCurrentLimits() {
+        var rollerConfig = new TalonFXConfiguration();
+
+        rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        rollerConfig.CurrentLimits.SupplyCurrentLimit = FeederLimits.supplyLimit;
         rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         feederMotor.getConfigurator().apply(rollerConfig);
@@ -68,5 +83,7 @@ public class FeederSubsystemReal extends FeederSubsystem {
     public void telemetry() {
         SmartDashboard.putNumber("Feeder Supply Current", getSupplyCurrent());
         SmartDashboard.putNumber("Feeder Stator Current", getStatorCurrent());
+
+        SmartDashboard.putNumber("Feeder Velocity", feederMotor.getVelocity().getValueAsDouble());
     }
 }

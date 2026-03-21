@@ -155,12 +155,12 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
     public void periodic() {
         swerveDrive.updateOdometry();
         LimelightHelpers.SetRobotOrientation(LimeLightConstants.limelight2, getHeading().getDegrees(), 0, 0, 0, 0, 0);
-        LimelightHelpers.SetRobotOrientation(LimeLightConstants.limelight3a, getHeading().getDegrees(), 0, 0, 0, 0, 0);
+        // LimelightHelpers.SetRobotOrientation(LimeLightConstants.limelight3a, getHeading().getDegrees(), 0, 0, 0, 0, 0);
 
         PoseEstimate LL2poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightConstants.limelight2);
-        // boolean acceptLL2Reading = (LL2poseEst != null && LL2poseEst.tagCount > 0 && LL2poseEst.avgTagDist < LimeLightConstants.maxReadDistance);
+        boolean acceptLL2Reading = (LL2poseEst != null && LL2poseEst.tagCount > 0 && LL2poseEst.avgTagDist < LimeLightConstants.maxReadDistance);
 
-        if (LL2poseEst != null && LL2poseEst.tagCount > 0) {
+        if (acceptLL2Reading) {
             swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
                 LL2poseEst.pose,
                 LL2poseEst.timestampSeconds,
@@ -169,9 +169,9 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         }
 
         PoseEstimate LL3poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightConstants.limelight3a);
-        // boolean acceptLL3Reading = (LL3poseEst != null && LL3poseEst.tagCount > 0 && LL3poseEst.avgTagDist < LimeLightConstants.maxReadDistance);
+        boolean acceptLL3Reading = (LL3poseEst != null && LL3poseEst.tagCount > 0 && LL3poseEst.avgTagDist < LimeLightConstants.maxReadDistance);
 
-        if (LL3poseEst != null && LL3poseEst.tagCount > 0) {
+        if (acceptLL3Reading) {
             swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
                 LL3poseEst.pose,
                 LL3poseEst.timestampSeconds,
@@ -334,14 +334,20 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
             Translation2d scaledInputs = SwerveMath.scaleTranslation(joystick, 0.8);
             Translation2d vector = aimer.pointAtGoal();
 
-            // Make the robot move
-            driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(
-                    scaledInputs.getX(),
-                    scaledInputs.getY(),
-                    vector.getX(),
-                    vector.getY(),
-                    swerveDrive.getOdometryHeading().getRadians(),
-                    swerveDrive.getMaximumChassisVelocity()));
+            // Lock swerve if there's no translation and the robot is close to its heading
+            if (Math.abs(getHeading().getDegrees() - vector.getAngle().getDegrees()) < 1.0 && joystick == Translation2d.kZero) {
+                lock();
+            }
+            else {
+                driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(
+                        scaledInputs.getX(),
+                        scaledInputs.getY(),
+                        vector.getX(),
+                        vector.getY(),
+                        swerveDrive.getOdometryHeading().getRadians(),
+                        swerveDrive.getMaximumChassisVelocity()));
+            }
+
         });
     }
 
@@ -362,8 +368,11 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
             
 
             Translation2d scaledInputs = SwerveMath.scaleTranslation(joystick, 0.8);
+            Rotation2d headingInput = new Rotation2d(headingX.getAsDouble(), headingY.getAsDouble());
+            Translation2d headingMagnitude = new Translation2d(headingX.getAsDouble(), headingY.getAsDouble());
 
-            if (magnitude < 0.2) {
+            // lock swerve if there's no translation or joystick rotation input or joystick roation is close to heading
+            if ((Math.abs(getHeading().getDegrees() - headingInput.getDegrees())< 2.0 || headingMagnitude.getNorm() < 0.1) && joystick == Translation2d.kZero) {
                 lock();
             }
 

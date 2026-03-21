@@ -27,22 +27,26 @@ public class RunFeeder extends Command {
     }
 
     @Override   
-    public void initialize() {  
+    public void initialize() {
+        this.hopperSubsystem.runRollers(-HopperValues.hopperRunSpeed);
+        this.feederSubsystem.runRollers(-FeederValues.feederRunSpeed);
+        // System.out.println("Feeder running");  
     }
 
+    // Run feeder no matter what so it doesn't get jammed but stop hopper if flywheel isn't up to speed
     @Override
     public void execute() {
-        if (this.shooter.nearTargetSpeed()) {
-            if (runForward) {
+        if (runForward) {
+            this.feederSubsystem.runRollers(FeederValues.feederRunSpeed);
+            if (this.shooter.nearTargetSpeed()) {
                 this.hopperSubsystem.runRollers(HopperValues.hopperRunSpeed);
-                this.feederSubsystem.runRollers(FeederValues.feederRunSpeed);
             } else {
-                this.hopperSubsystem.runRollers(-HopperValues.hopperRunSpeed);
-                this.feederSubsystem.runRollers(-FeederValues.feederRunSpeed);
+                this.hopperSubsystem.runRollers(0.0);
             }
         } else {
-            this.hopperSubsystem.runRollers(0.0);
-            this.feederSubsystem.runRollers(0.0);
+            // this.feederSubsystem. increaseCurrentLimits();
+            this.hopperSubsystem.runRollers(-HopperValues.hopperRunSpeed);
+            this.feederSubsystem.runRollers(-FeederValues.feederRunSpeed);
         }
     }
 
@@ -50,6 +54,7 @@ public class RunFeeder extends Command {
     public void end(boolean interrupted) {
         this.hopperSubsystem.runRollers(0);
         this.feederSubsystem.runRollers(0);
+        // this.feederSubsystem.decreaseCurrentLimits();
     }
 
     @Override

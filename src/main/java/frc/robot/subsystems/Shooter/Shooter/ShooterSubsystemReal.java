@@ -41,6 +41,7 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
 
         leftShooterConfig.Slot0.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
         leftShooterConfig.Slot0.kS = ShooterValues.kS;
+        leftShooterConfig.Slot0.kA = ShooterValues.kA;
         leftShooterConfig.Slot0.kV = ShooterValues.kV;
         leftShooterConfig.Slot0.kP = ShooterValues.kP;
         leftShooterConfig.Slot0.kI = ShooterValues.kI;
@@ -57,6 +58,7 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
 
         rightShooterConfig.Slot0.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
         rightShooterConfig.Slot0.kS = ShooterValues.kS;
+        rightShooterConfig.Slot0.kA = ShooterValues.kA;
         rightShooterConfig.Slot0.kV = ShooterValues.kV;
         rightShooterConfig.Slot0.kP = ShooterValues.kP;
         rightShooterConfig.Slot0.kI = ShooterValues.kI;
@@ -90,7 +92,7 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
 
     @Override
     public boolean nearTargetSpeed() {
-        return (getAverageVelocity() > targetVelocity.Velocity-10);
+        return (getAverageVelocity() > targetVelocity.Velocity-ShooterValues.tolerance);
     }
 
     @Override
@@ -110,12 +112,12 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
 
     @Override
     public double getSupplyCurrent() {
-        return (leftShooter.getSupplyCurrent().getValueAsDouble() + leftShooter.getSupplyCurrent().getValueAsDouble()) / 2;
+        return (rightShooter.getSupplyCurrent().getValueAsDouble() + leftShooter.getSupplyCurrent().getValueAsDouble()) / 2;
     }
 
     @Override
     public double getStatorCurrent() {
-        return (leftShooter.getStatorCurrent().getValueAsDouble() + leftShooter.getStatorCurrent().getValueAsDouble()) / 2;
+        return (rightShooter.getStatorCurrent().getValueAsDouble() + leftShooter.getStatorCurrent().getValueAsDouble()) / 2;
     }
     
     @Override

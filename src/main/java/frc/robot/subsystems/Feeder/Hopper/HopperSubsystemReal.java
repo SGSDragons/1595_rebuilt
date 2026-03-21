@@ -34,7 +34,7 @@ public class HopperSubsystemReal extends HopperSubsystem {
     } 
 
     @Override
-    public void stopRotation() {
+    public void stopRollers() {
         hopperMotor.stopMotor();
     } 
  
@@ -48,16 +48,15 @@ public class HopperSubsystemReal extends HopperSubsystem {
         return hopperMotor.getSupplyCurrent().getValueAsDouble();
     }
 
-    @Override
-    public void resetCurrentLimits() {
-        var rollerConfig = new TalonFXConfiguration();
+    // @Override
+    // public void resetCurrentLimits() {
+    //     var rollerConfig = new TalonFXConfiguration();
 
-        rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        rollerConfig.CurrentLimits.StatorCurrentLimit = 100;
-        rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    //     rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    //     rollerConfig.CurrentLimits.SupplyCurrentLimit = 100;
 
-        hopperMotor.getConfigurator().apply(rollerConfig);
-    }
+    //     hopperMotor.getConfigurator().apply(rollerConfig);
+    // }
     
     @Override
     public void periodic() {

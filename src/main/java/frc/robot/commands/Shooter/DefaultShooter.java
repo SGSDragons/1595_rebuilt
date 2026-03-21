@@ -24,6 +24,7 @@ public class DefaultShooter extends Command {
     @Override
     public void initialize() {
         targetpower = ShooterValues.runSpeed/100;
+        // System.out.println("Default Shooting"); 
     }
 
     @Override
@@ -33,7 +34,7 @@ public class DefaultShooter extends Command {
         }
         else {
             this.shooterSubsystem.runAtPower(0.0);
-        }
+        } 
     }
 
     @Override

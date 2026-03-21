@@ -28,6 +28,7 @@ public class EnableShooter extends Command {
     public void initialize() {
         targetspeed = Aiming.getWheelValue(this.goalAim.getAdjustedDistance());
         this.shooterSubsystem.setTargetVelocity(targetspeed);
+        // System.out.println("Shooter enabled");  
     }
 
     @Override

@@ -18,7 +18,7 @@ public class IntakeRollerSubsystemReal extends IntakeRollerSubsystem {
 
     public IntakeRollerSubsystemReal() {
         rollerMotor = new TalonFX(IntakeIds.rollerCanId);
-        rollerMotor.setNeutralMode(NeutralModeValue.Brake);
+        rollerMotor.setNeutralMode(NeutralModeValue.Coast);
 
         var rollerConfig = new TalonFXConfiguration();
 
@@ -50,16 +50,16 @@ public class IntakeRollerSubsystemReal extends IntakeRollerSubsystem {
         return rollerMotor.getStatorCurrent().getValueAsDouble();
     }
 
-    @Override
-    public void resetCurrentLimits() {
-        var rollerConfig = new TalonFXConfiguration();
+    // @Override
+    // public void resetCurrentLimits() {
+    //     var rollerConfig = new TalonFXConfiguration();
 
-        rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-        rollerConfig.CurrentLimits.SupplyCurrentLimit = IntakeRollerLimits.supplyLimit;
-        rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    //     rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    //     rollerConfig.CurrentLimits.SupplyCurrentLimit = IntakeRollerLimits.supplyLimit;
+    //     rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-        rollerMotor.getConfigurator().apply(rollerConfig);
-    }
+    //     rollerMotor.getConfigurator().apply(rollerConfig);
+    // }
     
     @Override
     public void periodic() {

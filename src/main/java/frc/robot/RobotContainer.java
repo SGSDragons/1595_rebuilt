@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Feeder.RunFeeder;
 import frc.robot.commands.Feeder.StopFeeder;
@@ -23,6 +24,7 @@ import frc.robot.subsystems.Feeder.Feeder.FeederSubsystem;
 import frc.robot.subsystems.Feeder.Feeder.FeederSubsystemReal;
 import frc.robot.subsystems.Feeder.Hopper.HopperSubsystem;
 import frc.robot.subsystems.Feeder.Hopper.HopperSubsystemReal;
+import frc.robot.subsystems.Feeder.Hopper.HopperSubsystemTwo;
 import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystem;
 import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystemReal;
 import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystem.IntakeRollerSpeeds;
@@ -49,6 +51,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -66,10 +69,10 @@ public class RobotContainer {
 	// private final SwerveSubsystem drive = new SwerveSubsystem();
 	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(4.0), new Pose2d(13.0, 4.05, Rotation2d.kZero));
 
-	private final IntakeSubsystem intake = new IntakeSubsystem();
+	private final IntakeSubsystem intake = new IntakeSubsystemReal();
 	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystemReal();
 
-	private final HopperSubsystem hopper = new HopperSubsystemReal();
+	private final HopperSubsystem hopper = new HopperSubsystemTwo();
 	private final FeederSubsystem feeder = new FeederSubsystemReal();
 
 	private final ShooterSubsystem shooter = new ShooterSubsystemReal();
@@ -94,13 +97,14 @@ public class RobotContainer {
 	Command runIntakeRollers = new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.FAST);
 	Command outtakeBalls = new ParallelCommandGroup(new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.REVERSE), new RunFeeder(hopper, feeder, shooter, false));
 
-	Command resetCurrent = Commands.runOnce(() -> resetCurrentLimits());
+	Command increaseFeederLimit = Commands.runOnce(() -> feeder.increaseCurrentLimits());
+	Command decreaseFeederLimit = Commands.runOnce(() -> feeder.decreaseCurrentLimits());
 
 	Command zeroIntake = new ZeroIntake(intake);
 	Command intakeOut = new IntakeToPosition(intake, IntakeStates.EXTENDED);
 	Command intakeIn = new IntakeToPosition(intake, IntakeStates.RETRACTED);
 
-	Command pointAtGoal = drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0);
+	Command pointAtGoal	 = drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0);
 	Command sleep5 = Commands.waitSeconds(5.0);
 	Command sleep3 = Commands.waitSeconds(3.0);
 
@@ -108,8 +112,7 @@ public class RobotContainer {
 	Command reverseDirection = Commands.runOnce(() -> reverseDirection());
 	Command resetOdometry = Commands.runOnce(() -> drive.resetOdometry(new Pose2d(Translation2d.kZero, Rotation2d.kZero)));
 
-	// Add intakeIn
-	Command autoShoot = new ParallelRaceGroup(Commands.waitSeconds(5.0), new RunFeeder(hopper, feeder, shooter, false), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0));
+	Command autoShoot = new ParallelCommandGroup(Commands.waitSeconds(10.0), new RunFeeder(hopper, feeder, shooter, false), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0));
 	Command resetForNext = new ParallelCommandGroup(new StopFeeder(hopper, feeder), new StopIntakeRollers(intakeRollers), new ZeroHood(hood), new DefaultShooter(shooter));
 
   	public RobotContainer() {
@@ -118,7 +121,6 @@ public class RobotContainer {
 
 		// Auto Chooser 
 		autoChooser = AutoBuilder.buildAutoChooser();
-		autoChooser.addOption("Auto", new PathPlannerAuto("DepoDoubleAuto", true));
 		SmartDashboard.putData("Auto Chooser", autoChooser);
 
 		if (drive instanceof SwerveSubsystem) {
@@ -143,8 +145,7 @@ public class RobotContainer {
 	// Thus, Blue axis are inverted.
 
 	class DriverSticks {
-		// private final double inverter = FieldConstants.isRedAlliance() ? 1.0 : -1.0;
-		private final double inverter = 1.0;
+		private final double inverter = FieldConstants.isRedAlliance() ? 1.0 : -1.0;
 		double readAxis(XboxController.Axis axis) {
 			return driverController.getRawAxis(axis.value);
 		}
@@ -188,18 +189,10 @@ public class RobotContainer {
 		drive.resetOdometry(new Pose2d(current.getTranslation(), drive.getHeading().plus(Rotation2d.k180deg)));
 	}
 
-	public void resetCurrentLimits() {
-		intakeRollers.resetCurrentLimits();
-		hopper.resetCurrentLimits();
-		feeder.resetCurrentLimits();
-	}
-
-
 	public void configureBindings() {
 		driverController.a().onTrue(reconfigAlliance);
 		driverController.povDown().onTrue(reverseDirection);
 
-		// drive.setDefaultCommand(drive.driveRelative(driver::translateX, driver::translateY, driver::lookX));
 		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
 		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
 		driverController.leftBumper().whileTrue(drive.lockSwerveDrive(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 0.25));
@@ -217,12 +210,13 @@ public class RobotContainer {
 
 		operatorController.povUp().onTrue(intakeOut);
 		operatorController.povDown().onTrue(intakeIn);
-		intake.setDefaultCommand(zeroIntake);
+		// intake.setDefaultCommand(zeroIntake);
 
 		operatorController.rightBumper().whileTrue(runIntakeRollers);
 		operatorController.leftBumper().whileTrue(outtakeBalls);
 
-		operatorController.x().onTrue(resetCurrent);
+		operatorController.x().onTrue(decreaseFeederLimit);
+		operatorController.y().onTrue(increaseFeederLimit);
 	}
 
 	public void configureTestBindings() {
@@ -232,7 +226,6 @@ public class RobotContainer {
 		driverController.povDown().onTrue(reverseDirection);
 		driverController.povUp().onTrue(resetOdometry);
 
-		// drive.setDefaultCommand(drive.driveRelative(driver::translateX, driver::translateY, driver::lookX));
 		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
 		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
 		driverController.leftBumper().whileTrue(drive.lockSwerveDrive(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 0.5));
@@ -250,12 +243,13 @@ public class RobotContainer {
 
 		operatorController.povUp().onTrue(intakeOut);
 		operatorController.povDown().onTrue(intakeIn);
-		intake.setDefaultCommand(zeroIntake);
+		// intake.setDefaultCommand(zeroIntake);
 
 		operatorController.rightBumper().whileTrue(runIntakeRollers);
 		operatorController.leftBumper().whileTrue(outtakeBalls);
 
-		operatorController.x().onTrue(resetCurrent);
+		operatorController.x().onTrue(decreaseFeederLimit);
+		operatorController.y().onTrue(increaseFeederLimit);
 	}
 
 

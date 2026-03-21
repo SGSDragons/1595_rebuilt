@@ -25,8 +25,8 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
 
         var rotationConfig = new TalonFXConfiguration();
 
-        rotationConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-        rotationConfig.CurrentLimits.SupplyCurrentLimit = IntakeLimits.supplyLimit;
+        rotationConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        rotationConfig.CurrentLimits.StatorCurrentLimit = IntakeLimits.statorLimit;
         rotationConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         rotationConfig.Slot0.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);

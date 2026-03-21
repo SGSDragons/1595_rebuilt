@@ -55,8 +55,8 @@ public final class Constants {
 
 		public static final class FeederIds {
 			public static final int hopperCanId = 16;
-			public static final int leftSpinnerCanId = 0;
-			public static final int rightSpinnerCanId = 0;
+			public static final int leftSpinnerCanId = 22;
+			public static final int rightSpinnerCanId = 21;
 			public static final int feederCanId = 17;
 		}
 
@@ -166,9 +166,11 @@ public final class Constants {
 			// Increase This
 			public static final double kS = 0.3;
 			public static final double kV = 0.15;
-			public static final double kP = 0.5;
-			public static final double kI = 0.05;
+			public static final double kA = 0;
+			public static final double kP = 1.0;
+			public static final double kI = 0.8;
 			public static final double kD = 0;
+
 
 			// public static final double kS = 0.25;
 			// public static final double kV = 0.2;
@@ -178,6 +180,7 @@ public final class Constants {
 
 			public static final double runSpeed = 25;
 			public static final double maxShooterSpeed = 85.0;
+			public static final double tolerance = 30.0;
  		}
 
 		public static final class HoodValues {
@@ -193,22 +196,22 @@ public final class Constants {
 		}
 
 		public static final class IntakeValues {
-			public static final double kS = 0.2;
+			public static final double kS = 3.0;
 			public static final double kG = 0;
 			public static final double kP = 0.4;
 			public static final double kI = 0.01;
 			public static final double kD = 0.0;
 
-			public static final double extended = 9;
+			public static final double extended = 9.5;
 			public static final double retracted = 1.5;
 			public static final double tolerance = 0.5;
 
-			public static final double intakeFastRunSpeed = 0.7;
+			public static final double intakeFastRunSpeed = 0.8;
 			public static final double intakeSlowRunSpeed = 0.4;
 		}
 
 		public static final class HopperValues {
-			public static final double hopperRunSpeed = 0.4;
+			public static final double hopperRunSpeed = 0.8;
 		}
 
 		public static final class FeederValues {
@@ -229,22 +232,26 @@ public final class Constants {
 		}
 
 		public static final class IntakeLimits {
-			public static final double supplyLimit = 80;
+			public static final double statorLimit = 100;
 			public static final double currentLimit = 50;
 			public static final double duration = 0.1;
 			public static final double maxTravelTime = 2;
 		}
 
 		public static final class IntakeRollerLimits {
-			public static final double supplyLimit = 20;
+			public static final double supplyLimit = 50;
 		}
 
 		public static final class HopperLimits {
-			public static final double supplyLimit = 10;
+			public static final double supplyLimit = 30;
+		}
+
+		public static final class SpinnerLimits {
+			public static final double supplyLimit = 20;
 		}
 
 		public static final class FeederLimits {
-			public static final double supplyLimit = 10;
+			public static final double supplyLimit = 40;
 		}
 	}
 
