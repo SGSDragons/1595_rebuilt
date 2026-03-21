@@ -22,8 +22,8 @@ public class IntakeRollerSubsystemReal extends IntakeRollerSubsystem {
 
         var rollerConfig = new TalonFXConfiguration();
 
-        rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        rollerConfig.CurrentLimits.StatorCurrentLimit = IntakeRollerLimits.supplyLimit;
+        rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        rollerConfig.CurrentLimits.SupplyCurrentLimit = IntakeRollerLimits.supplyLimit;
         rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         rollerMotor.getConfigurator().apply(rollerConfig);

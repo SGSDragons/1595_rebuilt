@@ -83,11 +83,8 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
 
     @Override
     public void setTargetVelocity(double velocity) {
-        if (velocity > ShooterValues.maxShooterSpeed) {
-            targetVelocity = new VelocityVoltage(0).withVelocity(ShooterValues.maxShooterSpeed);
-        } else {
-            targetVelocity = new VelocityVoltage(0).withVelocity(velocity);
-        }
+        double value = Math.min(velocity, ShooterValues.maxShooterSpeed);
+        targetVelocity = new VelocityVoltage(0).withVelocity(value);
     }
 
     @Override
@@ -134,6 +131,6 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
         SmartDashboard.putNumber("ShooterAverage Velocity", getAverageVelocity());
 
         SmartDashboard.putNumber("Shooter Stator Current", leftShooter.getStatorCurrent().getValueAsDouble());
-        SmartDashboard.putNumber("Shooter Supply Current", leftShooter.getStatorCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Shooter Supply Current", leftShooter.getSupplyCurrent().getValueAsDouble());
     }
 }

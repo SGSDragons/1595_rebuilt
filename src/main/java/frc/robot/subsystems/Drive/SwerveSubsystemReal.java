@@ -117,7 +117,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         SwerveModule[] modules = swerveDrive.getModules();
         for (int i=0; i<4; i++) {
             TalonFX driveMotor = (TalonFX) modules[i].getDriveMotor().getMotor();
-            TalonFX angleMotor = (TalonFX) modules[i].getDriveMotor().getMotor();
+            TalonFX angleMotor = (TalonFX) modules[i].getAngleMotor().getMotor();
             totalCurrent += Math.abs(driveMotor.getSupplyCurrent().getValueAsDouble())+
                             Math.abs(angleMotor.getSupplyCurrent().getValueAsDouble());
         }
@@ -131,7 +131,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         SwerveModule[] modules = swerveDrive.getModules();
         for (int i=0; i<4; i++) {
             TalonFX driveMotor = (TalonFX) modules[i].getDriveMotor().getMotor();
-            TalonFX angleMotor = (TalonFX) modules[i].getDriveMotor().getMotor();
+            TalonFX angleMotor = (TalonFX) modules[i].getAngleMotor().getMotor();
             totalCurrent += Math.abs(driveMotor.getStatorCurrent().getValueAsDouble())+ 
                             Math.abs(angleMotor.getStatorCurrent().getValueAsDouble());
         }
@@ -335,7 +335,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
             Translation2d vector = aimer.pointAtGoal();
 
             // Lock swerve if there's no translation and the robot is close to its heading
-            if (Math.abs(getHeading().getDegrees() - vector.getAngle().getDegrees()) < 1.0 && joystick == Translation2d.kZero) {
+            if (Math.abs(getHeading().getDegrees() - vector.getAngle().getDegrees()) < 1.0 && joystick.getNorm() < 0.1) {
                 lock();
             }
             else {
