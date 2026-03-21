@@ -171,16 +171,12 @@ public final class Constants {
 			public static final double kI = 0.8;
 			public static final double kD = 0;
 
-
-			// public static final double kS = 0.25;
-			// public static final double kV = 0.2;
-			// public static final double kP = 0.8;
-			// public static final double kI = 0.05;
-			// public static final double kD = 0;
-
+			public static double kickVoltage = 1.5;
+			public static double kickLength = 0.15;
+			
 			public static final double runSpeed = 25;
 			public static final double maxShooterSpeed = 85.0;
-			public static final double tolerance = 30.0;
+			public static final double tolerance = 15.0;
  		}
 
 		public static final class HoodValues {
@@ -206,16 +202,21 @@ public final class Constants {
 			public static final double retracted = 1.5;
 			public static final double tolerance = 0.5;
 
-			public static final double intakeFastRunSpeed = 0.8;
-			public static final double intakeSlowRunSpeed = 0.4;
+			// public static final double intakeFastRunSpeed = 0.8;
+			// public static final double intakeSlowRunSpeed = 0.4;
+			public static final double intakeFastVoltage = 8.0;
+			public static final double intakeSlowVoltage = 4.0;
 		}
 
 		public static final class HopperValues {
-			public static final double hopperRunSpeed = 0.8;
+			// public static final double hopperRunSpeed = 0.8;
+			public static final double hopperVoltage = 8.0;
+			public static final double spinnerVoltage = 8.0;
 		}
 
 		public static final class FeederValues {
-			public static final double feederRunSpeed = 0.8;
+			// public static final double feederRunSpeed = 0.8;
+			public static final double feederVoltage = 8.0;
 		}
 	}
 
@@ -243,11 +244,11 @@ public final class Constants {
 		}
 
 		public static final class HopperLimits {
-			public static final double supplyLimit = 30;
+			public static final double supplyLimit = 40;
 		}
 
 		public static final class SpinnerLimits {
-			public static final double supplyLimit = 20;
+			public static final double supplyLimit = 40;
 		}
 
 		public static final class FeederLimits {

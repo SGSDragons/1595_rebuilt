@@ -10,6 +10,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareID.ShooterIds;
@@ -85,6 +86,19 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
     public void setTargetVelocity(double velocity) {
         double value = Math.min(velocity, ShooterValues.maxShooterSpeed);
         targetVelocity = new VelocityVoltage(0).withVelocity(value);
+    }
+
+    @Override
+    public void FFkick(double volts, double seconds) {
+        
+        var kicked = targetVelocity.withFeedForward(volts);
+        leftShooter.setControl(kicked);
+        rightShooter.setControl(kicked);
+
+        Timer.delay(seconds);
+        leftShooter.setControl(targetVelocity);
+        rightShooter.setControl(targetVelocity);
+
     }
 
     @Override

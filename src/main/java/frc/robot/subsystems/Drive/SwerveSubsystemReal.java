@@ -6,6 +6,7 @@ package frc.robot.subsystems.Drive;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
@@ -81,6 +82,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
 
         this.maxSpeedMps = maxSpeed.in(MetersPerSecond);
 
+
         // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
         try {
@@ -90,6 +92,9 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        // might need to remove
+        swerveStatorLimits();
 
         // Heading correction should only be used while controlling the robot via angle.
         swerveDrive.setHeadingCorrection(false);
@@ -109,6 +114,21 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         
         configureAutoBuilder();
         publishTunables();
+    }
+
+    // keep everything else but limit stator hopefully
+    public void swerveStatorLimits() {
+        for (SwerveModule module : swerveDrive.getModules()) {
+            TalonFX drive = (TalonFX) module.getDriveMotor().getMotor();
+
+            TalonFXConfiguration config = new TalonFXConfiguration();
+            drive.getConfigurator().refresh(config);
+
+            config.CurrentLimits.StatorCurrentLimitEnable = true;
+            config.CurrentLimits.StatorCurrentLimit = 60.0;
+
+            drive.getConfigurator().apply(config);
+        }
     }
 
     public double getSwerveSupplyCurrent() {

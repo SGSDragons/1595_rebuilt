@@ -1,4 +1,5 @@
 package frc.robot.subsystems.Shooter.Shooter;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -11,6 +12,8 @@ public class ShooterSubsystem extends SubsystemBase {
     public void runShooter() {}
 
     public void setTargetVelocity(double velocity) {}
+
+    public void FFkick(double volts, double seconds) {}
 
     public boolean nearTargetSpeed() { return false; }
 

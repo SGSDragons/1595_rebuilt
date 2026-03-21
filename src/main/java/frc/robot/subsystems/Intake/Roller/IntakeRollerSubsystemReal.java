@@ -2,6 +2,7 @@ package frc.robot.subsystems.Intake.Roller;
 
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -14,7 +15,8 @@ import frc.robot.Constants.CurrentLimits.IntakeRollerLimits;;
 
 public class IntakeRollerSubsystemReal extends IntakeRollerSubsystem {
     
-    TalonFX rollerMotor;
+    private TalonFX rollerMotor;
+    private VoltageOut targetVoltage;
 
     public IntakeRollerSubsystemReal() {
         rollerMotor = new TalonFX(IntakeIds.rollerCanId);
@@ -28,11 +30,13 @@ public class IntakeRollerSubsystemReal extends IntakeRollerSubsystem {
 
         rollerMotor.getConfigurator().apply(rollerConfig);
 
+        targetVoltage = new VoltageOut(0.0);
+        rollerMotor.setControl(targetVoltage);
     }
 
     @Override
-    public void runRollers(double power) {
-        rollerMotor.set(power);
+    public void runRollers(double voltage) {
+        rollerMotor.setControl(targetVoltage.withOutput(voltage));
     } 
 
     @Override
@@ -68,6 +72,7 @@ public class IntakeRollerSubsystemReal extends IntakeRollerSubsystem {
 
     @Override
     public void telemetry() {
+        SmartDashboard.putNumber("IntakeRoller Target Voltage", targetVoltage.Output);
         SmartDashboard.putNumber("IntakeRoller Supply Current", getSupplyCurrent());
         SmartDashboard.putNumber("IntakeRoller Stator Current", getStatorCurrent());
     }

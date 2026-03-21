@@ -11,7 +11,9 @@ public class HopperSubsystem extends SubsystemBase {
 
     public HopperSubsystem() {}
 
-    public void runRollers(double power) {} 
+    // public void runRollers(double power) {}
+
+    public void runRollers(double hopperTargetVoltage, double spinnerTargetVoltage) {}  
 
     public void stopRollers() {} 
 

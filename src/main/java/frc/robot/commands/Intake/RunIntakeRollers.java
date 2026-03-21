@@ -28,12 +28,12 @@ public class RunIntakeRollers extends Command {
     @Override
     public void execute() {
         if (speed == IntakeRollerSpeeds.FAST) {
-            this.intakeRollerSubsystem.runRollers(IntakeValues.intakeFastRunSpeed);
+            this.intakeRollerSubsystem.runRollers(IntakeValues.intakeFastVoltage);
         } else if (speed == IntakeRollerSpeeds.SLOW) {
-            this.intakeRollerSubsystem.runRollers(IntakeValues.intakeSlowRunSpeed);
+            this.intakeRollerSubsystem.runRollers(IntakeValues.intakeSlowVoltage);
         }
         else {
-            this.intakeRollerSubsystem.runRollers(-IntakeValues.intakeFastRunSpeed);
+            this.intakeRollerSubsystem.runRollers(-IntakeValues.intakeFastVoltage);
         }
     }
 

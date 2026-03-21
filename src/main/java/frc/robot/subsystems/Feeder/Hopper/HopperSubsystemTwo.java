@@ -3,6 +3,7 @@ package frc.robot.subsystems.Feeder.Hopper;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -16,9 +17,12 @@ import frc.robot.Constants.CurrentLimits.SpinnerLimits;;
 
 public class HopperSubsystemTwo extends HopperSubsystem {
     
-    TalonFX hopperMotor;
-    TalonFX rightSpinner;
-    TalonFX spinner;
+    private TalonFX hopperMotor;
+    private TalonFX rightSpinner;
+    private TalonFX spinner;
+
+    private VoltageOut hopperTargetVoltage;
+    private VoltageOut spinnerTargetVoltage;
 
     public HopperSubsystemTwo() {
         hopperMotor = new TalonFX(FeederIds.hopperCanId);
@@ -29,11 +33,10 @@ public class HopperSubsystemTwo extends HopperSubsystem {
         rollerConfig.CurrentLimits.SupplyCurrentLimit = HopperLimits.supplyLimit;
         hopperMotor.getConfigurator().apply(rollerConfig);
 
-
         spinner = new TalonFX(FeederIds.leftSpinnerCanId);
         rightSpinner = new TalonFX(FeederIds.rightSpinnerCanId);
         rightSpinner.setControl(new Follower(spinner.getDeviceID(), MotorAlignmentValue.Opposed));
-        hopperMotor.setNeutralMode(NeutralModeValue.Coast);
+        spinner.setNeutralMode(NeutralModeValue.Coast);
 
         var spinnerConfig = new TalonFXConfiguration();
         spinnerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -44,12 +47,18 @@ public class HopperSubsystemTwo extends HopperSubsystem {
         rightSpinnerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         rightSpinnerConfig.CurrentLimits.SupplyCurrentLimit = SpinnerLimits.supplyLimit;
         rightSpinner.getConfigurator().apply(rightSpinnerConfig);
+
+        hopperTargetVoltage = new VoltageOut(0.0);
+        hopperMotor.setControl(hopperTargetVoltage);
+
+        spinnerTargetVoltage = new VoltageOut(0.0);
+        spinner.setControl(spinnerTargetVoltage);        
     }
 
     @Override
-    public void runRollers(double power) {
-        hopperMotor.set(power);
-        spinner.set(power);
+    public void runRollers(double hopperVoltage, double spinnerVoltage) {
+        hopperMotor.setControl(hopperTargetVoltage.withOutput(hopperVoltage));
+        spinner.setControl(spinnerTargetVoltage.withOutput(spinnerVoltage));
     } 
 
     @Override
