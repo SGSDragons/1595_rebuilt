@@ -16,15 +16,14 @@ public class RunFeeder extends Command {
     private final HopperSubsystem hopperSubsystem;
     private final FeederSubsystem feederSubsystem;
     private final ShooterSubsystem shooter;
+    boolean atSpeed = false;
     private boolean runForward;
-    private boolean atSpeed;
 
     public RunFeeder(HopperSubsystem hopperSubsystem, FeederSubsystem feederSubsystem, ShooterSubsystem shooter, boolean runForward) {
         this.hopperSubsystem = hopperSubsystem;
         this.feederSubsystem = feederSubsystem;
         this.shooter = shooter;
         this.runForward = runForward;
-        atSpeed = false;
 
         addRequirements((Subsystem) hopperSubsystem, (Subsystem) feederSubsystem);
     }
@@ -41,7 +40,6 @@ public class RunFeeder extends Command {
     @Override
     public void execute() {
         if (this.shooter.nearTargetSpeed()) {
-            shooter.FFkick(ShooterValues.kickVoltage, ShooterValues.kickLength);
             atSpeed = true;
         }
         if (runForward) {

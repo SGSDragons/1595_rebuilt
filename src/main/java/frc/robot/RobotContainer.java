@@ -75,7 +75,7 @@ public class RobotContainer {
 	private final HopperSubsystem hopper = new HopperSubsystemTwo();
 	private final FeederSubsystem feeder = new FeederSubsystemReal();
 
-	private final ShooterSubsystem shooter = new ShooterSubsystemReal();
+	private final ShooterSubsystem shooter = new ShooterSubsystemReal(() -> feeder.getStatorCurrent() > 1.0);
 	private final HoodSubsystem hood = new HoodSubsystemReal();
 
 	private final ClimberSubsystem climber = new ClimberSubsystem();

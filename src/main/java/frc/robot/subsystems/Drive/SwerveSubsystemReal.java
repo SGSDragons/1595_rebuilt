@@ -94,7 +94,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         }
 
         // might need to remove
-        swerveStatorLimits();
+        // swerveStatorLimits();
 
         // Heading correction should only be used while controlling the robot via angle.
         swerveDrive.setHeadingCorrection(false);

@@ -1,6 +1,8 @@
 package frc.robot.subsystems.Shooter.Shooter;
 
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -22,10 +24,13 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
     
     TalonFX leftShooter;
     TalonFX rightShooter;
+    BooleanSupplier addFF;
 
     private VelocityVoltage targetVelocity;
 
-    public ShooterSubsystemReal() {
+    public ShooterSubsystemReal(BooleanSupplier addFF) {
+        this.addFF = addFF;
+
         // Make leftShooter control both left and right shooters
         leftShooter = new TalonFX(ShooterIds.leftShooterCanId);
         rightShooter = new TalonFX(ShooterIds.rightShooterCanId);
@@ -86,20 +91,23 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
     public void setTargetVelocity(double velocity) {
         double value = Math.min(velocity, ShooterValues.maxShooterSpeed);
         targetVelocity = new VelocityVoltage(0).withVelocity(value);
+        if (this.addFF.getAsBoolean()) {
+            targetVelocity = targetVelocity.withFeedForward(ShooterValues.kickVoltage);
+        }
     }
 
-    @Override
-    public void FFkick(double volts, double seconds) {
+    // @Override
+    // public void FFkick(double volts, double seconds) {
         
-        var kicked = targetVelocity.withFeedForward(volts);
-        leftShooter.setControl(kicked);
-        rightShooter.setControl(kicked);
+    //     var kicked = targetVelocity.withFeedForward(volts);
+    //     leftShooter.setControl(kicked);
+    //     rightShooter.setControl(kicked);
 
-        Timer.delay(seconds);
-        leftShooter.setControl(targetVelocity);
-        rightShooter.setControl(targetVelocity);
+    //     Timer.delay(seconds);
+    //     leftShooter.setControl(targetVelocity);
+    //     rightShooter.setControl(targetVelocity);
 
-    }
+    // }
 
     @Override
     public boolean nearTargetSpeed() {

@@ -13,8 +13,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void setTargetVelocity(double velocity) {}
 
-    public void FFkick(double volts, double seconds) {}
-
     public boolean nearTargetSpeed() { return false; }
 
     public double getLeftVelocity() { return 0; }
