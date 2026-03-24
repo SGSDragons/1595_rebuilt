@@ -168,11 +168,10 @@ public final class Constants {
 			public static final double kV = 0.15;
 			public static final double kA = 0;
 			public static final double kP = 1.0;
-			public static final double kI = 0.8;
+			public static final double kI = 0.0;
 			public static final double kD = 0;
 
 			public static double kickVoltage = 1.5;
-			// public static double kickLength = 0.3;
 			
 			public static final double runSpeed = 25;
 			public static final double maxShooterSpeed = 85.0;

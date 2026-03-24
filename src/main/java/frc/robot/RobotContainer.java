@@ -6,10 +6,8 @@ package frc.robot;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Feeder.RunFeeder;
-import frc.robot.commands.Feeder.StopFeeder;
 import frc.robot.commands.Intake.IntakeToPosition;
 import frc.robot.commands.Intake.RunIntakeRollers;
-import frc.robot.commands.Intake.StopIntakeRollers;
 import frc.robot.commands.Intake.ZeroIntake;
 import frc.robot.commands.Shooter.CloseShot;
 import frc.robot.commands.Shooter.EnableHood;
@@ -69,14 +67,15 @@ public class RobotContainer {
 	// private final SwerveSubsystem drive = new SwerveSubsystem();
 	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(4.0), new Pose2d(13.0, 4.05, Rotation2d.kZero));
 
-	private final IntakeSubsystem intake = new IntakeSubsystemReal();
-	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystemReal();
+	private final IntakeSubsystem intake = new IntakeSubsystem();
+	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystem();
 
-	private final HopperSubsystem hopper = new HopperSubsystemTwo();
-	private final FeederSubsystem feeder = new FeederSubsystemReal();
+	private final HopperSubsystem hopper = new HopperSubsystem();
+	private final FeederSubsystem feeder = new FeederSubsystem();
 
-	private final ShooterSubsystem shooter = new ShooterSubsystemReal(() -> feeder.getStatorCurrent() > 1.0);
-	private final HoodSubsystem hood = new HoodSubsystemReal();
+	private final ShooterSubsystem shooter = new ShooterSubsystem();
+	// private final ShooterSubsystem shooter = new ShooterSubsystemReal(() -> feeder.getStatorCurrent() > 1.0);
+	private final HoodSubsystem hood = new HoodSubsystem();
 
 	private final ClimberSubsystem climber = new ClimberSubsystem();
 
@@ -92,7 +91,7 @@ public class RobotContainer {
 	Command defaultShooter = new DefaultShooter(shooter);
 
 	Command runFeeder = new ParallelCommandGroup(new RunFeeder(hopper, feeder, shooter, true), new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.SLOW));
-	Command stopRollers = new ParallelRaceGroup(new StopFeeder(hopper, feeder), new StopIntakeRollers(intakeRollers));
+	Command stopRollers = Commands.runOnce(() -> runFeeder.cancel());
 
 	Command runIntakeRollers = new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.FAST);
 	Command outtakeBalls = new ParallelCommandGroup(new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.REVERSE), new RunFeeder(hopper, feeder, shooter, false));
@@ -105,7 +104,6 @@ public class RobotContainer {
 	Command intakeIn = new IntakeToPosition(intake, IntakeStates.RETRACTED);
 
 	Command pointAtGoal	 = drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0);
-	Command sleep5 = Commands.waitSeconds(5.0);
 	Command sleep3 = Commands.waitSeconds(3.0);
 
 	Command reconfigAlliance = Commands.runOnce(() -> reconfigAlliance());
@@ -113,7 +111,7 @@ public class RobotContainer {
 	Command resetOdometry = Commands.runOnce(() -> drive.resetOdometry(new Pose2d(Translation2d.kZero, Rotation2d.kZero)));
 
 	Command autoShoot = new ParallelCommandGroup(Commands.waitSeconds(10.0), new RunFeeder(hopper, feeder, shooter, false), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0));
-	Command resetForNext = new ParallelCommandGroup(new StopFeeder(hopper, feeder), new StopIntakeRollers(intakeRollers), new ZeroHood(hood), new DefaultShooter(shooter));
+	Command resetForNext = new ParallelCommandGroup(Commands.runOnce(() -> runFeeder.cancel()), new ZeroHood(hood), new DefaultShooter(shooter));
 
   	public RobotContainer() {
 		configureBindings();
@@ -170,7 +168,6 @@ public class RobotContainer {
 		NamedCommands.registerCommand("zeroIntake", zeroIntake);
 
 		NamedCommands.registerCommand("pointAtGoal", pointAtGoal);
-		NamedCommands.registerCommand("sleep5", sleep5);
 		NamedCommands.registerCommand("sleep3", sleep3);
 
 		NamedCommands.registerCommand("autoShoot", autoShoot);

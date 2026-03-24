@@ -8,7 +8,7 @@
   "autoFolders": [
     "Old"
   ],
-  "defaultMaxVel": 4.0,
+  "defaultMaxVel": 0.5,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
@@ -16,11 +16,11 @@
   "robotMass": 50.0,
   "robotMOI": 6.883,
   "robotTrackwidth": 0.546,
-  "driveWheelRadius": 0.05,
+  "driveWheelRadius": 0.048,
   "driveGearing": 8.14,
   "maxDriveSpeed": 8.0,
   "driveMotorType": "krakenX60",
-  "driveCurrentLimit": 40.0,
+  "driveCurrentLimit": 30.0,
   "wheelCOF": 1.19,
   "flModuleX": 0.234,
   "flModuleY": 0.234,
