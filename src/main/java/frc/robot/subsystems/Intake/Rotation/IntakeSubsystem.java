@@ -4,6 +4,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CurrentLimits.HoodLimits;
 
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -35,6 +36,8 @@ public class IntakeSubsystem extends SubsystemBase {
     public double getSupplyCurrent() { return 0; }
 
     public double getStatorCurrent() { return 0; }
+
+    public void doZeroing() {}
 
     public void zeroRotation() {}
 

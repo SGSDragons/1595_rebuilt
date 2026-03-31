@@ -78,7 +78,7 @@ public final class Constants {
 		public static InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
 
 		public static double closeShot = 1.3;
-		public static double wheelExtra = 8;
+		public static double wheelExtra = 5;
 
 		static {
 			hoodMap.put(1.225,1.5);
@@ -227,13 +227,13 @@ public final class Constants {
 
 		public static final class HoodLimits {
 			public static final double supplyLimit = 40;
-			public static final double currentLimit = 25;
+			public static final double hardLimit = 25;
 			public static final double duration = 0.1;
 		}
 
 		public static final class IntakeLimits {
 			public static final double statorLimit = 100;
-			public static final double currentLimit = 50;
+			public static final double hardLimit = 50;
 			public static final double duration = 0.1;
 			public static final double maxTravelTime = 2;
 		}

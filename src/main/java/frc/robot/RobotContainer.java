@@ -21,22 +21,18 @@ import frc.robot.subsystems.Drive.SwerveSubsystemReal;
 import frc.robot.subsystems.Feeder.Feeder.FeederSubsystem;
 import frc.robot.subsystems.Feeder.Feeder.FeederSubsystemReal;
 import frc.robot.subsystems.Feeder.Hopper.HopperSubsystem;
-// import frc.robot.subsystems.Feeder.Hopper.HopperSubsystemReal;
-import frc.robot.subsystems.Feeder.Hopper.HopperSubsystemTwo;
+import frc.robot.subsystems.Feeder.Hopper.HopperSubsystemReal;
 import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystem;
 import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystemReal;
 import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystem.IntakeRollerSpeeds;
 import frc.robot.subsystems.Intake.Rotation.IntakeSubsystem;
 import frc.robot.subsystems.Intake.Rotation.IntakeSubsystem.IntakeStates;
-import frc.robot.subsystems.Intake.Rotation.IntakeSubsystemReal;
 import frc.robot.subsystems.Shooter.Hood.HoodSubsystem;
 import frc.robot.subsystems.Shooter.Hood.HoodSubsystemReal;
 import frc.robot.subsystems.Shooter.Shooter.ShooterSubsystem;
-import frc.robot.subsystems.Shooter.Shooter.ShooterSubsystemReal;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -49,8 +45,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 
@@ -65,17 +59,17 @@ public class RobotContainer {
 
 	// The robot's subsystems and commands are defined here...
 	// private final SwerveSubsystem drive = new SwerveSubsystem();
-	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(4.0), new Pose2d(13.0, 4.05, Rotation2d.kZero));
+	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(0.0), new Pose2d(13.0, 4.05, Rotation2d.kZero));
 
 	private final IntakeSubsystem intake = new IntakeSubsystem();
-	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystem();
+	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystemReal();
 
 	private final HopperSubsystem hopper = new HopperSubsystem();
-	private final FeederSubsystem feeder = new FeederSubsystem();
+	private final FeederSubsystem feeder = new FeederSubsystemReal();
 
 	private final ShooterSubsystem shooter = new ShooterSubsystem();
 	// private final ShooterSubsystem shooter = new ShooterSubsystemReal(() -> feeder.getStatorCurrent() > 1.0);
-	private final HoodSubsystem hood = new HoodSubsystem();
+	private final HoodSubsystem hood = new HoodSubsystemReal();
 
 	private final ClimberSubsystem climber = new ClimberSubsystem();
 

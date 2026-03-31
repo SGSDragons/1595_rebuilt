@@ -1,73 +1,104 @@
-// package frc.robot.subsystems.Feeder.Hopper;
+package frc.robot.subsystems.Feeder.Hopper;
 
 
-// import com.ctre.phoenix6.configs.TalonFXConfiguration;
-// import com.ctre.phoenix6.hardware.TalonFX;
-// import com.ctre.phoenix6.signals.InvertedValue;
-// import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import frc.robot.Constants.HardwareID.FeederIds;
-// import frc.robot.Constants.CurrentLimits.HopperLimits;;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.HardwareID.FeederIds;
+import frc.robot.Constants.CurrentLimits.HopperLimits;
+import frc.robot.Constants.CurrentLimits.SpinnerLimits;;
 
 
-// public class HopperSubsystemReal extends HopperSubsystem {
+public class HopperSubsystemReal extends HopperSubsystem {
     
-//     private TalonFX hopperMotor;
-//     private VoltageOut targetVoltage;
+    private TalonFX hopperMotor;
+    private TalonFX rightSpinner;
+    private TalonFX spinner;
 
-//     public HopperSubsystemReal() {
-//         hopperMotor = new TalonFX(FeederIds.hopperCanId);
-//         hopperMotor.setNeutralMode(NeutralModeValue.Brake);
+    private VoltageOut hopperTargetVoltage;
+    private VoltageOut spinnerTargetVoltage;
 
-//         var rollerConfig = new TalonFXConfiguration();
+    public HopperSubsystemReal() {
+        hopperMotor = new TalonFX(FeederIds.hopperCanId);
+        hopperMotor.setNeutralMode(NeutralModeValue.Coast);
 
-//         rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-//         rollerConfig.CurrentLimits.SupplyCurrentLimit = HopperLimits.supplyLimit;
+        var rollerConfig = new TalonFXConfiguration();
+        rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        rollerConfig.CurrentLimits.SupplyCurrentLimit = HopperLimits.supplyLimit;
+        hopperMotor.getConfigurator().apply(rollerConfig);
 
-//         hopperMotor.getConfigurator().apply(rollerConfig);
+        spinner = new TalonFX(FeederIds.leftSpinnerCanId);
+        rightSpinner = new TalonFX(FeederIds.rightSpinnerCanId);
+        rightSpinner.setControl(new Follower(spinner.getDeviceID(), MotorAlignmentValue.Opposed));
+        spinner.setNeutralMode(NeutralModeValue.Coast);
 
-//     }
+        var spinnerConfig = new TalonFXConfiguration();
+        spinnerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        spinnerConfig.CurrentLimits.SupplyCurrentLimit = SpinnerLimits.supplyLimit;
+        spinner.getConfigurator().apply(spinnerConfig);
 
-//     @Override
-//     public void runRollers(double voltage) {
-//         hopperMotor.setControl(power);
-//     } 
+        var rightSpinnerConfig = new TalonFXConfiguration();
+        rightSpinnerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        rightSpinnerConfig.CurrentLimits.SupplyCurrentLimit = SpinnerLimits.supplyLimit;
+        rightSpinner.getConfigurator().apply(rightSpinnerConfig);
 
-//     @Override
-//     public void stopRollers() {
-//         hopperMotor.stopMotor();
-//     } 
+        hopperTargetVoltage = new VoltageOut(0.0);
+        hopperMotor.setControl(hopperTargetVoltage);
+
+        spinnerTargetVoltage = new VoltageOut(0.0);
+        spinner.setControl(spinnerTargetVoltage);        
+    }
+
+    @Override
+    public void runRollers(double hopperVoltage, double spinnerVoltage) {
+        hopperMotor.setControl(hopperTargetVoltage.withOutput(hopperVoltage));
+        spinner.setControl(spinnerTargetVoltage.withOutput(spinnerVoltage));
+    } 
+
+    @Override
+    public void stopRollers() {
+        hopperMotor.stopMotor();
+        spinner.stopMotor();
+    } 
  
-//     @Override
-//     public double getSupplyCurrent() {
-//         return hopperMotor.getSupplyCurrent().getValueAsDouble();
-//     }
+    @Override
+    public double getSupplyCurrent() {
+        return hopperMotor.getSupplyCurrent().getValueAsDouble() + spinner.getSupplyCurrent().getValueAsDouble() + rightSpinner.getSupplyCurrent().getValueAsDouble();
+    }
 
-//     @Override
-//     public double getStatorCurrent() {
-//         return hopperMotor.getSupplyCurrent().getValueAsDouble();
-//     }
+    @Override
+    public double getStatorCurrent() {
+        return hopperMotor.getSupplyCurrent().getValueAsDouble() + spinner.getSupplyCurrent().getValueAsDouble() + rightSpinner.getSupplyCurrent().getValueAsDouble();
+    }
 
-//     // @Override
-//     // public void resetCurrentLimits() {
-//     //     var rollerConfig = new TalonFXConfiguration();
+    // @Override
+    // public void resetCurrentLimits() {
+    //     var rollerConfig = new TalonFXConfiguration();
 
-//     //     rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-//     //     rollerConfig.CurrentLimits.SupplyCurrentLimit = 100;
+    //     rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    //     rollerConfig.CurrentLimits.SupplyCurrentLimit = 100;
 
-//     //     hopperMotor.getConfigurator().apply(rollerConfig);
-//     // }
+    //     hopperMotor.getConfigurator().apply(rollerConfig);
+    // }
     
-//     @Override
-//     public void periodic() {
-//         telemetry();
-//     }
+    @Override
+    public void periodic() {
+        telemetry();
+    }
 
-//     @Override
+    @Override
 
-//     public void telemetry() {
-//         SmartDashboard.putNumber("Hopper Supply Current", getSupplyCurrent());
-//         SmartDashboard.putNumber("Hopper Stator Current", getStatorCurrent());
-//     }
-// }
+    public void telemetry() {
+        SmartDashboard.putNumber("Hopper Supply Current", getSupplyCurrent());
+        SmartDashboard.putNumber("Hopper Stator Current", getStatorCurrent());
+
+        SmartDashboard.putNumber("Hopper Velocity", hopperMotor.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("Spinner Velocity", spinner.getVelocity().getValueAsDouble());
+    }
+}

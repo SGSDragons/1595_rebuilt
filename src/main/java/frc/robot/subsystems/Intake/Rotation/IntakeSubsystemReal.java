@@ -8,15 +8,20 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.HardwareID.IntakeIds;
 import frc.robot.Constants.TuningValues.IntakeValues;
+import frc.robot.Constants.CurrentLimits.HoodLimits;
 import frc.robot.Constants.CurrentLimits.IntakeLimits;
 
 public class IntakeSubsystemReal extends IntakeSubsystem {
     
     PositionVoltage targetPosition;
     TalonFX rotationMotor;
+
+    private Debouncer spikeTime;
+    private boolean isZeroed;
 
     public IntakeSubsystemReal() {
 
@@ -38,6 +43,9 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
 
         rotationMotor.getConfigurator().apply(rotationConfig);
         targetPosition = new PositionVoltage(0).withPosition(IntakeValues.retracted);
+
+        isZeroed = false;
+        spikeTime = new Debouncer(IntakeLimits.duration);
     }
 
     @Override
@@ -52,6 +60,7 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
 
     @Override
     public void gotoPosition() {
+        isZeroed = false;
         rotationMotor.setControl(targetPosition);
     }
 
@@ -87,6 +96,19 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
     @Override
     public double getStatorCurrent() {
         return rotationMotor.getStatorCurrent().getValueAsDouble();
+    }
+
+    @Override
+    public void doZeroing() {
+        if (!isZeroed) {
+            rotationMotor.set(-0.1);
+            if (spikeTime.calculate(getStatorCurrent() > HoodLimits.hardLimit)) {
+                zeroRotation();
+                isZeroed = true;
+            }
+        } else {
+            rotationMotor.set(0.0);
+        }
     }
 
     @Override

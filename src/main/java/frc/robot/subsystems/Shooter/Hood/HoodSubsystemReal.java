@@ -8,6 +8,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.HardwareID.HoodIds;
 import frc.robot.Constants.TuningValues.HoodValues;
@@ -17,6 +18,9 @@ public class HoodSubsystemReal extends HoodSubsystem {
     
     public TalonFX hoodMotor;
     private PositionVoltage targetPosition;
+
+    private Debouncer spikeTime;
+    private boolean isZeroed;
 
     public HoodSubsystemReal() {
         hoodMotor = new TalonFX(HoodIds.hoodCanId);
@@ -38,7 +42,8 @@ public class HoodSubsystemReal extends HoodSubsystem {
         hoodMotor.getConfigurator().apply(hoodConfig);
         targetPosition = new PositionVoltage(0).withPosition(0);
 
-        // Mechanism2d arm = new Mechanism2d(2, 3);
+        isZeroed = false;
+        spikeTime = new Debouncer(HoodLimits.duration);
     }
 
     @Override
@@ -48,6 +53,7 @@ public class HoodSubsystemReal extends HoodSubsystem {
 
     @Override
     public void enableHood() {
+        isZeroed = false;
         hoodMotor.setControl(targetPosition);
     }
 
@@ -75,6 +81,19 @@ public class HoodSubsystemReal extends HoodSubsystem {
     @Override
     public double getPosition() {
         return hoodMotor.getPosition().getValueAsDouble();
+    }
+
+    @Override
+    public void doZeroing() {
+        if (!isZeroed) {
+            hoodMotor.set(-0.1);
+            if (spikeTime.calculate(getStatorCurrent() > HoodLimits.hardLimit)) {
+                zeroHood();
+                isZeroed = true;
+            }
+        } else {
+            hoodMotor.set(0.0);
+        }
     }
 
     public void zeroHood() {

@@ -37,6 +37,8 @@ public class HoodSubsystem extends SubsystemBase {
 
     public double getPosition() { return 0; }
 
+    public void doZeroing() {}
+
     public void zeroHood() {}
 
     public void periodic() { telemetry(); }
