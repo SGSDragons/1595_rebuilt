@@ -175,9 +175,10 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
     public void periodic() {
         swerveDrive.updateOdometry();
         LimelightHelpers.SetRobotOrientation(LimeLightConstants.limelight2, getHeading().getDegrees(), 0, 0, 0, 0, 0);
-        // LimelightHelpers.SetRobotOrientation(LimeLightConstants.limelight3a, getHeading().getDegrees(), 0, 0, 0, 0, 0);
+        LimelightHelpers.SetRobotOrientation(LimeLightConstants.limelight3a, getHeading().getDegrees(), 0, 0, 0, 0, 0);
 
-        PoseEstimate LL2poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightConstants.limelight2);
+        // PoseEstimate LL2poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightConstants.limelight2);
+        PoseEstimate LL2poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimeLightConstants.limelight2);
         boolean acceptLL2Reading = (LL2poseEst != null && LL2poseEst.tagCount > 0 && LL2poseEst.avgTagDist < LimeLightConstants.maxReadDistance);
 
         if (acceptLL2Reading) {
@@ -188,7 +189,8 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
                 );
         }
 
-        PoseEstimate LL3poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightConstants.limelight3a);
+        // PoseEstimate LL3poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightConstants.limelight3a);
+        PoseEstimate LL3poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimeLightConstants.limelight3a);
         boolean acceptLL3Reading = (LL3poseEst != null && LL3poseEst.tagCount > 0 && LL3poseEst.avgTagDist < LimeLightConstants.maxReadDistance);
 
         if (acceptLL3Reading) {

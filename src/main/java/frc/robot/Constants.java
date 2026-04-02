@@ -78,7 +78,7 @@ public final class Constants {
 		public static InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
 
 		public static double closeShot = 1.3;
-		public static double wheelExtra = 5;
+		public static double wheelExtra = 3;
 
 		static {
 			hoodMap.put(1.225,1.5);
@@ -171,7 +171,7 @@ public final class Constants {
 			public static final double kI = 0.0;
 			public static final double kD = 0;
 
-			public static double kickVoltage = 1.5;
+			public static double kickVoltage = 4.0;
 			
 			public static final double runSpeed = 25;
 			public static final double maxShooterSpeed = 85.0;

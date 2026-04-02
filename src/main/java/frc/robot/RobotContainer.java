@@ -30,6 +30,7 @@ import frc.robot.subsystems.Intake.Rotation.IntakeSubsystem.IntakeStates;
 import frc.robot.subsystems.Shooter.Hood.HoodSubsystem;
 import frc.robot.subsystems.Shooter.Hood.HoodSubsystemReal;
 import frc.robot.subsystems.Shooter.Shooter.ShooterSubsystem;
+import frc.robot.subsystems.Shooter.Shooter.ShooterSubsystemReal;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -59,7 +60,7 @@ public class RobotContainer {
 
 	// The robot's subsystems and commands are defined here...
 	// private final SwerveSubsystem drive = new SwerveSubsystem();
-	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(0.0), new Pose2d(13.0, 4.05, Rotation2d.kZero));
+	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(2.0), new Pose2d(13.0, 4.05, Rotation2d.kZero));
 
 	private final IntakeSubsystem intake = new IntakeSubsystem();
 	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystemReal();
@@ -67,8 +68,8 @@ public class RobotContainer {
 	private final HopperSubsystem hopper = new HopperSubsystem();
 	private final FeederSubsystem feeder = new FeederSubsystemReal();
 
-	private final ShooterSubsystem shooter = new ShooterSubsystem();
-	// private final ShooterSubsystem shooter = new ShooterSubsystemReal(() -> feeder.getStatorCurrent() > 1.0);
+	// private final ShooterSubsystem shooter = new ShooterSubsystem();
+	private final ShooterSubsystem shooter = new ShooterSubsystemReal(() -> feeder.getStatorCurrent() > 1.0);
 	private final HoodSubsystem hood = new HoodSubsystemReal();
 
 	private final ClimberSubsystem climber = new ClimberSubsystem();
@@ -185,7 +186,7 @@ public class RobotContainer {
 		driverController.povDown().onTrue(reverseDirection);
 
 		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
-		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
+		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 0.5));
 		driverController.leftBumper().whileTrue(drive.lockSwerveDrive(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 0.25));
 		
 		// Drive Tangent
@@ -218,7 +219,7 @@ public class RobotContainer {
 		driverController.povUp().onTrue(resetOdometry);
 
 		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
-		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 1.0));
+		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 0.5));
 		driverController.leftBumper().whileTrue(drive.lockSwerveDrive(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 0.5));
 		
 		// Drive Tangent
