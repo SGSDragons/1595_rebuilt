@@ -10,7 +10,7 @@ public class FeederSubsystem extends SubsystemBase {
 
     public FeederSubsystem() {}
 
-    public void runRollers(double power) {} 
+    public void runRollers(double voltage) {} 
 
     public void stopRollers() {} 
  

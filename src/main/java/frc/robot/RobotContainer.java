@@ -12,6 +12,7 @@ import frc.robot.commands.Intake.ZeroIntake;
 import frc.robot.commands.Shooter.CloseShot;
 import frc.robot.commands.Shooter.EnableHood;
 import frc.robot.commands.Shooter.EnableShooter;
+import frc.robot.commands.Shooter.PassShot;
 import frc.robot.commands.Shooter.DefaultShooter;
 import frc.robot.commands.Shooter.ZeroHood;
 import frc.robot.subsystems.GoalAim;
@@ -85,17 +86,16 @@ public class RobotContainer {
 
 	Command zeroHood = new ZeroHood(hood);
 	Command enableShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
-	Command closeShot = new CloseShot(shooter, hood, goalAimer);
 	Command defaultShooter = new DefaultShooter(shooter);
+	
+	Command closeShot = new CloseShot(shooter, hood, goalAimer);
+	Command passShot = new PassShot(shooter, hood, feeder, hopper, intakeRollers);
 
 	Command runFeeder = new ParallelCommandGroup(new RunFeeder(hopper, feeder, shooter, true), new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.SLOW));
 	Command stopRollers = Commands.runOnce(() -> runFeeder.cancel());
 
 	Command runIntakeRollers = new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.FAST);
 	Command outtakeBalls = new ParallelCommandGroup(new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.REVERSE), new RunFeeder(hopper, feeder, shooter, false));
-
-	Command increaseFeederLimit = Commands.runOnce(() -> feeder.increaseCurrentLimits());
-	Command decreaseFeederLimit = Commands.runOnce(() -> feeder.decreaseCurrentLimits());
 
 	Command zeroIntake = new ZeroIntake(intake);
 	Command intakeOut = new IntakeToPosition(intake, IntakeStates.EXTENDED);
@@ -112,7 +112,7 @@ public class RobotContainer {
 
 	// Command autoShoot = new ParallelRaceGroup(Commands.waitSeconds(5.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0));
 	Command autoShoot = new SequentialCommandGroup(
-		new ParallelRaceGroup(Commands.waitSeconds(5.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0)),
+		new ParallelRaceGroup(Commands.waitSeconds(8.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0)),
 		new ParallelRaceGroup(Commands.waitSeconds(2.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer), new IntakeToPosition(intake, IntakeStates.RETRACTED), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0)),
 		new IntakeToPosition(intake, IntakeStates.EXTENDED));
 
@@ -206,6 +206,8 @@ public class RobotContainer {
 		operatorController.a().whileTrue(enableShooter);
 		operatorController.b().whileTrue(closeShot);
 
+		operatorController.x().whileTrue(passShot);
+
 		hood.setDefaultCommand(new ZeroHood(hood));
 		shooter.setDefaultCommand(defaultShooter);
 
@@ -219,9 +221,6 @@ public class RobotContainer {
 
 		operatorController.rightBumper().whileTrue(runIntakeRollers);
 		operatorController.leftBumper().whileTrue(outtakeBalls);
-
-		operatorController.x().onTrue(decreaseFeederLimit);
-		operatorController.y().onTrue(increaseFeederLimit);
 	}
 
 	public void configureTestBindings() {
@@ -241,6 +240,8 @@ public class RobotContainer {
 		operatorController.a().whileTrue(enableShooter);
 		operatorController.b().whileTrue(closeShot);
 
+		operatorController.x().whileTrue(passShot);
+
 		hood.setDefaultCommand(zeroHood);
 		shooter.setDefaultCommand(defaultShooter);
 
@@ -255,9 +256,6 @@ public class RobotContainer {
 
 		operatorController.rightBumper().whileTrue(runIntakeRollers);
 		operatorController.leftBumper().whileTrue(outtakeBalls);
-
-		operatorController.x().onTrue(decreaseFeederLimit);
-		operatorController.y().onTrue(increaseFeederLimit);
 	}
 
 
