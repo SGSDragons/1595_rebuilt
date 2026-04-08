@@ -82,6 +82,9 @@ public final class Constants {
 		public static double wheelExtra = 0;
 		public static double hoodExtra = 1.5 ;
 
+		public static double passingHood = 8.0;
+		public static double passingShooter = 70;
+
 		static {
 			hoodMap.put(1.225,1.5);
 			hoodMap.put(1.529,2.75);
