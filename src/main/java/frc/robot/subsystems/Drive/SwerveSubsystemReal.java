@@ -319,7 +319,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
      */
     @Override
     public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX, DoubleSupplier headingY, double scale) {
-        swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
+        // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
         return run(() -> {
 
             Translation2d joystick = new Translation2d(translationX.getAsDouble(), translationY.getAsDouble());
@@ -383,6 +383,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
 
     @Override
     public Command lockSwerveDrive(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX, double scale) {
+        swerveDrive.setHeadingCorrection(true);
         return run(() -> {
 
             Translation2d joystick = new Translation2d(translationX.getAsDouble(), translationY.getAsDouble());

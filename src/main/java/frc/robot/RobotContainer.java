@@ -197,6 +197,7 @@ public class RobotContainer {
 
 		// drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
 		drive.setDefaultCommand(drive.turnRelative(driver::translateX, driver::translateY, driver::lookX, 1.0));
+		driverController.y().whileTrue(drive.driveCommand(driver::translateX, driver::translateY, () -> 0.0, () -> -driver.inverter, 1.0));
 		driverController.rightTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0)); 
 
 		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 0.5));

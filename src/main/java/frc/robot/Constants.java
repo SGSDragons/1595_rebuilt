@@ -213,8 +213,8 @@ public final class Constants {
 
 		public static final class HopperValues {
 			// public static final double hopperRunSpeed = 0.8;
-			public static final double hopperVoltage = 1.0;
-			public static final double spinnerVoltage = 4.0;
+			public static final double hopperVoltage = 8.0;
+			public static final double spinnerVoltage = 8.0;
 		}
 
 		public static final class FeederValues {
