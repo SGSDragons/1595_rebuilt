@@ -9,19 +9,14 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.controllers.PPLTVController;
-import com.pathplanner.lib.controllers.PathFollowingController;
-import com.pathplanner.lib.util.DriveFeedforwards;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -30,15 +25,11 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
-import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.HardwareID.LimeLightConstants;
 import frc.robot.LimelightHelpers;
@@ -61,7 +52,7 @@ import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
-import frc.robot.Constants.TuningValues.DrivingValues;;;
+import frc.robot.Constants.TuningValues.DrivingValues;
 
 public class SwerveSubsystemReal extends SwerveSubsystem {
 
@@ -84,7 +75,10 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
 
 
         // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
+
+        // Maybe slowing it down
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+
         try {
             File configs = new File(Filesystem.getDeployDirectory(), "swerve");
             SwerveParser configParser = new SwerveParser(configs);
@@ -174,22 +168,20 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
     @Override
     public void periodic() {
         swerveDrive.updateOdometry();
-        LimelightHelpers.SetRobotOrientation(LimeLightConstants.limelight2, getHeading().getDegrees(), 0, 0, 0, 0, 0);
+
+        // LimelightHelpers.SetRobotOrientation(LimeLightConstants.limelight2, getHeading().getDegrees(), 0, 0, 0, 0, 0);
+        // PoseEstimate LL2poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimeLightConstants.limelight2);
+        // boolean acceptLL2Reading = (LL2poseEst != null && LL2poseEst.tagCount > 0 && LL2poseEst.avgTagDist < LimeLightConstants.maxReadDistance);
+
+        // if (acceptLL2Reading) {
+        //     swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
+        //         LL2poseEst.pose,
+        //         LL2poseEst.timestampSeconds,
+        //         VecBuilder.fill(0.7, 0.7, 1e10)
+        //         );
+        // }
+
         LimelightHelpers.SetRobotOrientation(LimeLightConstants.limelight3a, getHeading().getDegrees(), 0, 0, 0, 0, 0);
-
-        // PoseEstimate LL2poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightConstants.limelight2);
-        PoseEstimate LL2poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimeLightConstants.limelight2);
-        boolean acceptLL2Reading = (LL2poseEst != null && LL2poseEst.tagCount > 0 && LL2poseEst.avgTagDist < LimeLightConstants.maxReadDistance);
-
-        if (acceptLL2Reading) {
-            swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
-                LL2poseEst.pose,
-                LL2poseEst.timestampSeconds,
-                VecBuilder.fill(0.7, 0.7, 1e10)
-                );
-        }
-
-        // PoseEstimate LL3poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightConstants.limelight3a);
         PoseEstimate LL3poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimeLightConstants.limelight3a);
         boolean acceptLL3Reading = (LL3poseEst != null && LL3poseEst.tagCount > 0 && LL3poseEst.avgTagDist < LimeLightConstants.maxReadDistance);
 
@@ -279,6 +271,41 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         swerveDrive.replaceSwerveModuleFeedforward(new SimpleMotorFeedforward(kS, kV, kA));
     }
 
+    @Override
+    public Command driveRelative(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX) {
+        return run(() -> {
+            Translation2d joystick = new Translation2d(translationX.getAsDouble(), translationY.getAsDouble());
+            if (joystick.getNorm() < 0.1) {
+                joystick = Translation2d.kZero;
+            }
+            double omega = MathUtil.applyDeadband(angularRotationX.getAsDouble(), 0.2);
+            omega = Math.pow(omega, 3) * swerveDrive.getMaximumChassisAngularVelocity() / 4.0;
+
+            swerveDrive.drive(joystick, omega*2, false, false);
+        });
+    }
+
+    @Override
+    public Command turnRelative(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX, double scale) {
+        return run(() -> {
+
+            Translation2d joystick = new Translation2d(translationX.getAsDouble(), translationY.getAsDouble());
+            double magnitude = joystick.getNorm();
+            
+            if (joystick.getNorm() < 0.1) {
+                joystick = Translation2d.kZero;
+            }
+
+            magnitude = scale*Math.pow(magnitude, DrivingValues.joystickPower);
+            joystick = joystick.times(magnitude*this.maxSpeedMps);
+
+            double omega = MathUtil.applyDeadband(angularRotationX.getAsDouble(), 0.2);
+            omega = Math.pow(omega, 3) * swerveDrive.getMaximumChassisAngularVelocity();
+
+            swerveDrive.drive(joystick, omega*-0.75, true, false);
+        });
+    }
+
     /**
      * Command to drive the robot using translative values and heading as a setpoint.
      * Using this method, the robot will move in the direction of one joystick's tilt, and
@@ -301,40 +328,18 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
             if (magnitude < 0.1) {
                 joystick = Translation2d.kZero;
             }
-
             
             magnitude = scale*Math.pow(magnitude, DrivingValues.joystickPower);
             joystick = joystick.times(magnitude);
-            
 
-            Translation2d scaledInputs = SwerveMath.scaleTranslation(joystick, 0.8);
-
-            // Make the robot move
             driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(
-                    scaledInputs.getX(),
-                    scaledInputs.getY(),
+                    joystick.getX(),
+                    joystick.getY(),
                     headingX.getAsDouble(),
                     headingY.getAsDouble(),
                     swerveDrive.getOdometryHeading().getRadians(),
                     swerveDrive.getMaximumChassisVelocity()));
         });
-    }
-
-    @Override
-    public Command driveRelative(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX)
-    {
-      return run(() -> {
-        
-        Translation2d joystick = new Translation2d(translationX.getAsDouble(), translationY.getAsDouble());
-        if (joystick.getNorm() < 0.1) {
-            joystick = Translation2d.kZero;
-        }
-        double omega = MathUtil.applyDeadband(angularRotationX.getAsDouble(), 0.2);
-        omega = Math.pow(omega, 3) * swerveDrive.getMaximumChassisAngularVelocity() / 4.0;
-
-        // Make the robot move
-        swerveDrive.drive(joystick, omega, false, false);
-      });
     }
 
     @Override
@@ -356,56 +361,48 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
             Translation2d scaledInputs = SwerveMath.scaleTranslation(joystick, 0.8);
             Translation2d vector = aimer.pointAtGoal();
 
+
             // Lock swerve if there's no translation and the robot is close to its heading
-            if (Math.abs(getHeading().getDegrees() - vector.getAngle().getDegrees()) < 1.0 && joystick.getNorm() < 0.1) {
+            if (Math.abs(vector.getAngle().getDegrees() - getHeading().getDegrees()) < 1.0 && joystick.getNorm() < 0.1) {
                 lock();
             }
             else {
                 driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(
-                        scaledInputs.getX(),
-                        scaledInputs.getY(),
-                        vector.getX(),
-                        vector.getY(),
-                        swerveDrive.getOdometryHeading().getRadians(),
-                        swerveDrive.getMaximumChassisVelocity()));
-            }
+                    scaledInputs.getX(),
+                    scaledInputs.getY(),
 
+                    // Vector inputs reversed
+                    vector.getY(),
+                    vector.getX(),
+
+                    swerveDrive.getOdometryHeading().getRadians(),
+                    swerveDrive.getMaximumChassisVelocity()));
+            }
         });
     }
 
     @Override
-    public Command lockSwerveDrive(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX, DoubleSupplier headingY, double scale) {
-        swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
+    public Command lockSwerveDrive(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX, double scale) {
         return run(() -> {
 
             Translation2d joystick = new Translation2d(translationX.getAsDouble(), translationY.getAsDouble());
             double magnitude = joystick.getNorm();
-          
-            if (magnitude < 0.1) {
+            
+            if (joystick.getNorm() < 0.1) {
                 joystick = Translation2d.kZero;
             }
 
             magnitude = scale*Math.pow(magnitude, DrivingValues.joystickPower);
-            joystick = joystick.times(magnitude);
-            
+            joystick = joystick.times(magnitude*this.maxSpeedMps);
 
-            Translation2d scaledInputs = SwerveMath.scaleTranslation(joystick, 0.8);
-            Rotation2d headingInput = new Rotation2d(headingX.getAsDouble(), headingY.getAsDouble());
-            Translation2d headingMagnitude = new Translation2d(headingX.getAsDouble(), headingY.getAsDouble());
+            double omega = MathUtil.applyDeadband(angularRotationX.getAsDouble(), 0.2);
+            omega = Math.pow(omega, 3) * swerveDrive.getMaximumChassisAngularVelocity();
 
-            // lock swerve if there's no translation or joystick rotation input or joystick roation is close to heading
-            if ((Math.abs(getHeading().getDegrees() - headingInput.getDegrees())< 2.0 || headingMagnitude.getNorm() < 0.1) && joystick == Translation2d.kZero) {
+            if (Math.abs(angularRotationX.getAsDouble()) < 0.1 && joystick.getNorm() < 0.1) {
                 lock();
             }
-
-            else{
-            driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(
-                    scaledInputs.getX(),
-                    scaledInputs.getY(),
-                    headingX.getAsDouble(),
-                    headingY.getAsDouble(),
-                    swerveDrive.getOdometryHeading().getRadians(),
-                    swerveDrive.getMaximumChassisVelocity()));
+            else {
+                swerveDrive.drive(joystick, omega*-0.75, true, false);
             }
         });
     }

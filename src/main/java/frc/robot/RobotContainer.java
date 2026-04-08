@@ -27,6 +27,7 @@ import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystemReal;
 import frc.robot.subsystems.Intake.Roller.IntakeRollerSubsystem.IntakeRollerSpeeds;
 import frc.robot.subsystems.Intake.Rotation.IntakeSubsystem;
 import frc.robot.subsystems.Intake.Rotation.IntakeSubsystem.IntakeStates;
+import frc.robot.subsystems.Intake.Rotation.IntakeSubsystemReal;
 import frc.robot.subsystems.Shooter.Hood.HoodSubsystem;
 import frc.robot.subsystems.Shooter.Hood.HoodSubsystemReal;
 import frc.robot.subsystems.Shooter.Shooter.ShooterSubsystem;
@@ -46,6 +47,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 
@@ -60,12 +63,12 @@ public class RobotContainer {
 
 	// The robot's subsystems and commands are defined here...
 	// private final SwerveSubsystem drive = new SwerveSubsystem();
-	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(2.0), new Pose2d(13.0, 4.05, Rotation2d.kZero));
+	private final SwerveSubsystemReal drive = new SwerveSubsystemReal(Units.MetersPerSecond.of(4.0), new Pose2d(13.0, 4.05, Rotation2d.kZero));
 
-	private final IntakeSubsystem intake = new IntakeSubsystem();
+	private final IntakeSubsystem intake = new IntakeSubsystemReal();
 	private final IntakeRollerSubsystem intakeRollers = new IntakeRollerSubsystemReal();
 
-	private final HopperSubsystem hopper = new HopperSubsystem();
+	private final HopperSubsystem hopper = new HopperSubsystemReal();
 	private final FeederSubsystem feeder = new FeederSubsystemReal();
 
 	// private final ShooterSubsystem shooter = new ShooterSubsystem();
@@ -97,6 +100,8 @@ public class RobotContainer {
 	Command zeroIntake = new ZeroIntake(intake);
 	Command intakeOut = new IntakeToPosition(intake, IntakeStates.EXTENDED);
 	Command intakeIn = new IntakeToPosition(intake, IntakeStates.RETRACTED);
+	// Command setIntakeDown = Commands.runOnce(() -> this.intake.setDown());
+	// Command setIntakeUp = Commands.runOnce(() -> this.intake.setDown());
 
 	Command pointAtGoal	 = drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0);
 	Command sleep3 = Commands.waitSeconds(3.0);
@@ -105,7 +110,12 @@ public class RobotContainer {
 	Command reverseDirection = Commands.runOnce(() -> reverseDirection());
 	Command resetOdometry = Commands.runOnce(() -> drive.resetOdometry(new Pose2d(Translation2d.kZero, Rotation2d.kZero)));
 
-	Command autoShoot = new ParallelCommandGroup(Commands.waitSeconds(10.0), new RunFeeder(hopper, feeder, shooter, false), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0));
+	// Command autoShoot = new ParallelRaceGroup(Commands.waitSeconds(5.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0));
+	Command autoShoot = new SequentialCommandGroup(
+		new ParallelRaceGroup(Commands.waitSeconds(5.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0)),
+		new ParallelRaceGroup(Commands.waitSeconds(2.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer), new IntakeToPosition(intake, IntakeStates.RETRACTED), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0)),
+		new IntakeToPosition(intake, IntakeStates.EXTENDED));
+
 	Command resetForNext = new ParallelCommandGroup(Commands.runOnce(() -> runFeeder.cancel()), new ZeroHood(hood), new DefaultShooter(shooter));
 
   	public RobotContainer() {
@@ -185,12 +195,12 @@ public class RobotContainer {
 		driverController.a().onTrue(reconfigAlliance);
 		driverController.povDown().onTrue(reverseDirection);
 
-		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
+		// drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
+		drive.setDefaultCommand(drive.turnRelative(driver::translateX, driver::translateY, driver::lookX, 1.0));
+		driverController.rightTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0)); 
+
 		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 0.5));
-		driverController.leftBumper().whileTrue(drive.lockSwerveDrive(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 0.25));
-		
-		// Drive Tangent
-		// driverController.rightTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY, driver::translateY, driver::translateX, 1.0));
+		driverController.leftBumper().whileTrue(drive.lockSwerveDrive(driver::translateX, driver::translateY, driver::lookX, 0.25));
 
 		operatorController.a().whileTrue(enableShooter);
 		operatorController.b().whileTrue(closeShot);
@@ -202,7 +212,9 @@ public class RobotContainer {
 
 		operatorController.povUp().onTrue(intakeOut);
 		operatorController.povDown().onTrue(intakeIn);
-		// intake.setDefaultCommand(zeroIntake);
+		// operatorController.povDown().onTrue(setIntakeDown);
+		// operatorController.povLeft().onTrue(setIntakeUp);
+		intake.setDefaultCommand(zeroIntake);
 
 		operatorController.rightBumper().whileTrue(runIntakeRollers);
 		operatorController.leftBumper().whileTrue(outtakeBalls);
@@ -218,12 +230,12 @@ public class RobotContainer {
 		driverController.povDown().onTrue(reverseDirection);
 		driverController.povUp().onTrue(resetOdometry);
 
-		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
+		// drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
+		drive.setDefaultCommand(drive.turnRelative(driver::translateX, driver::translateY, driver::lookX, 1.0));
+		driverController.rightTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0)); 
+
 		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 0.5));
-		driverController.leftBumper().whileTrue(drive.lockSwerveDrive(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 0.5));
-		
-		// Drive Tangent
-		// driverController.rightTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY, driver::translateY, driver::translateX, 1.0));
+		driverController.leftBumper().whileTrue(drive.lockSwerveDrive(driver::translateX, driver::translateY, driver::lookX, 0.25));
 
 		operatorController.a().whileTrue(enableShooter);
 		operatorController.b().whileTrue(closeShot);
@@ -232,10 +244,13 @@ public class RobotContainer {
 		shooter.setDefaultCommand(defaultShooter);
 
 		operatorController.rightTrigger(0.2).whileTrue(runFeeder);
+		driverController.rightTrigger(0.2).whileTrue(runIntakeRollers);
 
 		operatorController.povUp().onTrue(intakeOut);
 		operatorController.povDown().onTrue(intakeIn);
-		// intake.setDefaultCommand(zeroIntake);
+		// operatorController.povRight().onTrue(setIntakeDown);
+		// operatorController.povLeft().onTrue(setIntakeUp);
+		intake.setDefaultCommand(zeroIntake);
 
 		operatorController.rightBumper().whileTrue(runIntakeRollers);
 		operatorController.leftBumper().whileTrue(outtakeBalls);

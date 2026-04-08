@@ -69,6 +69,7 @@ public final class Constants {
 			public static final String limelight3a = "limelight-three";
 
 			public static final double maxReadDistance = 5.0;
+
 		}
 	}
 
@@ -78,7 +79,8 @@ public final class Constants {
 		public static InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
 
 		public static double closeShot = 1.3;
-		public static double wheelExtra = 3;
+		public static double wheelExtra = 0;
+		public static double hoodExtra = 1.5 ;
 
 		static {
 			hoodMap.put(1.225,1.5);
@@ -137,7 +139,7 @@ public final class Constants {
 		}
 
 		public static double getHoodValue(double distance) {
-			return hoodMap.get(distance);
+			return hoodMap.get(distance)+hoodExtra;
 		}
 
 		public static double getWheelValue(double distance) {
@@ -159,7 +161,7 @@ public final class Constants {
 	public static final class TuningValues {
 
 		public static final class DrivingValues {
-			public static final double joystickPower = 5;
+			public static final double joystickPower = 3;
  		}
 
 		public static final class ShooterValues {
@@ -168,7 +170,7 @@ public final class Constants {
 			public static final double kV = 0.15;
 			public static final double kA = 0;
 			public static final double kP = 1.0;
-			public static final double kI = 0.0;
+			public static final double kI = 0.8;
 			public static final double kD = 0;
 
 			public static double kickVoltage = 4.0;
@@ -191,11 +193,13 @@ public final class Constants {
 		}
 
 		public static final class IntakeValues {
-			public static final double kS = 3.0;
+			public static final double kS = 1.0;	
 			public static final double kG = 0;
 			public static final double kP = 0.4;
 			public static final double kI = 0.01;
 			public static final double kD = 0.0;
+
+			public static final double upStatic = 3.0;
 
 			public static final double extended = 9.5;
 			public static final double retracted = 1.5;
@@ -203,14 +207,14 @@ public final class Constants {
 
 			// public static final double intakeFastRunSpeed = 0.8;
 			// public static final double intakeSlowRunSpeed = 0.4;
-			public static final double intakeFastVoltage = 8.0;
-			public static final double intakeSlowVoltage = 4.0;
+			public static final double intakeFastVoltage = 6.0;
+			public static final double intakeSlowVoltage = 2.0;
 		}
 
 		public static final class HopperValues {
 			// public static final double hopperRunSpeed = 0.8;
-			public static final double hopperVoltage = 6.0;
-			public static final double spinnerVoltage = 6.0;
+			public static final double hopperVoltage = 1.0;
+			public static final double spinnerVoltage = 4.0;
 		}
 
 		public static final class FeederValues {
@@ -243,11 +247,11 @@ public final class Constants {
 		}
 
 		public static final class HopperLimits {
-			public static final double supplyLimit = 40;
+			public static final double supplyLimit = 10;
 		}
 
 		public static final class SpinnerLimits {
-			public static final double supplyLimit = 40;
+			public static final double supplyLimit = 10;
 		}
 
 		public static final class FeederLimits {

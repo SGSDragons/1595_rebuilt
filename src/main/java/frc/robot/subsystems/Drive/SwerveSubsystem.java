@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -26,6 +27,19 @@ public class SwerveSubsystem extends SubsystemBase {
     public SwerveSubsystem() {}
 
     /**
+     * Command to drive the robot relative to the robot itself.
+     * 
+     * @param translationX A supplier where positive values drive forward
+     * @param translationY A supplier where positive values strafe left
+     * @param angularRotationX A supplier where positive values turn right
+     * @return A drive command
+     */
+    public Command driveRelative(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX) { return runOnce(null); }
+
+    public Command turnRelative(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX, double scale) { return runOnce(null); }
+
+
+    /**
      * Command to drive the robot using translative values and heading as a setpoint.
      * Using this method, the robot will move in the direction of one joystick's tilt, and
      * point in the direction of the other joystick's tilt.
@@ -40,16 +54,6 @@ public class SwerveSubsystem extends SubsystemBase {
     public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX, DoubleSupplier headingY, double scale) { return runOnce(null); }
 
     /**
-     * Command to drive the robot relative to the robot itself.
-     * 
-     * @param translationX A supplier where positive values drive forward
-     * @param translationY A supplier where positive values strafe left
-     * @param angularRotationX A supplier where positive values turn right
-     * @return A drive command
-     */
-    public Command driveRelative(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX) { return runOnce(null); }
-
-    /**
      * Command to drive the robot using translation values and heading pointed to the goal
      *
      * @param translationX Translation in the X direction. Cubed for smoother controls.
@@ -59,7 +63,7 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public Command aimAtGoal(DoubleSupplier translationX, DoubleSupplier translationY, GoalAim aimer, double scale) { return runOnce(null); }
 
-    public Command lockSwerveDrive(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX, DoubleSupplier headingY, double scale) { return runOnce(null); }
+    public Command lockSwerveDrive(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX, double scale) { return runOnce(null); }
 
     public Pose2d getPose() { return Pose2d.kZero; }
 

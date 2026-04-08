@@ -34,18 +34,22 @@ public class HopperSubsystemReal extends HopperSubsystem {
         hopperMotor.getConfigurator().apply(rollerConfig);
 
         spinner = new TalonFX(FeederIds.leftSpinnerCanId);
+        spinner.setNeutralMode(NeutralModeValue.Coast);
+
         rightSpinner = new TalonFX(FeederIds.rightSpinnerCanId);
         rightSpinner.setControl(new Follower(spinner.getDeviceID(), MotorAlignmentValue.Opposed));
-        spinner.setNeutralMode(NeutralModeValue.Coast);
+        rightSpinner.setNeutralMode(NeutralModeValue.Coast);
 
         var spinnerConfig = new TalonFXConfiguration();
         spinnerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         spinnerConfig.CurrentLimits.SupplyCurrentLimit = SpinnerLimits.supplyLimit;
+        spinnerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         spinner.getConfigurator().apply(spinnerConfig);
 
         var rightSpinnerConfig = new TalonFXConfiguration();
         rightSpinnerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         rightSpinnerConfig.CurrentLimits.SupplyCurrentLimit = SpinnerLimits.supplyLimit;
+        rightSpinnerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         rightSpinner.getConfigurator().apply(rightSpinnerConfig);
 
         hopperTargetVoltage = new VoltageOut(0.0);

@@ -1,10 +1,12 @@
 package frc.robot.subsystems.Intake.Rotation;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CurrentLimits.HoodLimits;
+import frc.robot.Constants.TuningValues.IntakeValues;
 
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -27,6 +29,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void setTargetPosition(IntakeStates position) {}
 
+    public void increasePID() {}
+
+    public void decreasePID() {}
+
     public double getPosition() { return 0; }
 
     public boolean isExtended() { return false; }
@@ -40,6 +46,10 @@ public class IntakeSubsystem extends SubsystemBase {
     public void doZeroing() {}
 
     public void zeroRotation() {}
+
+    public void setUp() {}
+
+    public void setDown() {}
 
     public void periodic() { telemetry(); }
 

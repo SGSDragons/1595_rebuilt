@@ -32,8 +32,7 @@ public class RunFeeder extends Command {
     public void initialize() {
         this.feederSubsystem.runRollers(-FeederValues.feederVoltage);
         this.hopperSubsystem.runRollers(-HopperValues.hopperVoltage, -HopperValues.spinnerVoltage);
-        atSpeed = false;
-        // System.out.println("Feeder running");  
+        atSpeed = false; 
     }
 
     // If shooter is up to speed run hopper and feeder no matter what 

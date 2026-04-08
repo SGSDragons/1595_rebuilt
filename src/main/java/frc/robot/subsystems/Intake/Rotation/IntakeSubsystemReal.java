@@ -1,6 +1,7 @@
 package frc.robot.subsystems.Intake.Rotation;
 
 
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -68,9 +69,38 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
     public void setTargetPosition(IntakeStates position) {
         if (position == IntakeStates.RETRACTED) {
             targetPosition = new PositionVoltage(0).withPosition(IntakeValues.retracted);
+            increasePID();
+            
         } else {
             targetPosition = new PositionVoltage(0).withPosition(IntakeValues.extended);
+            decreasePID();
         }
+    }
+
+    @Override
+    public void increasePID() {
+        var slot0Configs = new Slot0Configs();
+        slot0Configs.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
+        slot0Configs.kS = IntakeValues.upStatic;
+        slot0Configs.kG = IntakeValues.kG;
+        slot0Configs.kP = IntakeValues.kP;
+        slot0Configs.kI = IntakeValues.kI;
+        slot0Configs.kD = IntakeValues.kD;
+
+        rotationMotor.getConfigurator().apply(slot0Configs);
+    }
+
+    @Override
+    public void decreasePID() {
+        var slot0Configs = new Slot0Configs();
+        slot0Configs.withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
+        slot0Configs.kS = IntakeValues.kS;
+        slot0Configs.kG = IntakeValues.kG;
+        slot0Configs.kP = IntakeValues.kP;
+        slot0Configs.kI = IntakeValues.kI;
+        slot0Configs.kD = IntakeValues.kD;
+
+        rotationMotor.getConfigurator().apply(slot0Configs);
     }
 
     @Override
@@ -119,6 +149,16 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
     @Override
     public void periodic() {
         telemetry();
+    }
+
+    @Override
+    public void setUp() {
+        rotationMotor.setPosition(IntakeValues.retracted);
+    }
+
+    @Override
+    public void setDown() {
+        rotationMotor.setPosition(IntakeValues.extended);
     }
 
     @Override
