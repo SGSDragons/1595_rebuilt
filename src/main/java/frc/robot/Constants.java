@@ -205,13 +205,14 @@ public final class Constants {
 			public static final double upStatic = 3.0;
 
 			public static final double extended = 9.5;
+			public static final double agitate = 4.0;
 			public static final double retracted = 1.5;
 			public static final double tolerance = 0.5;
 
 			// public static final double intakeFastRunSpeed = 0.8;
 			// public static final double intakeSlowRunSpeed = 0.4;
-			public static final double intakeFastVoltage = 6.0;
-			public static final double intakeSlowVoltage = 2.0;
+			public static final double intakeFastVoltage = 10.0;
+			public static final double intakeSlowVoltage = 4.0;
 		}
 
 		public static final class HopperValues {

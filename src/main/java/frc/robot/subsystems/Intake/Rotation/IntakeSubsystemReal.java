@@ -71,6 +71,10 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
             targetPosition = new PositionVoltage(0).withPosition(IntakeValues.retracted);
             increasePID();
             
+        // } if (position == IntakeStates.AGITATE) {
+        //     targetPosition = new PositionVoltage(0).withPosition(IntakeValues.agitate);
+        //     increasePID();
+            
         } else {
             targetPosition = new PositionVoltage(0).withPosition(IntakeValues.extended);
             decreasePID();

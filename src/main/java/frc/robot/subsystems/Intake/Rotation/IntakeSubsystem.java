@@ -13,6 +13,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public enum IntakeStates {
         EXTENDED,
+        AGITATE,
         RETRACTED,
         ZEROED
     }

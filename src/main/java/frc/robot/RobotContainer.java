@@ -99,6 +99,7 @@ public class RobotContainer {
 
 	Command zeroIntake = new ZeroIntake(intake);
 	Command intakeOut = new IntakeToPosition(intake, IntakeStates.EXTENDED);
+	Command intakeAgitate = new IntakeToPosition(intake, IntakeStates.AGITATE);
 	Command intakeIn = new IntakeToPosition(intake, IntakeStates.RETRACTED);
 	// Command setIntakeDown = Commands.runOnce(() -> this.intake.setDown());
 	// Command setIntakeUp = Commands.runOnce(() -> this.intake.setDown());
@@ -215,6 +216,7 @@ public class RobotContainer {
 
 		operatorController.povUp().onTrue(intakeOut);
 		operatorController.povDown().onTrue(intakeIn);
+		// operatorController.povRight().onTrue(intakeAgitate);
 		// operatorController.povDown().onTrue(setIntakeDown);
 		// operatorController.povLeft().onTrue(setIntakeUp);
 		intake.setDefaultCommand(zeroIntake);
@@ -250,6 +252,7 @@ public class RobotContainer {
 
 		operatorController.povUp().onTrue(intakeOut);
 		operatorController.povDown().onTrue(intakeIn);
+		// operatorController.povRight().onTrue(intakeAgitate);
 		// operatorController.povRight().onTrue(setIntakeDown);
 		// operatorController.povLeft().onTrue(setIntakeUp);
 		intake.setDefaultCommand(zeroIntake);
