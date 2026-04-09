@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
-import frc.robot.Constants.TuningValues.ShooterValues;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -38,6 +37,8 @@ public final class Constants {
 		// Can ID -1 denotes numbers that have yet to be programmed on devices.
 		// 
 		// IDs 3-14 are used by the swerve modules. Do NOT reuse here.
+
+		public static final int testID = 100;
 
 		public static final class ShooterIds {
 			public static final int leftShooterCanId = 14;
@@ -117,10 +118,6 @@ public final class Constants {
 			wheelMap.put(4.2,85.53);
 			wheelMap.put(4.5,88.93);
 			wheelMap.put(4.8,92.56);
-			// wheelMap.put(5.1,85.0);
-			// wheelMap.put(5.4,85.0);
-			// wheelMap.put(5.7,85.0);
-			// wheelMap.put(6.0,85.0);
 
 			timeOfFlightMap.put(1.225,1.1);
 			timeOfFlightMap.put(1.529,1.12);
@@ -168,7 +165,6 @@ public final class Constants {
  		}
 
 		public static final class ShooterValues {
-			// Increase This
 			public static final double kS = 0.3;
 			public static final double kV = 0.15;
 			public static final double kA = 0;
@@ -209,20 +205,16 @@ public final class Constants {
 			public static final double retracted = 1.5;
 			public static final double tolerance = 0.5;
 
-			// public static final double intakeFastRunSpeed = 0.8;
-			// public static final double intakeSlowRunSpeed = 0.4;
 			public static final double intakeFastVoltage = 10.0;
 			public static final double intakeSlowVoltage = 4.0;
 		}
 
 		public static final class HopperValues {
-			// public static final double hopperRunSpeed = 0.8;
 			public static final double hopperVoltage = 7.0;
 			public static final double spinnerVoltage = 6.0;
 		}
 
 		public static final class FeederValues {
-			// public static final double feederRunSpeed = 0.8;
 			public static final double feederVoltage = 6.0;
 		}
 	}
