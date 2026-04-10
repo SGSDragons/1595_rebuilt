@@ -118,6 +118,11 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
     }
 
     @Override
+    public boolean isAgitated() {
+        return (Math.abs(getPosition() - IntakeValues.agitate) < 0.5);
+    }
+
+    @Override
     public boolean isRetracted() {
         return (getPosition() < IntakeValues.retracted+0.5);
     }

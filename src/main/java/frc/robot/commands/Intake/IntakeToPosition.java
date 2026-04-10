@@ -40,6 +40,9 @@ public class IntakeToPosition extends Command {
         if (this.position == IntakeStates.EXTENDED && this.intakeSubsystem.isExtended()) {
             return true;
         }
+        // if (this.position == IntakeStates.AGITATE && this.intakeSubsystem.isAgitated()) {
+        //     return true;
+        // }
         if (this.position == IntakeStates.RETRACTED && this.intakeSubsystem.isRetracted()) {
             return true;
         }

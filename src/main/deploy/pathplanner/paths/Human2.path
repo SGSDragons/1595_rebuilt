@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.596344444444444,
-        "y": 0.6244444444444435
+        "x": 4.45,
+        "y": 0.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.819818714259661,
-        "y": 0.5984563713497293
+        "x": 5.673474269815217,
+        "y": 0.4740119269052858
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "human start"
     },
     {
       "anchor": {
@@ -126,6 +126,14 @@
   ],
   "rotationTargets": [
     {
+      "waypointRelativePos": 0.37759336099585183,
+      "rotationDegrees": 90.07729938414565
+    },
+    {
+      "waypointRelativePos": 0.6331950207468754,
+      "rotationDegrees": 102.57103541939762
+    },
+    {
       "waypointRelativePos": 1.0,
       "rotationDegrees": 124.01934998982665
     },
@@ -186,15 +194,20 @@
       "command": {
         "type": "named",
         "data": {
-          "name": "resetForNext"
+          "name": "zeroHood"
         }
       }
     },
     {
       "name": "intakeOut",
-      "waypointRelativePos": 0.35,
+      "waypointRelativePos": 0.17,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intakeOut"
+        }
+      }
     },
     {
       "name": "runIntakeRollers",
@@ -209,7 +222,7 @@
     },
     {
       "name": "enableShooter",
-      "waypointRelativePos": 5.0,
+      "waypointRelativePos": 6.399007444168753,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -235,7 +248,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": 136.5074357587749
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

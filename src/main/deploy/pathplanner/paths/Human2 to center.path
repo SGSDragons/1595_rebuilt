@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 2.257677777777778,
-        "y": 0.4392999999999996
+        "y": 0.4392999999999998
       },
       "isLocked": false,
       "linkedName": "human new first pass end"
@@ -53,7 +53,7 @@
       },
       "prevControl": {
         "x": 7.402744444444444,
-        "y": 0.6439333333333334
+        "y": 0.6439333333333335
       },
       "nextControl": {
         "x": 8.439194974407187,
@@ -175,7 +175,7 @@
     },
     {
       "waypointRelativePos": 4.0,
-      "rotationDegrees": 111.80140948635184
+      "rotationDegrees": 111.80140948635186
     },
     {
       "waypointRelativePos": 4.395161290322574,
@@ -233,7 +233,7 @@
     },
     {
       "name": "enableShooter",
-      "waypointRelativePos": 7.0,
+      "waypointRelativePos": 8.5846153846154,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

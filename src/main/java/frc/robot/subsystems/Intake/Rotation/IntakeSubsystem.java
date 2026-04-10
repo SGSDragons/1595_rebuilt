@@ -38,6 +38,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public boolean isExtended() { return false; }
 
+    public boolean isAgitated() { return false; }
+
     public boolean isRetracted() { return false; }
  
     public double getSupplyCurrent() { return 0; }

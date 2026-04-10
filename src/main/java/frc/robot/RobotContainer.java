@@ -86,14 +86,14 @@ public class RobotContainer {
 	GoalAim goalAimer = new GoalAim(drive);
 
 	Command zeroHood = new ZeroHood(hood);
-	Command enableShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer, false));
-	Command extraShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer, true));
+	Command enableShooter = new EnableShooter(shooter, goalAimer, false);
+	Command extraShooter = new EnableShooter(shooter, goalAimer, true);
 	Command defaultShooter = new DefaultShooter(shooter);
 	
 	Command closeShot = new CloseShot(shooter, hood, goalAimer);
 	Command passShot = new PassShot(shooter, hood, feeder, hopper, intakeRollers);
 
-	Command runFeeder = new ParallelCommandGroup(new RunFeeder(hopper, feeder, shooter, true), new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.SLOW));
+	Command runFeeder = new ParallelCommandGroup(new RunFeeder(hopper, feeder, shooter, true), new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.SLOW), new EnableHood(hood, goalAimer));
 	Command stopRollers = Commands.runOnce(() -> runFeeder.cancel());
 
 	Command runIntakeRollers = new RunIntakeRollers(intakeRollers, IntakeRollerSpeeds.FAST);
