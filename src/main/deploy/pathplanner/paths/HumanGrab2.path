@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.51,
-        "y": 0.55
+        "x": 0.484188888888889,
+        "y": 0.5172555555555562
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.6867766952966369,
-        "y": 0.7267766952966369
+        "x": 1.0201333333333333,
+        "y": 1.5404222222222224
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "center human depo"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 2.3368944444444435
       },
       "prevControl": {
-        "x": 2.1019844158144734,
-        "y": 2.160117749147807
+        "x": 1.4586333333333337,
+        "y": 2.1932999999999994
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,21 +29,7 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.5,
-      "maxWaypointRelativePos": 0.65,
-      "constraints": {
-        "maxVelocity": 2.0,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
@@ -74,7 +60,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 89.96765487526399
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }
