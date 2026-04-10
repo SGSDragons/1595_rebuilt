@@ -289,7 +289,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
     @Override
     public Command turnRelative(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX, double scale) {
         return run(() -> {
-            Translation2d joystick = computeTranslation(translationX.getAsDouble(), translationY.getAsDouble(), scale);
+            Translation2d joystick = computeTranslation(translationX.getAsDouble(), translationY.getAsDouble(), scale*this.maxSpeedMps);
 
             double omega = MathUtil.applyDeadband(angularRotationX.getAsDouble(), 0.2);
             omega = Math.pow(omega, 3) * swerveDrive.getMaximumChassisAngularVelocity();
@@ -358,7 +358,7 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
         swerveDrive.setHeadingCorrection(true);
         return run(() -> {
 
-            Translation2d joystick = computeTranslation(translationX.getAsDouble(), translationY.getAsDouble(), scale);
+            Translation2d joystick = computeTranslation(translationX.getAsDouble(), translationY.getAsDouble(), scale*this.maxSpeedMps);
 
             double omega = MathUtil.applyDeadband(angularRotationX.getAsDouble(), 0.2);
             omega = Math.pow(omega, 3) * swerveDrive.getMaximumChassisAngularVelocity();

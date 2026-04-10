@@ -196,7 +196,7 @@ public class RobotContainer {
 	}
 
 	public void configureBindings() {
-		driverController.a().onTrue(reconfigAlliance);
+		// driverController.a().onTrue(reconfigAlliance);
 		driverController.povDown().onTrue(reverseDirection);
 
 		// drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
@@ -233,7 +233,7 @@ public class RobotContainer {
 	public void configureTestBindings() {
 		driverController.x().onTrue(Commands.runOnce(drive::updateAnglePIDF));
 
-		driverController.a().onTrue(reconfigAlliance);
+		// driverController.a().onTrue(reconfigAlliance);
 		driverController.povDown().onTrue(reverseDirection);
 		driverController.povUp().onTrue(resetOdometry);
 
