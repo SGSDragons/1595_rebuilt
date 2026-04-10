@@ -68,7 +68,7 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
     @Override
     public void setTargetPosition(IntakeStates position) {
         if (position == IntakeStates.RETRACTED) {
-            targetPosition = new PositionVoltage(0).withPosition(IntakeValues.retracted);
+            targetPosition.withPosition(IntakeValues.retracted);
             increasePID();
             
         // } if (position == IntakeStates.AGITATE) {
@@ -76,7 +76,7 @@ public class IntakeSubsystemReal extends IntakeSubsystem {
         //     increasePID();
             
         } else {
-            targetPosition = new PositionVoltage(0).withPosition(IntakeValues.extended);
+            targetPosition.withPosition(IntakeValues.extended);
             decreasePID();
         }
     }

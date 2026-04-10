@@ -183,7 +183,8 @@ public class SwerveSubsystemReal extends SwerveSubsystem {
 
         LimelightHelpers.SetRobotOrientation(LimeLightConstants.limelight3a, getHeading().getDegrees(), 0, 0, 0, 0, 0);
         PoseEstimate LL3poseEst = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimeLightConstants.limelight3a);
-        boolean acceptLL3Reading = (LL3poseEst != null && LL3poseEst.tagCount > 0 && LL3poseEst.avgTagDist < LimeLightConstants.maxReadDistance);
+        // boolean acceptLL3Reading = (LL3poseEst != null && LL3poseEst.tagCount > 0 && LL3poseEst.avgTagDist < LimeLightConstants.maxReadDistance);
+        boolean acceptLL3Reading = (LL3poseEst != null && LL3poseEst.tagCount > 0);
 
         if (acceptLL3Reading) {
             swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(

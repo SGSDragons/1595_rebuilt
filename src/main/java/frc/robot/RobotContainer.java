@@ -48,6 +48,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -85,7 +86,8 @@ public class RobotContainer {
 	GoalAim goalAimer = new GoalAim(drive);
 
 	Command zeroHood = new ZeroHood(hood);
-	Command enableShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
+	Command enableShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer, false));
+	Command extraShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer, true));
 	Command defaultShooter = new DefaultShooter(shooter);
 	
 	Command closeShot = new CloseShot(shooter, hood, goalAimer);
@@ -113,8 +115,8 @@ public class RobotContainer {
 
 	// Command autoShoot = new ParallelRaceGroup(Commands.waitSeconds(5.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0));
 	Command autoShoot = new SequentialCommandGroup(
-		new ParallelRaceGroup(Commands.waitSeconds(8.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0)),
-		new ParallelRaceGroup(Commands.waitSeconds(2.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer), new IntakeToPosition(intake, IntakeStates.RETRACTED), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0)),
+		new ParallelRaceGroup(Commands.waitSeconds(5.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer, false), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0)),
+		new ParallelDeadlineGroup(Commands.waitSeconds(2.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer, false), new IntakeToPosition(intake, IntakeStates.RETRACTED), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0)),
 		new IntakeToPosition(intake, IntakeStates.EXTENDED));
 
 	Command resetForNext = new ParallelCommandGroup(Commands.runOnce(() -> runFeeder.cancel()), new ZeroHood(hood), new DefaultShooter(shooter));
@@ -183,7 +185,8 @@ public class RobotContainer {
 	public void reconfigAlliance() {
 		drive.configureAutoBuilder();
 		driver = new DriverSticks();
-		enableShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer));
+		enableShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer, false));
+		extraShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer, true));
 		pointAtGoal = drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0);
 	}
 
@@ -199,12 +202,14 @@ public class RobotContainer {
 		// drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
 		drive.setDefaultCommand(drive.turnRelative(driver::translateX, driver::translateY, driver::lookX, 1.0));
 		driverController.y().whileTrue(drive.driveCommand(driver::translateX, driver::translateY, () -> 0.0, () -> -driver.inverter, 1.0));
+		driverController.a().whileTrue(drive.driveCommand(driver::translateX, driver::translateY, () -> 0.0, () -> driver.inverter, 1.0));
 		driverController.rightTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0)); 
 
 		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 0.5));
 		driverController.leftBumper().whileTrue(drive.lockSwerveDrive(driver::translateX, driver::translateY, driver::lookX, 0.25));
 
 		operatorController.a().whileTrue(enableShooter);
+		operatorController.y().whileTrue(extraShooter);
 		operatorController.b().whileTrue(closeShot);
 
 		operatorController.x().whileTrue(passShot);
@@ -236,10 +241,14 @@ public class RobotContainer {
 		drive.setDefaultCommand(drive.turnRelative(driver::translateX, driver::translateY, driver::lookX, 1.0));
 		driverController.rightTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0)); 
 
+		driverController.y().whileTrue(drive.driveCommand(driver::translateX, driver::translateY, () -> 0.0, () -> -driver.inverter, 1.0));
+		driverController.a().whileTrue(drive.driveCommand(driver::translateX, driver::translateY, () -> 0.0, () -> driver.inverter, 1.0));
+
 		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 0.5));
 		driverController.leftBumper().whileTrue(drive.lockSwerveDrive(driver::translateX, driver::translateY, driver::lookX, 0.25));
 
 		operatorController.a().whileTrue(enableShooter);
+		operatorController.y().whileTrue(extraShooter);
 		operatorController.b().whileTrue(closeShot);
 
 		operatorController.x().whileTrue(passShot);
