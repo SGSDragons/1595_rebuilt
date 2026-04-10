@@ -8,6 +8,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.HardwareID.HoodIds;
@@ -59,8 +60,8 @@ public class HoodSubsystemReal extends HoodSubsystem {
 
     @Override
     public void setTargetPosition(double position) {
-        position = Math.max(HoodValues.min, Math.min(position, HoodValues.max));
-        targetPosition = new PositionVoltage(0).withPosition(position);
+        position = MathUtil.clamp(position, HoodValues.min, HoodValues.max);
+        targetPosition.withPosition(position);
     }
 
     @Override

@@ -111,7 +111,7 @@ public class RobotContainer {
 
 	Command reconfigAlliance = Commands.runOnce(() -> reconfigAlliance());
 	Command reverseDirection = Commands.runOnce(() -> reverseDirection());
-	Command resetOdometry = Commands.runOnce(() -> drive.resetOdometry(new Pose2d(Translation2d.kZero, Rotation2d.kZero)));
+	Command resetOdometry = Commands.runOnce(() -> drive.resetOdometry(Pose2d.kZero));
 
 	// Command autoShoot = new ParallelRaceGroup(Commands.waitSeconds(5.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0));
 	Command autoShoot = new SequentialCommandGroup(

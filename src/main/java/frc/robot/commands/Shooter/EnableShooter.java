@@ -30,7 +30,7 @@ public class EnableShooter extends Command {
             targetspeed = Aiming.getWheelValue(this.goalAim.getAdjustedDistance()+1.0);
         }
         else {
-             targetspeed = Aiming.getWheelValue(this.goalAim.getAdjustedDistance());
+            targetspeed = Aiming.getWheelValue(this.goalAim.getAdjustedDistance());
         }
         
         this.shooterSubsystem.setTargetVelocity(targetspeed);
@@ -43,7 +43,7 @@ public class EnableShooter extends Command {
             targetspeed = Aiming.getWheelValue(this.goalAim.getAdjustedDistance()+1.0);
         }
         else {
-             targetspeed = Aiming.getWheelValue(this.goalAim.getAdjustedDistance());
+            targetspeed = Aiming.getWheelValue(this.goalAim.getAdjustedDistance());
         }
 
         this.shooterSubsystem.setTargetVelocity(targetspeed);

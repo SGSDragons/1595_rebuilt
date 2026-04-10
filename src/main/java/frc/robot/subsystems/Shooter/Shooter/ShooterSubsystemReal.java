@@ -86,9 +86,9 @@ public class ShooterSubsystemReal extends ShooterSubsystem {
     @Override
     public void setTargetVelocity(double velocity) {
         double value = Math.min(velocity, ShooterValues.maxShooterSpeed);
-        targetVelocity = new VelocityVoltage(0).withVelocity(value);
+        targetVelocity.withVelocity(value);
         if (this.addFF.getAsBoolean()) {
-            targetVelocity = targetVelocity.withFeedForward(ShooterValues.kickVoltage);
+            targetVelocity.withFeedForward(ShooterValues.kickVoltage);
         }
     }
 
