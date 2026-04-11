@@ -215,7 +215,7 @@ public class RobotContainer {
 		// operatorController.povRight().onTrue(intakeAgitate);
 		// operatorController.povDown().onTrue(setIntakeDown);
 		// operatorController.povLeft().onTrue(setIntakeUp);
-		intake.setDefaultCommand(zeroIntake);
+		// intake.setDefaultCommand(zeroIntake);
 
 		operatorController.rightBumper().whileTrue(runIntakeRollers);
 		operatorController.leftBumper().whileTrue(outtakeBalls);
@@ -255,7 +255,7 @@ public class RobotContainer {
 		// operatorController.povRight().onTrue(intakeAgitate);
 		// operatorController.povRight().onTrue(setIntakeDown);
 		// operatorController.povLeft().onTrue(setIntakeUp);
-		intake.setDefaultCommand(zeroIntake);
+		// intake.setDefaultCommand(zeroIntake);
 
 		operatorController.rightBumper().whileTrue(runIntakeRollers);
 		operatorController.leftBumper().whileTrue(outtakeBalls);

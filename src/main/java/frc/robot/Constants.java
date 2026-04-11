@@ -205,6 +205,8 @@ public final class Constants {
 			public static final double retracted = 1.5;
 			public static final double tolerance = 0.5;
 
+			public static final double agitateSpeed = -0.5;
+
 			public static final double intakeFastVoltage = 10.0;
 			public static final double intakeSlowVoltage = 4.0;
 		}
