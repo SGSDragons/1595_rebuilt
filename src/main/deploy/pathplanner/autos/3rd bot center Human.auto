@@ -5,21 +5,27 @@
     "data": {
       "commands": [
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Human2 testing"
+            "pathName": "3rd bot center Human"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "autoShoot"
+            "name": "sleep3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Human2 to center v3 testing"
+            "pathName": "HumanGrab2"
           }
         },
         {

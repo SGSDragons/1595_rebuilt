@@ -117,7 +117,7 @@
       },
       "prevControl": {
         "x": 2.433077777777778,
-        "y": 0.6829111111111101
+        "y": 0.6829111111111099
       },
       "nextControl": null,
       "isLocked": false,
@@ -161,39 +161,6 @@
         "type": "named",
         "data": {
           "name": "zeroHood"
-        }
-      }
-    },
-    {
-      "name": "intakeOut",
-      "waypointRelativePos": 0.17,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "intakeOut"
-        }
-      }
-    },
-    {
-      "name": "runIntakeRollers",
-      "waypointRelativePos": 0.3265508684863435,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "runIntakeRollers"
-        }
-      }
-    },
-    {
-      "name": "enableShooter",
-      "waypointRelativePos": 6.399007444168749,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "enableShooter"
         }
       }
     }
