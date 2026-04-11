@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 2.384355555555556,
-        "y": 1.7450555555555547
+        "y": 1.8
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.257677777777778,
-        "y": 0.4392999999999998
+        "x": 2.2576667680376445,
+        "y": 0.4941309594307546
       },
       "isLocked": false,
-      "linkedName": "human new first pass end"
+      "linkedName": "human 2 shoot"
     },
     {
       "anchor": {
@@ -52,12 +52,12 @@
         "y": 1.1214111111111107
       },
       "prevControl": {
-        "x": 7.402744444444444,
-        "y": 0.6439333333333335
+        "x": 7.315044444444445,
+        "y": 0.7706111111111105
       },
       "nextControl": {
-        "x": 8.439194974407187,
-        "y": 1.4764919557624185
+        "x": 8.501375665030668,
+        "y": 1.38072431026974
       },
       "isLocked": false,
       "linkedName": null
@@ -145,15 +145,15 @@
     {
       "anchor": {
         "x": 2.384355555555556,
-        "y": 1.7450555555555547
+        "y": 1.8
       },
       "prevControl": {
         "x": 2.3161444444444443,
-        "y": 0.7998444444444441
+        "y": 0.8547888888888895
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "human 2 shoot"
     }
   ],
   "rotationTargets": [
@@ -244,8 +244,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -253,13 +253,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 45.9793196543395
+    "rotation": 45.979
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": 45.9793196543395
+    "rotation": 45.979
   },
   "useDefaultConstraints": true
 }

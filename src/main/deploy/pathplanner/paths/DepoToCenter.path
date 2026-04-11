@@ -3,109 +3,109 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.5,
+        "x": 2.627966666666667,
         "y": 6.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5,
-        "y": 7.5
+        "x": 2.627966666666667,
+        "y": 7.767122222222222
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "depo shoot"
     },
     {
       "anchor": {
-        "x": 4.5,
-        "y": 7.5
+        "x": 4.508644444444445,
+        "y": 7.5527444444444445
       },
       "prevControl": {
-        "x": 3.6935280437513125,
-        "y": 7.5
+        "x": 4.185761892770505,
+        "y": 7.550181884510525
       },
       "nextControl": {
-        "x": 5.3064719562486875,
-        "y": 7.5
+        "x": 5.7364444444444445,
+        "y": 7.562488888888888
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.5,
-        "y": 7.0
+        "x": 7.782777777777778,
+        "y": 6.987566666666667
       },
       "prevControl": {
-        "x": 6.792787083638233,
-        "y": 7.556641618037212
+        "x": 7.480700000000001,
+        "y": 7.445555555555555
       },
       "nextControl": {
-        "x": 8.163349909066715,
-        "y": 6.477882603435301
+        "x": 8.230552169014764,
+        "y": 6.308682912210591
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.5,
-        "y": 5.1
+        "x": 7.987411111111111,
+        "y": 5.223822222222222
       },
       "prevControl": {
-        "x": 7.677508053945482,
-        "y": 5.679300608982551
+        "x": 8.302816439102779,
+        "y": 5.634930089847579
       },
       "nextControl": {
-        "x": 7.307569809336719,
-        "y": 4.472000739346146
+        "x": 7.400011539682043,
+        "y": 4.458189673172091
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.1,
-        "y": 4.4
+        "x": 6.213922222222224,
+        "y": 5.662322222222222
       },
       "prevControl": {
-        "x": 6.9766845178339505,
-        "y": 3.9779106164535807
+        "x": 6.310525214292545,
+        "y": 4.659956322524342
       },
       "nextControl": {
-        "x": 5.424786292034895,
-        "y": 4.725089050803866
+        "x": 6.116517058997944,
+        "y": 6.673011559871853
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.6,
-        "y": 7.5
+        "x": 5.356411111111111,
+        "y": 7.5527444444444445
       },
       "prevControl": {
-        "x": 7.1,
-        "y": 7.5
+        "x": 5.892355555555556,
+        "y": 7.542999999999998
       },
       "nextControl": {
-        "x": 3.5999999999999996,
-        "y": 7.5
+        "x": 4.48127577066188,
+        "y": 7.568655996088978
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.5,
+        "x": 2.627966666666667,
         "y": 6.0
       },
       "prevControl": {
-        "x": 2.5,
-        "y": 7.5
+        "x": 2.6182222222222227,
+        "y": 7.747633333333333
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "depo shoot"
     }
   ],
   "rotationTargets": [
@@ -114,20 +114,16 @@
       "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": -0.0
-    },
-    {
-      "waypointRelativePos": 1.5,
-      "rotationDegrees": 5.257400015866566
+      "waypointRelativePos": 1.3195020746887993,
+      "rotationDegrees": 0.0
     },
     {
       "waypointRelativePos": 2.0,
-      "rotationDegrees": -55.797
+      "rotationDegrees": -70.76932762433862
     },
     {
-      "waypointRelativePos": 3,
-      "rotationDegrees": -107.554
+      "waypointRelativePos": 3.191701244813273,
+      "rotationDegrees": -163.92360522214085
     },
     {
       "waypointRelativePos": 4.0,
@@ -138,25 +134,11 @@
       "rotationDegrees": -0.0
     },
     {
-      "waypointRelativePos": 5.5,
+      "waypointRelativePos": 5.382572614107885,
       "rotationDegrees": -0.0
     }
   ],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 5.0,
-      "maxWaypointRelativePos": 5.5,
-      "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
@@ -172,7 +154,7 @@
     },
     {
       "name": "runIntakeRollers",
-      "waypointRelativePos": 1.5,
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -183,7 +165,7 @@
     },
     {
       "name": "enableShooter",
-      "waypointRelativePos": 5.5,
+      "waypointRelativePos": 5.818362282878411,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -194,8 +176,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -203,13 +185,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -42.9056395167296
+    "rotation": -45.40402596078936
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": 0.0
+    "rotation": -45.40402596078936
   },
   "useDefaultConstraints": true
 }

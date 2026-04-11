@@ -109,13 +109,12 @@ public class RobotContainer {
 	Command pointAtGoal	 = drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0);
 	Command sleep3 = Commands.waitSeconds(3.0);
 
-	Command reconfigAlliance = Commands.runOnce(() -> reconfigAlliance());
 	Command reverseDirection = Commands.runOnce(() -> reverseDirection());
 	Command resetOdometry = Commands.runOnce(() -> drive.resetOdometry(Pose2d.kZero));
 
 	// Command autoShoot = new ParallelRaceGroup(Commands.waitSeconds(5.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0));
 	Command autoShoot = new SequentialCommandGroup(
-		new ParallelRaceGroup(Commands.waitSeconds(5.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer, false), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0)),
+		new ParallelRaceGroup(Commands.waitSeconds(2.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer, false), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0)),
 		new ParallelDeadlineGroup(Commands.waitSeconds(2.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer, false), new IntakeToPosition(intake, IntakeStates.RETRACTED), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0)),
 		new IntakeToPosition(intake, IntakeStates.EXTENDED));
 
@@ -144,11 +143,11 @@ public class RobotContainer {
 	//    (0,0)
 	//
 	// With 0deg heading pointing right.
-	//
+	//     
 	// When on the Blue alliance
-	//    Left joystick Up (-1 y-axis) maps to positive X.
-	//    Left joystick left (-1 x-axis) maps to positive Y.
-	// Thus, Blue axis are inverted.
+	//    Driver joystick Up (-1 y-axis) maps to positive X.
+	//    Driver joystick left (-1 x-axis) maps to positive Y.
+	// Thus, Blue axis are negated.
 
 	class DriverSticks {
 		private final double inverter = FieldConstants.isRedAlliance() ? 1.0 : -1.0;
@@ -180,14 +179,6 @@ public class RobotContainer {
 
 		NamedCommands.registerCommand("autoShoot", autoShoot);
 		NamedCommands.registerCommand("resetForNext", resetForNext);
-	}
-
-	public void reconfigAlliance() {
-		drive.configureAutoBuilder();
-		driver = new DriverSticks();
-		enableShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer, false));
-		extraShooter = new ParallelCommandGroup(new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer, true));
-		pointAtGoal = drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0);
 	}
 
 	public void reverseDirection() {

@@ -52,47 +52,47 @@
         "y": 3.3139111111111106
       },
       "prevControl": {
-        "x": 7.405002938344452,
-        "y": 3.393550780503795
+        "x": 7.291758287933705,
+        "y": 3.299056451115057
       },
       "nextControl": {
-        "x": 6.243155555555557,
-        "y": 3.138511111111111
+        "x": 6.2236666666666665,
+        "y": 3.3626333333333323
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.116477777777778,
-        "y": 1.6086333333333322
+        "x": 6.028777777777779,
+        "y": 1.5793999999999992
       },
       "prevControl": {
-        "x": 6.0775,
-        "y": 2.1640666666666664
+        "x": 5.542201352618384,
+        "y": 2.3244776445479727
       },
       "nextControl": {
-        "x": 6.1533387603935505,
-        "y": 1.083364331058572
+        "x": 6.348116759701432,
+        "y": 1.0904072659478294
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.268711111111112,
+        "x": 5.609766666666667,
         "y": 0.5
       },
       "prevControl": {
-        "x": 5.987788629625055,
-        "y": 0.5433232626181009
+        "x": 5.896818912063832,
+        "y": 0.5017780979791314
       },
       "nextControl": {
-        "x": 4.908166666666667,
-        "y": 0.4782777777777778
+        "x": 5.2492222222222225,
+        "y": 0.49776666666666647
       },
       "isLocked": false,
-      "linkedName": "human through trench"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -116,12 +116,12 @@
         "y": 1.8
       },
       "prevControl": {
-        "x": 2.433077777777778,
-        "y": 0.6829111111111101
+        "x": 2.2284444444444444,
+        "y": 0.9912111111111113
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "human 2 shoot"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
@@ -130,16 +130,36 @@
       "rotationDegrees": 90.07729938414565
     },
     {
+      "waypointRelativePos": 0.6331950207468754,
+      "rotationDegrees": 102.57103541939762
+    },
+    {
       "waypointRelativePos": 1.0,
-      "rotationDegrees": 106.58733855692746
+      "rotationDegrees": 124.01934998982665
     },
     {
-      "waypointRelativePos": 2.190041493775938,
-      "rotationDegrees": 130.52026289872393
+      "waypointRelativePos": 2.0,
+      "rotationDegrees": 129.52263127117124
     },
     {
-      "waypointRelativePos": 3.6539419087136737,
-      "rotationDegrees": -88.79256774669996
+      "waypointRelativePos": 2.395161290322574,
+      "rotationDegrees": 157.1192230382277
+    },
+    {
+      "waypointRelativePos": 3.0,
+      "rotationDegrees": -176.42366562500268
+    },
+    {
+      "waypointRelativePos": 3.395161290322535,
+      "rotationDegrees": -127.71685004092201
+    },
+    {
+      "waypointRelativePos": 3.774193548387097,
+      "rotationDegrees": -58.63009339918069
+    },
+    {
+      "waypointRelativePos": 4.238709677419332,
+      "rotationDegrees": -23.438261225766578
     },
     {
       "waypointRelativePos": 5.0,
@@ -188,7 +208,7 @@
     },
     {
       "name": "enableShooter",
-      "waypointRelativePos": 6.66302729528535,
+      "waypointRelativePos": 6.399007444168753,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
