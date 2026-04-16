@@ -84,7 +84,7 @@ public final class Constants {
 		public static double hoodExtra = 1.5 ;
 
 		public static double passingHood = 8.0;
-		public static double passingShooter = 70;
+		public static double passingShooter = 80;
 
 		static {
 			hoodMap.put(1.225,1.5);
@@ -200,12 +200,12 @@ public final class Constants {
 
 			public static final double upStatic = 3.0;
 
-			public static final double extended = 9.5;
+			public static final double extended = 11.0;
 			public static final double agitate = 4.0;
 			public static final double retracted = 1.5;
 			public static final double tolerance = 0.5;
 
-			public static final double agitateSpeed = -0.5;
+			public static final double agitateSpeed = -0.2;
 
 			public static final double intakeFastVoltage = 10.0;
 			public static final double intakeSlowVoltage = 4.0;

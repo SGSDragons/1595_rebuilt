@@ -7,6 +7,7 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Feeder.RunFeeder;
 import frc.robot.commands.Intake.IntakeToPosition;
+import frc.robot.commands.Intake.PullBalls;
 import frc.robot.commands.Intake.RunIntakeRollers;
 import frc.robot.commands.Intake.ZeroIntake;
 import frc.robot.commands.Shooter.CloseShot;
@@ -103,6 +104,7 @@ public class RobotContainer {
 	Command intakeOut = new IntakeToPosition(intake, IntakeStates.EXTENDED);
 	Command intakeAgitate = new IntakeToPosition(intake, IntakeStates.AGITATE);
 	Command intakeIn = new IntakeToPosition(intake, IntakeStates.RETRACTED);
+	Command pushBalls = new PullBalls(intake);
 	// Command setIntakeDown = Commands.runOnce(() -> this.intake.setDown());
 	// Command setIntakeUp = Commands.runOnce(() -> this.intake.setDown());
 
@@ -110,13 +112,19 @@ public class RobotContainer {
 	Command sleep3 = Commands.waitSeconds(3.0);
 
 	Command reverseDirection = Commands.runOnce(() -> reverseDirection());
-	Command resetOdometry = Commands.runOnce(() -> drive.resetOdometry(Pose2d.kZero));
+	Command zeroHeading = Commands.runOnce(() -> drive.zeroGyro());
 
 	// Command autoShoot = new ParallelRaceGroup(Commands.waitSeconds(5.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0));
 	Command autoShoot = new SequentialCommandGroup(
 		new ParallelRaceGroup(Commands.waitSeconds(2.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer, false), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0)),
 		new ParallelDeadlineGroup(Commands.waitSeconds(2.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer, false), new IntakeToPosition(intake, IntakeStates.RETRACTED), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0)),
 		new IntakeToPosition(intake, IntakeStates.EXTENDED));
+
+	// Command shootTillEnd = new SequentialCommandGroup(
+	// 	new ParallelRaceGroup(Commands.waitSeconds(2.0), new RunFeeder(hoppe
+	// r, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer, false), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0)),
+	// 	new ParallelDeadlineGroup(Commands.waitSeconds(2.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer, false), new IntakeToPosition(intake, IntakeStates.RETRACTED), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0)),
+	// 	new ParallelRaceGroup(Commands.waitSeconds(20.0), new RunFeeder(hopper, feeder, shooter, true), new EnableHood(hood, goalAimer), new EnableShooter(shooter, goalAimer, false), drive.aimAtGoal(() -> 0, () -> 0, goalAimer, 1.0)));
 
 	Command resetForNext = new ParallelCommandGroup(Commands.runOnce(() -> runFeeder.cancel()), new ZeroHood(hood), new DefaultShooter(shooter));
 
@@ -158,6 +166,7 @@ public class RobotContainer {
 		public double translateY() { return inverter*readAxis(Axis.kLeftX); }
 		public double lookX() { return inverter*readAxis(Axis.kRightX); }
 		public double lookY() { return inverter*readAxis(Axis.kRightY); }
+		public double turnRelatveX() { return readAxis(Axis.kRightX); }
 	}
 
 	private void registerCommands() {
@@ -178,6 +187,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("sleep3", sleep3);
 
 		NamedCommands.registerCommand("autoShoot", autoShoot);
+		// NamedCommands.registerCommand("shootTillEnd", shootTillEnd);
 		NamedCommands.registerCommand("resetForNext", resetForNext);
 	}
 
@@ -188,13 +198,15 @@ public class RobotContainer {
 
 	public void configureBindings() {
 		// driverController.a().onTrue(reconfigAlliance);
+		driverController.povUp().onTrue(zeroHeading);
 		driverController.povDown().onTrue(reverseDirection);
 
-		// drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
-		drive.setDefaultCommand(drive.turnRelative(driver::translateX, driver::translateY, driver::lookX, 1.0));
+		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
+		// drive.setDefaultCommand(drive.turnRelative(driver::translateX, driver::translateY, driver::lookX, 1.0));
 		driverController.y().whileTrue(drive.driveCommand(driver::translateX, driver::translateY, () -> 0.0, () -> -driver.inverter, 1.0));
 		driverController.a().whileTrue(drive.driveCommand(driver::translateX, driver::translateY, () -> 0.0, () -> driver.inverter, 1.0));
-		driverController.rightTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0)); 
+		// driverController.rightTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
+		driverController.rightTrigger(0.2).whileTrue(drive.turnRelative(driver::translateX, driver::translateY, driver::turnRelatveX, 1.0)); 
 
 		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 0.5));
 		driverController.leftBumper().whileTrue(drive.lockSwerveDrive(driver::translateX, driver::translateY, driver::lookX, 0.25));
@@ -212,6 +224,7 @@ public class RobotContainer {
 
 		operatorController.povUp().onTrue(intakeOut);
 		operatorController.povDown().onTrue(intakeIn);
+		// operatorController.povRight().onTrue(pushBalls);
 		// operatorController.povRight().onTrue(intakeAgitate);
 		// operatorController.povDown().onTrue(setIntakeDown);
 		// operatorController.povLeft().onTrue(setIntakeUp);
@@ -226,14 +239,14 @@ public class RobotContainer {
 
 		// driverController.a().onTrue(reconfigAlliance);
 		driverController.povDown().onTrue(reverseDirection);
-		driverController.povUp().onTrue(resetOdometry);
+		driverController.povUp().onTrue(zeroHeading);
 
-		// drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
-		drive.setDefaultCommand(drive.turnRelative(driver::translateX, driver::translateY, driver::lookX, 1.0));
-		driverController.rightTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0)); 
-
+		drive.setDefaultCommand(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
+		// drive.setDefaultCommand(drive.turnRelative(driver::translateX, driver::translateY, driver::lookX, 1.0));
 		driverController.y().whileTrue(drive.driveCommand(driver::translateX, driver::translateY, () -> 0.0, () -> -driver.inverter, 1.0));
 		driverController.a().whileTrue(drive.driveCommand(driver::translateX, driver::translateY, () -> 0.0, () -> driver.inverter, 1.0));
+		// driverController.rightTrigger(0.2).whileTrue(drive.driveCommand(driver::translateX, driver::translateY, driver::lookX, driver::lookY, 1.0));
+		driverController.rightTrigger(0.2).whileTrue(drive.turnRelative(driver::translateX, driver::translateY, driver::turnRelatveX, 1.0)); 
 
 		driverController.rightBumper().whileTrue(drive.aimAtGoal(driver::translateX, driver::translateY, goalAimer , 0.5));
 		driverController.leftBumper().whileTrue(drive.lockSwerveDrive(driver::translateX, driver::translateY, driver::lookX, 0.25));
@@ -252,6 +265,7 @@ public class RobotContainer {
 
 		operatorController.povUp().onTrue(intakeOut);
 		operatorController.povDown().onTrue(intakeIn);
+		// operatorController.povRight().onTrue(pushBalls);
 		// operatorController.povRight().onTrue(intakeAgitate);
 		// operatorController.povRight().onTrue(setIntakeDown);
 		// operatorController.povLeft().onTrue(setIntakeUp);

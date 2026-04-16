@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.384355555555556,
-        "y": 1.8
+        "x": 2.5500111111111106,
+        "y": 1.4624666666666655
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.355122222222222,
-        "y": 0.4198111111111109
+        "x": 2.3746111111111112,
+        "y": 0.27364444444444413
       },
       "isLocked": false,
       "linkedName": "human 2 shoot"
@@ -20,12 +20,12 @@
         "y": 0.5
       },
       "prevControl": {
-        "x": 3.9774776426703777,
-        "y": 0.5010172599315773
+        "x": 3.046977777777778,
+        "y": 0.4977666666666664
       },
       "nextControl": {
-        "x": 5.000738888888889,
-        "y": 0.4992222222222231
+        "x": 5.000739086395362,
+        "y": 0.500655591689892
       },
       "isLocked": false,
       "linkedName": null
@@ -100,12 +100,12 @@
         "y": 0.5
       },
       "prevControl": {
-        "x": 5.551299999999999,
-        "y": 0.6169333333333338
+        "x": 5.574441490354125,
+        "y": 0.5076694051805553
       },
       "nextControl": {
-        "x": 4.935555584237522,
-        "y": 0.3621425406040304
+        "x": 4.7912333333333335,
+        "y": 0.48802222222222097
       },
       "isLocked": false,
       "linkedName": "human through trench"
@@ -116,24 +116,24 @@
         "y": 0.5
       },
       "prevControl": {
-        "x": 4.830211111111111,
-        "y": 0.4587888888888869
+        "x": 4.829697124053563,
+        "y": 0.44775206921062427
       },
       "nextControl": {
-        "x": 3.186567587020187,
-        "y": 0.5262770582975455
+        "x": 2.559755555555556,
+        "y": 0.5659777777777775
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.384355555555556,
-        "y": 1.8
+        "x": 2.5500111111111106,
+        "y": 1.4624666666666655
       },
       "prevControl": {
-        "x": 2.3843555555555556,
-        "y": 0.8388222222222237
+        "x": 2.55001111111111,
+        "y": 0.5012888888888891
       },
       "nextControl": null,
       "isLocked": false,
@@ -142,12 +142,12 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.6838174273858928,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 0.5775933609958575,
+      "rotationDegrees": -0.7848474154792424
     },
     {
-      "waypointRelativePos": 0.75,
-      "rotationDegrees": -0.7848474154792424
+      "waypointRelativePos": 0.6838174273858928,
+      "rotationDegrees": 0.0
     },
     {
       "waypointRelativePos": 1.2,
@@ -173,11 +173,37 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 1.040198511166255,
+      "minWaypointRelativePos": 0.11910669975186565,
+      "maxWaypointRelativePos": 0.53200992555833,
       "constraints": {
-        "maxVelocity": 4.0,
-        "maxAcceleration": 3.0,
+        "maxVelocity": 2.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 5.328039702233257,
+      "maxWaypointRelativePos": 5.8521091811414685,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 7.67841191066996,
+      "maxWaypointRelativePos": 8.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 4.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -226,7 +252,7 @@
     "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
-    "nominalVoltage": 12.0,
+    "nominalVoltage": 12.5,
     "unlimited": true
   },
   "goalEndState": {
